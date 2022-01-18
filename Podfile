@@ -8,4 +8,6 @@ target 'SeSACFriends' do
   # Pods for SeSACFriends
   pod 'Firebase/Auth'
   pod 'SnapKit','~>5.0.0'
+  pod 'TextFieldEffects'
+
 end

@@ -6,7 +6,7 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<string>None</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.520062465863-i1epurisnd9ujtf17fa41tc1lo8g1mf0</string>

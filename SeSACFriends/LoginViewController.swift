@@ -9,41 +9,58 @@ import Foundation
 import UIKit
 import SnapKit
 import FirebaseAuth
+import TextFieldEffects
 
 
 class LoginViewController: UIViewController {
     
     private var verifyID: String?
+
+    
+    let descLabel:UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "NotoSansKR-Regular", size: 20)
+        label.text = "새싹 서비스 이용을 위해\n휴대폰 번호를 입력해 주세요"
+        label.textColor = UIColor().getColor(.defaultTextColor)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        label.spasing = 1.08
+        return label
+    }()
+    
     
     let phoneNumberTextField : UITextField = {
         let textField = UITextField()
-        textField.placeholder = "핸드폰 번호 입력"
-        textField.layer.borderWidth = 1
+        textField.placeholder = "휴대폰 번호(-없이 숫자만 입력)"
         return textField
     }()
     
-    let sendButton : UIButton = {
-       let button = UIButton()
-        button.setTitle("인증번호 전송", for: .normal)
-        button.setTitleColor(.black, for: .normal)
+    let verifySendButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("인증 문자 받기", for: .normal)
+        button.titleLabel?.font = UIFont(name: "NotoSansKR-Regular", size: 14)
+        button.setTitleColor(UIColor().getColor(.whiteTextColor), for: .normal)
+        button.layer.cornerRadius = 8
+        button.layer.backgroundColor = UIColor().getColor(.inactiveColor).cgColor
         button.addTarget(self, action: #selector(sendPhoneNumber), for: .touchUpInside)
         return button
     }()
+        
+//    let varificationCodeTextField : UITextField = {
+//       let textField = UITextField()
+//        textField.placeholder = "인증코드"
+//        textField.layer.borderWidth = 1
+//        return textField
+//    }()
     
-    let varificationCodeTextField : UITextField = {
-       let textField = UITextField()
-        textField.placeholder = "인증코드"
-        textField.layer.borderWidth = 1
-        return textField
-    }()
-    
-    let doneButton : UIButton = {
-       let button = UIButton()
-        button.setTitle("확인", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.addTarget(self, action: #selector(handleDoneBtn), for: .touchUpInside)
-       return button
-    }()
+//    let doneButton : UIButton = {
+//       let button = UIButton()
+//        button.setTitle("확인", for: .normal)
+//        button.setTitleColor(.black, for: .normal)
+//        button.addTarget(self, action: #selector(handleDoneBtn), for: .touchUpInside)
+//       return button
+//    }()
 
     
     override func viewDidLoad() {
@@ -53,48 +70,43 @@ class LoginViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewDidLayoutSubviews() {
+        self.phoneNumberTextField.setUnderLine()
+
+    }
     
     func setup() {
         
         [
+            descLabel,
             phoneNumberTextField,
-            sendButton,
-            varificationCodeTextField,
-            doneButton
+            verifySendButton
         ].forEach { self.view.addSubview($0) }
         
     }
     
     func setupConstraints() {
         
+        descLabel.snp.makeConstraints{
+            $0.leading.equalToSuperview().offset(74)
+            $0.top.equalToSuperview().offset(169)
+        }
+        
         phoneNumberTextField.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(30)
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(50)
-            $0.width.equalTo(150)
-        }
-        
-        sendButton.snp.makeConstraints{
-            $0.top.equalTo(phoneNumberTextField)
-            $0.leading.equalTo(phoneNumberTextField.snp.trailing).offset(20)
-            $0.width.equalTo(100)
+            $0.top.equalTo(descLabel.snp.bottom).offset(64)
+            $0.leading.equalToSuperview().offset(16)
+            $0.width.equalTo(343)
+            $0.height.equalTo(48)
 
         }
         
-        varificationCodeTextField.snp.makeConstraints {
-            
-            $0.top.equalTo(phoneNumberTextField.snp.bottom).offset(30)
-            $0.leading.equalToSuperview().offset(30)
-            $0.width.equalTo(100)
-
+        verifySendButton.snp.makeConstraints{
+            $0.leading.equalToSuperview().offset(16)
+            $0.top.equalTo(phoneNumberTextField.snp.bottom).offset(72)
+            $0.width.equalTo(343)
+            $0.height.equalTo(48)
         }
         
-        
-        doneButton.snp.makeConstraints{
-            $0.top.equalTo(sendButton.snp.bottom).offset(20)
-            $0.leading.equalTo(varificationCodeTextField.snp.trailing).offset(20)
-            $0.width.equalTo(50)
-
-        }
         
         
     }
@@ -107,6 +119,7 @@ private extension LoginViewController {
     
     @objc func sendPhoneNumber() {
         
+
         PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumberTextField.text!, uiDelegate: nil ) { (varification , error ) in
             if error == nil {
                 self.verifyID = varification
@@ -119,21 +132,21 @@ private extension LoginViewController {
         
     }
     
-    @objc func handleDoneBtn() {
-        
-        let credential = PhoneAuthProvider.provider().credential(withVerificationID: verifyID!, verificationCode: varificationCodeTextField.text!)
-        
-        Auth.auth().signIn(with: credential) {
-             ( success , error  ) in
-            if error == nil {
-                print("User signed in.. ")
-            } else {
-                print( error.debugDescription)
-            }
-        }
-        
-        
-    }
+//    @objc func handleDoneBtn() {
+//
+//        let credential = PhoneAuthProvider.provider().credential(withVerificationID: verifyID!, verificationCode: varificationCodeTextField.text!)
+//
+//        Auth.auth().signIn(with: credential) {
+//             ( success , error  ) in
+//            if error == nil {
+//                print("User signed in.. ")
+//            } else {
+//                print( error.debugDescription)
+//            }
+//        }
+//
+//
+//    }
     
     
 }
