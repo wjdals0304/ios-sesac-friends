@@ -7,11 +7,15 @@
 
 import Foundation
 import UIKit
+import FirebaseAuth
 
 
 class LoginPhoneVerifyViewController : UIViewController {
-
     
+    // 멤버 변수
+    private var phoneNumber : String!
+    private var verifyID : String!
+
     //타이머 변수 선언
     var timer: Timer?
     
@@ -47,13 +51,13 @@ class LoginPhoneVerifyViewController : UIViewController {
     let verificationCodeTextField : UITextField = {
         let textField = UITextField()
         textField.placeholder = "인증번호 입력"
-//        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         return textField
     }()
     
     let timerLabel : UILabel = {
        let label = UILabel()
-        label.text = "1:00"
+        label.text = "01:00"
         label.textColor = UIColor().getColor(.activeColor)
        return label
     }()
@@ -65,17 +69,24 @@ class LoginPhoneVerifyViewController : UIViewController {
         button.layer.backgroundColor = UIColor().getColor(.activeColor).cgColor
         button.setTitleColor(UIColor().getColor(.whiteTextColor), for: .normal)
         button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(sendPhoneNumber), for: .touchUpInside)
         
         return button
     }()
     
-    let verifyButton : UIButton = {
+    let verifyStartButton : UIButton = {
        let button = UIButton()
         button.setTitle("인증하고 시작하기", for: .normal)
         button.layer.backgroundColor = UIColor().getColor(.inactiveColor).cgColor
         button.setTitleColor(UIColor().getColor(.whiteTextColor), for: .normal)
         button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(handleDoneBtn), for: .touchUpInside)
         return button
+    }()
+    
+    lazy var backBarButton : UIBarButtonItem = {
+        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
+        return barButtonItem
     }()
     
     override func viewDidLoad() {
@@ -83,12 +94,21 @@ class LoginPhoneVerifyViewController : UIViewController {
         
         setup()
         setupConstraint()
-        
         startTimer()
     }
     
     override func viewDidLayoutSubviews() {
         self.verificationCodeTextField.setUnderLine()
+    }
+    
+    init(phoneNumber: String , verifyID : String ) {
+        self.phoneNumber = phoneNumber
+        self.verifyID = verifyID
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     func setup(){
@@ -98,7 +118,7 @@ class LoginPhoneVerifyViewController : UIViewController {
             timeDescLabel,
             textfieldView,
             reSendButton,
-            verifyButton
+            verifyStartButton
         ].forEach{ self.view.addSubview($0)}
         
         [
@@ -106,6 +126,8 @@ class LoginPhoneVerifyViewController : UIViewController {
             timerLabel
         ].forEach { self.textfieldView.addSubview($0) }
         
+        navigationItem.leftBarButtonItem = backBarButton
+
     }
     
     func setupConstraint(){
@@ -148,7 +170,7 @@ class LoginPhoneVerifyViewController : UIViewController {
             $0.bottom.equalTo(textfieldView.snp.bottom).inset(12)
         }
         
-        verifyButton.snp.makeConstraints {
+        verifyStartButton.snp.makeConstraints {
             $0.top.equalTo(verificationCodeTextField.snp.bottom).offset(72)
             $0.leading.equalToSuperview().offset(16)
             $0.trailing.equalToSuperview().inset(16)
@@ -174,8 +196,8 @@ private extension LoginPhoneVerifyViewController {
         //1초 간격 타이머 시작
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerCallback), userInfo: nil, repeats: true)
     }
-    //타이머 동작 func
     
+    //타이머 동작 func
     @objc func timerCallback() {
         //60초 ~ 1초 까지 timeBtn의 타이틀 변경
         let minutes: Int = timerNum / 60 % 60
@@ -188,15 +210,78 @@ private extension LoginPhoneVerifyViewController {
         
         
         //timerNum이 0이면(60초 경과) 타이머 종료
-            if(timerNum == 0) {
-                timer?.invalidate()
-                timer = nil
-                
-            }
-            //timerNum -1 감소시키기
-            timerNum-=1
+        if(timerNum == 0) {
+            timer?.invalidate()
+            timer = nil
+        }
+        
+        //timerNum -1 감소시키기
+        timerNum-=1
     }
     
+    @objc func textFieldDidChange() {
+        
+        let code = verificationCodeTextField.text!.replacingOccurrences(of: "-", with: "")
+        let codeArr = Array(code)
+        
+        if self.isCheckCode(str: code) && codeArr.count >= 6 {
+            
+            verifyStartButton.layer.backgroundColor = UIColor().getColor(.activeColor).cgColor
+            
+        } else {
+            verifyStartButton.layer.backgroundColor = UIColor().getColor(.inactiveColor).cgColor
+        }
+        
+
+    }
     
+    // 코드체크
+    func isCheckCode(str: String) -> Bool {
+        
+        let regex = "([0-9]{6})"
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: str)
+    }
     
+    // 문자 보내기
+    @objc func sendPhoneNumber() {
+            
+        phoneNumber = "+82" + phoneNumber.substring(from: 1)
+        
+        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil )
+        {
+            (varification , error ) in
+            if error == nil {
+                self.verifyID = varification
+                
+                
+            } else {
+                print("error")
+                print(error.debugDescription)
+            }
+            
+        }
+        
+    }
+    
+    // 코드번호 검증
+    @objc func handleDoneBtn() {
+
+        let credential = PhoneAuthProvider.provider().credential(withVerificationID: verifyID, verificationCode: verificationCodeTextField.text!)
+
+        Auth.auth().signIn(with: credential) {
+             ( success , error  ) in
+            if error == nil {
+                print("User signed in.. ")
+            } else {
+                print( error.debugDescription)
+            }
+        }
+
+
+    }
+
+    
+    @objc func closeButtonClicked(){
+        self.navigationController?.popViewController(animated: true)
+    }
 }

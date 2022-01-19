@@ -12,10 +12,8 @@ import FirebaseAuth
 import TextFieldEffects
 import Toast_Swift
 
-class LoginPhoneViewController: UIViewController, UITextFieldDelegate {
+class LoginPhoneViewController: UIViewController {
     
-    private var verifyID: String?
-
     
     let descLabel:UILabel = {
         let label = UILabel()
@@ -66,7 +64,6 @@ class LoginPhoneViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        phoneNumberTextField.delegate = self
         setup()
         setupConstraints()
     }
@@ -121,18 +118,20 @@ private extension LoginPhoneViewController {
        var phoneNumber = phoneNumberTextField.text!.replacingOccurrences(of: "-", with: "")
        let phoneNumberArr = Array(phoneNumber)
         
-        if !self.isPhone(candidate: phoneNumber) && !(phoneNumberArr.count >= 10) {
+       if !self.isPhone(candidate: phoneNumber) && !(phoneNumberArr.count >= 10) {
              self.view.makeToast("잘못된 전화번호 형식입니다.")
              return
         }
+        
         phoneNumber = "+82" + phoneNumber.substring(from: 1)
         
         PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil )
         {
             (varification , error ) in
             if error == nil {
-                self.verifyID = varification
                 
+                let vc = LoginPhoneVerifyViewController(phoneNumber: phoneNumber, verifyID: varification!)
+                self.navigationController?.pushViewController(vc, animated: true)
                 
             } else {
                 print("error")
@@ -174,7 +173,7 @@ private extension LoginPhoneViewController {
             //MARK: 핸드폰 번호 유효성 검사
             if let regex = try? NSRegularExpression(pattern: "([0-9]{3})([0-9]{3,4})([0-9]{4})", options: .caseInsensitive)
              {
-                 modString = regex.stringByReplacingMatches(in: _str, options: [], range: NSRange(_str.startIndex..., in: _str), withTemplate: "$1-$2-$3")
+                modString = regex.stringByReplacingMatches(in: _str, options: [], range: NSRange(_str.startIndex..., in: _str), withTemplate: "$1-$2-$3")
             }
             
             phoneNumberTextField.text = modString
@@ -188,6 +187,7 @@ private extension LoginPhoneViewController {
         }
     
     }
+    
     //MARK: 핸드폰 번호 유효성 검사
     func isPhone(candidate: String) -> Bool {
 
