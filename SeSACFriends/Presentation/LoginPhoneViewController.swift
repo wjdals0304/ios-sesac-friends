@@ -10,9 +10,9 @@ import UIKit
 import SnapKit
 import FirebaseAuth
 import TextFieldEffects
+import Toast_Swift
 
-
-class LoginViewController: UIViewController {
+class LoginPhoneViewController: UIViewController, UITextFieldDelegate {
     
     private var verifyID: String?
 
@@ -30,9 +30,10 @@ class LoginViewController: UIViewController {
     }()
     
     
-    let phoneNumberTextField : UITextField = {
+    let  phoneNumberTextField : UITextField = {
         let textField = UITextField()
         textField.placeholder = "휴대폰 번호(-없이 숫자만 입력)"
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         return textField
     }()
     
@@ -65,7 +66,7 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        phoneNumberTextField.delegate = self
         setup()
         setupConstraints()
     }
@@ -107,22 +108,32 @@ class LoginViewController: UIViewController {
             $0.height.equalTo(48)
         }
         
-        
-        
     }
 
- 
- 
 }
 
-private extension LoginViewController {
+
+
+private extension LoginPhoneViewController {
     
     @objc func sendPhoneNumber() {
         
-
-        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumberTextField.text!, uiDelegate: nil ) { (varification , error ) in
+       var phoneNumber = phoneNumberTextField.text!.replacingOccurrences(of: "-", with: "")
+       let phoneNumberArr = Array(phoneNumber)
+        
+        if !self.isPhone(candidate: phoneNumber) && !(phoneNumberArr.count >= 10) {
+             self.view.makeToast("잘못된 전화번호 형식입니다.")
+             return
+        }
+        phoneNumber = "+82" + phoneNumber.substring(from: 1)
+        
+        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil )
+        {
+            (varification , error ) in
             if error == nil {
                 self.verifyID = varification
+                
+                
             } else {
                 print("error")
                 print(error.debugDescription)
@@ -131,6 +142,7 @@ private extension LoginViewController {
         }
         
     }
+    
     
 //    @objc func handleDoneBtn() {
 //
@@ -147,6 +159,46 @@ private extension LoginViewController {
 //
 //
 //    }
+    
+    @objc func textFieldDidChange() {
+         
+        let _str = phoneNumberTextField.text!.replacingOccurrences(of: "-", with: "")
+        let phoneNumberArr = Array(_str)
+            
+        var modString = ""
+
+            
+        //MARK: 11자이상이고 핸드폰번호인 경우만 실행
+        if self.isPhone(candidate: _str) && phoneNumberArr.count >= 10 {
+            
+            //MARK: 핸드폰 번호 유효성 검사
+            if let regex = try? NSRegularExpression(pattern: "([0-9]{3})([0-9]{3,4})([0-9]{4})", options: .caseInsensitive)
+             {
+                 modString = regex.stringByReplacingMatches(in: _str, options: [], range: NSRange(_str.startIndex..., in: _str), withTemplate: "$1-$2-$3")
+            }
+            
+            phoneNumberTextField.text = modString
+            verifySendButton.layer.backgroundColor = UIColor().getColor(.activeColor).cgColor
+            
+        } else  {
+            
+            verifySendButton.layer.backgroundColor = UIColor().getColor(.inactiveColor).cgColor
+            return
+
+        }
+    
+    }
+    //MARK: 핸드폰 번호 유효성 검사
+    func isPhone(candidate: String) -> Bool {
+
+        let regex = "([0-9]{3})([0-9]{3,4})([0-9]{4})"
+
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: candidate)
+
+    }
+
+
+
     
     
 }

@@ -9,5 +9,6 @@ target 'SeSACFriends' do
   pod 'Firebase/Auth'
   pod 'SnapKit','~>5.0.0'
   pod 'TextFieldEffects'
+  pod 'Toast-Swift', '~> 5.0.1'
 
 end
