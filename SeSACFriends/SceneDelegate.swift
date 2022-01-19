@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         window?.backgroundColor = .systemBackground
-        window?.rootViewController = LoginViewController()
+        window?.rootViewController = LoginPhoneVerifyViewController()
 //        window?.tintColor = .label
         window?.makeKeyAndVisible()
     }

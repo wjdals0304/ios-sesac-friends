@@ -83,6 +83,8 @@ class LoginPhoneVerifyViewController : UIViewController {
         
         setup()
         setupConstraint()
+        
+        startTimer()
     }
     
     override func viewDidLayoutSubviews() {
@@ -151,10 +153,7 @@ class LoginPhoneVerifyViewController : UIViewController {
             $0.leading.equalToSuperview().offset(16)
             $0.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(48)
-            
         }
-        
-        
     }
     
     
@@ -178,8 +177,14 @@ private extension LoginPhoneVerifyViewController {
     //타이머 동작 func
     
     @objc func timerCallback() {
-    //60초 ~ 1초 까지 timeBtn의 타이틀 변경
-        self.timerLabel.text = "\(timerNum)"
+        //60초 ~ 1초 까지 timeBtn의 타이틀 변경
+        let minutes: Int = timerNum / 60 % 60
+        let seconds: Int = timerNum % 60
+        
+        let minutesString = String(minutes).count == 1 ? "0" + String(minutes) : String(minutes)
+        let secondsString = String(seconds).count == 1 ? "0" + String(seconds) : String(seconds)
+        
+        self.timerLabel.text = minutesString + ":" + secondsString
         
         
         //timerNum이 0이면(60초 경과) 타이머 종료
