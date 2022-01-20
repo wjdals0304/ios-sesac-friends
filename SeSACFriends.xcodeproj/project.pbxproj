@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		645EA78C2797C27000DD1CE8 /* String+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA78B2797C27000DD1CE8 /* String+extension.swift */; };
 		645EA78E2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA78D2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift */; };
+		645EA7932799303600DD1CE8 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA7922799303600DD1CE8 /* User.swift */; };
+		645EA7952799353700DD1CE8 /* UserNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA7942799353700DD1CE8 /* UserNetwork.swift */; };
+		645EA799279958F700DD1CE8 /* LoginPhoneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA798279958F700DD1CE8 /* LoginPhoneViewModel.swift */; };
+		645EA79D27998EDB00DD1CE8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 645EA79C27998EDB00DD1CE8 /* GoogleService-Info.plist */; };
 		6495F9362795197F00A9F6E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6495F9352795197F00A9F6E0 /* AppDelegate.swift */; };
 		6495F9382795197F00A9F6E0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6495F9372795197F00A9F6E0 /* SceneDelegate.swift */; };
 		6495F93F2795198300A9F6E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6495F93E2795198300A9F6E0 /* Assets.xcassets */; };
@@ -16,7 +20,6 @@
 		6495F94A27951AD600A9F6E0 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6495F94927951AD600A9F6E0 /* TabBarController.swift */; };
 		6495F94C27951C1400A9F6E0 /* LoginPhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6495F94B27951C1400A9F6E0 /* LoginPhoneViewController.swift */; };
 		6495F94F279530E700A9F6E0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6495F94E279530E700A9F6E0 /* SnapKit */; };
-		6495F9532795374300A9F6E0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6495F9522795374300A9F6E0 /* GoogleService-Info.plist */; };
 		6495F95A279681DF00A9F6E0 /* UIColor+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6495F959279681DE00A9F6E0 /* UIColor+extension.swift */; };
 		64A2EC9127968EFE00192FF2 /* UITextField+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A2EC9027968EFE00192FF2 /* UITextField+extension.swift */; };
 		64A2EC9A2796984200192FF2 /* NotoSansKR-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 64A2EC932796984000192FF2 /* NotoSansKR-Bold.otf */; };
@@ -34,6 +37,11 @@
 		55BFDB73B7F7CECD6612D105 /* Pods_SeSACFriends.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SeSACFriends.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		645EA78B2797C27000DD1CE8 /* String+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+extension.swift"; sourceTree = "<group>"; };
 		645EA78D2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPhoneVerifyViewController.swift; sourceTree = "<group>"; };
+		645EA7922799303600DD1CE8 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		645EA7942799353700DD1CE8 /* UserNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNetwork.swift; sourceTree = "<group>"; };
+		645EA79627993FD200DD1CE8 /* urltest.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = urltest.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		645EA798279958F700DD1CE8 /* LoginPhoneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPhoneViewModel.swift; sourceTree = "<group>"; };
+		645EA79C27998EDB00DD1CE8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6495F9322795197F00A9F6E0 /* SeSACFriends.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeSACFriends.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6495F9352795197F00A9F6E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6495F9372795197F00A9F6E0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -42,7 +50,6 @@
 		6495F9432795198300A9F6E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6495F94927951AD600A9F6E0 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		6495F94B27951C1400A9F6E0 /* LoginPhoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPhoneViewController.swift; sourceTree = "<group>"; };
-		6495F9522795374300A9F6E0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6495F95627953A6A00A9F6E0 /* SeSACFriends.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SeSACFriends.entitlements; sourceTree = "<group>"; };
 		6495F959279681DE00A9F6E0 /* UIColor+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+extension.swift"; sourceTree = "<group>"; };
 		64A2EC9027968EFE00192FF2 /* UITextField+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+extension.swift"; sourceTree = "<group>"; };
@@ -74,10 +81,36 @@
 		645EA78F279812FF00DD1CE8 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				6495F94B27951C1400A9F6E0 /* LoginPhoneViewController.swift */,
-				645EA78D2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift */,
+				6495F94927951AD600A9F6E0 /* TabBarController.swift */,
+				645EA797279958DE00DD1CE8 /* LoginPhone */,
 			);
 			path = Presentation;
+			sourceTree = "<group>";
+		};
+		645EA79027992C5200DD1CE8 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				645EA7922799303600DD1CE8 /* User.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		645EA79127992F7E00DD1CE8 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				645EA7942799353700DD1CE8 /* UserNetwork.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		645EA797279958DE00DD1CE8 /* LoginPhone */ = {
+			isa = PBXGroup;
+			children = (
+				6495F94B27951C1400A9F6E0 /* LoginPhoneViewController.swift */,
+				645EA78D2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift */,
+				645EA798279958F700DD1CE8 /* LoginPhoneViewModel.swift */,
+			);
+			path = LoginPhone;
 			sourceTree = "<group>";
 		};
 		6495F9292795197F00A9F6E0 = {
@@ -101,18 +134,20 @@
 		6495F9342795197F00A9F6E0 /* SeSACFriends */ = {
 			isa = PBXGroup;
 			children = (
+				645EA79C27998EDB00DD1CE8 /* GoogleService-Info.plist */,
 				64A2EC92279697B800192FF2 /* Font */,
 				6495F95627953A6A00A9F6E0 /* SeSACFriends.entitlements */,
 				6495F9352795197F00A9F6E0 /* AppDelegate.swift */,
 				6495F9372795197F00A9F6E0 /* SceneDelegate.swift */,
-				6495F94927951AD600A9F6E0 /* TabBarController.swift */,
+				645EA79127992F7E00DD1CE8 /* Network */,
+				645EA79027992C5200DD1CE8 /* Entities */,
 				645EA78F279812FF00DD1CE8 /* Presentation */,
 				64A2ECA427969BB500192FF2 /* Extension */,
-				6495F9522795374300A9F6E0 /* GoogleService-Info.plist */,
 				6495F9432795198300A9F6E0 /* Info.plist */,
 				6495F93E2795198300A9F6E0 /* Assets.xcassets */,
 				6495F9402795198300A9F6E0 /* LaunchScreen.storyboard */,
 				6495F9332795197F00A9F6E0 /* Products */,
+				645EA79627993FD200DD1CE8 /* urltest.playground */,
 			);
 			path = SeSACFriends;
 			sourceTree = "<group>";
@@ -232,9 +267,9 @@
 				64A2ECA02796984200192FF2 /* NotoSansKR-Regular.otf in Resources */,
 				64A2EC9B2796984200192FF2 /* NotoSansKR-Light.otf in Resources */,
 				6495F93F2795198300A9F6E0 /* Assets.xcassets in Resources */,
+				645EA79D27998EDB00DD1CE8 /* GoogleService-Info.plist in Resources */,
 				64A2EC9A2796984200192FF2 /* NotoSansKR-Bold.otf in Resources */,
 				64A2EC9E2796984200192FF2 /* OFL.txt in Resources */,
-				6495F9532795374300A9F6E0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,9 +328,12 @@
 				64A2EC9127968EFE00192FF2 /* UITextField+extension.swift in Sources */,
 				6495F9362795197F00A9F6E0 /* AppDelegate.swift in Sources */,
 				6495F95A279681DF00A9F6E0 /* UIColor+extension.swift in Sources */,
+				645EA7952799353700DD1CE8 /* UserNetwork.swift in Sources */,
 				6495F94C27951C1400A9F6E0 /* LoginPhoneViewController.swift in Sources */,
 				6495F9382795197F00A9F6E0 /* SceneDelegate.swift in Sources */,
+				645EA7932799303600DD1CE8 /* User.swift in Sources */,
 				64A2ECA227969B0F00192FF2 /* UILabel+extension.swift in Sources */,
+				645EA799279958F700DD1CE8 /* LoginPhoneViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,7 +505,7 @@
 				CODE_SIGN_ENTITLEMENTS = SeSACFriends/SeSACFriends.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = XJJN8UXL48;
+				DEVELOPMENT_TEAM = 2EZ5QWFYX2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SeSACFriends/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -479,7 +517,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jmkim.SeSACFriends;
+				PRODUCT_BUNDLE_IDENTIFIER = com.memolease.sesac1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

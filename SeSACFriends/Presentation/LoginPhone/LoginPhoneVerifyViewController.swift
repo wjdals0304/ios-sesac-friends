@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import FirebaseAuth
-
+import GoogleSignIn
 
 class LoginPhoneVerifyViewController : UIViewController {
     
@@ -21,6 +21,8 @@ class LoginPhoneVerifyViewController : UIViewController {
     
     /// 타이머에 사용할 번호값
     var timerNum: Int = 0
+    
+    let loginPhoneViewModel = LoginPhoneViewModel()
     
     let descLabel:UILabel = {
         let label = UILabel()
@@ -51,6 +53,7 @@ class LoginPhoneVerifyViewController : UIViewController {
     let verificationCodeTextField : UITextField = {
         let textField = UITextField()
         textField.placeholder = "인증번호 입력"
+        textField.textContentType = .oneTimeCode
         textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         return textField
     }()
@@ -92,6 +95,7 @@ class LoginPhoneVerifyViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+       
         setup()
         setupConstraint()
         startTimer()
@@ -113,8 +117,11 @@ class LoginPhoneVerifyViewController : UIViewController {
     
     func setup(){
         
-        view.backgroundColor = .systemBackground
+    
+        self.view.backgroundColor = .systemBackground
+        self.view.makeToast("인증번호를 보냈습니다")
         
+
         [
             descLabel,
             timeDescLabel,
@@ -250,7 +257,6 @@ private extension LoginPhoneVerifyViewController {
     @objc func sendPhoneNumber() {
             
         let phoneNumber = self.phoneNumber!
-        print(phoneNumber)
        
         PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil )
         {
@@ -259,6 +265,7 @@ private extension LoginPhoneVerifyViewController {
                 self.verifyID = varification
                 
                 self.timerLabel.text = "01:00"
+                self.verificationCodeTextField.text = ""
                 self.startTimer()
                 
             } else {
@@ -274,11 +281,31 @@ private extension LoginPhoneVerifyViewController {
     @objc func handleDoneBtn() {
 
         let credential = PhoneAuthProvider.provider().credential(withVerificationID: verifyID!, verificationCode: verificationCodeTextField.text!)
-
+        
+        Auth.auth().languageCode = "kr"
+  
         Auth.auth().signIn(with: credential) {
              ( success , error  ) in
             if error == nil {
                 print("User signed in.. ")
+                
+                /// Firebase 토근 가져오기
+                Auth.auth().currentUser?.getIDToken(completion: { idtoken, error in
+                    guard let idtoken = idtoken else {
+                        print(error!)
+                        self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                        return
+                   }
+                   
+                  self.loginPhoneViewModel.getUser(idtoken: idtoken)
+                    
+                    
+                 
+            })
+                
+                
+                
+                
             } else {
                 print( error.debugDescription)
                 self.view.makeToast("전화번호 인증 실패")

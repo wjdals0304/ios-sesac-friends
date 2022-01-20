@@ -88,6 +88,7 @@ class LoginPhoneViewController: UIViewController {
         descLabel.snp.makeConstraints{
             $0.leading.equalToSuperview().offset(74)
             $0.top.equalToSuperview().offset(169)
+            $0.width.equalTo(view.snp.width).multipliedBy(0.6)
         }
         
         phoneNumberTextField.snp.makeConstraints {
@@ -131,9 +132,12 @@ private extension LoginPhoneViewController {
             if error == nil {
                 
                 let vc = LoginPhoneVerifyViewController(phoneNumber: phoneNumber, verifyID: varification!)
+
                 self.navigationController?.pushViewController(vc, animated: true)
+
                 
             } else {
+                self.view.makeToast("에러가 발생했습니다. 다시 시도해주세요")
                 print("error")
                 print(error.debugDescription)
             }
