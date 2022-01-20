@@ -12,14 +12,14 @@ import FirebaseAuth
 
 class LoginPhoneVerifyViewController : UIViewController {
     
-    // 멤버 변수
-    private var phoneNumber : String!
-    private var verifyID : String!
+    /// 멤버 변수
+    private var phoneNumber : String?
+    private var verifyID : String?
 
-    //타이머 변수 선언
+    /// 타이머 변수 선언
     var timer: Timer?
     
-    // 타이머에 사용할 번호값
+    /// 타이머에 사용할 번호값
     var timerNum: Int = 0
     
     let descLabel:UILabel = {
@@ -113,6 +113,8 @@ class LoginPhoneVerifyViewController : UIViewController {
     
     func setup(){
         
+        view.backgroundColor = .systemBackground
+        
         [
             descLabel,
             timeDescLabel,
@@ -186,18 +188,18 @@ private extension LoginPhoneVerifyViewController {
     
     
     func startTimer() {
-        //기존에 타이머 동작중이면 중지 처리
+        /// 기존에 타이머 동작중이면 중지 처리
         if timer != nil && timer!.isValid {
                 timer!.invalidate()
         }
         
-        //타이머 사용값 초기화
+        /// 타이머 사용값 초기화
         timerNum = 60
-        //1초 간격 타이머 시작
+        /// 1초 간격 타이머 시작
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerCallback), userInfo: nil, repeats: true)
     }
     
-    //타이머 동작 func
+    /// 타이머 동작 func
     @objc func timerCallback() {
         //60초 ~ 1초 까지 timeBtn의 타이틀 변경
         let minutes: Int = timerNum / 60 % 60
@@ -213,6 +215,7 @@ private extension LoginPhoneVerifyViewController {
         if(timerNum == 0) {
             timer?.invalidate()
             timer = nil
+            self.view.makeToast("전화번호 인증 실패")
         }
         
         //timerNum -1 감소시키기
@@ -235,24 +238,28 @@ private extension LoginPhoneVerifyViewController {
 
     }
     
-    // 코드체크
+    /// 코드체크
     func isCheckCode(str: String) -> Bool {
         
         let regex = "([0-9]{6})"
         return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: str)
     }
     
-    // 문자 보내기
+    
+    /// 재전송 문자 보내기
     @objc func sendPhoneNumber() {
             
-        phoneNumber = "+82" + phoneNumber.substring(from: 1)
-        
+        let phoneNumber = self.phoneNumber!
+        print(phoneNumber)
+       
         PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil )
         {
             (varification , error ) in
             if error == nil {
                 self.verifyID = varification
                 
+                self.timerLabel.text = "01:00"
+                self.startTimer()
                 
             } else {
                 print("error")
@@ -263,10 +270,10 @@ private extension LoginPhoneVerifyViewController {
         
     }
     
-    // 코드번호 검증
+    /// 코드번호 검증
     @objc func handleDoneBtn() {
 
-        let credential = PhoneAuthProvider.provider().credential(withVerificationID: verifyID, verificationCode: verificationCodeTextField.text!)
+        let credential = PhoneAuthProvider.provider().credential(withVerificationID: verifyID!, verificationCode: verificationCodeTextField.text!)
 
         Auth.auth().signIn(with: credential) {
              ( success , error  ) in
@@ -274,6 +281,8 @@ private extension LoginPhoneVerifyViewController {
                 print("User signed in.. ")
             } else {
                 print( error.debugDescription)
+                self.view.makeToast("전화번호 인증 실패")
+
             }
         }
 
