@@ -33,7 +33,7 @@ enum Color {
 }
 
 extension UIColor {
-    func getColor(_ name: Color) -> UIColor {
+   static func getColor(_ name: Color) -> UIColor {
         
         switch name {
             

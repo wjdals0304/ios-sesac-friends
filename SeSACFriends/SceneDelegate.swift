@@ -20,9 +20,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.backgroundColor = .systemBackground
     
+//
+//        window?.rootViewController = UINavigationController(rootViewController: LoginPhoneViewController())
         
-        window?.rootViewController = UINavigationController(rootViewController: LoginPhoneViewController())
-        
+        window?.rootViewController = UINavigationController(rootViewController: LoginNickNameViewController())
 //        window?.tintColor = .label
         window?.makeKeyAndVisible()
     }
