@@ -26,9 +26,9 @@ class LoginPhoneVerifyViewController : UIViewController {
     
     let descLabel:UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "NotoSansKR-Regular", size: 20)
+        label.font = UIFont.getRegularFont(.regular_20)
         label.text = "인증번호가 문자로 전송되었어요"
-        label.textColor = UIColor().getColor(.defaultTextColor)
+        label.textColor = UIColor.getColor(.defaultTextColor)
         label.textAlignment = .center
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
@@ -37,9 +37,9 @@ class LoginPhoneVerifyViewController : UIViewController {
 
     let timeDescLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "NotoSansKR-Regular",size: 16)
+        label.font = UIFont.getRegularFont(.regular_16)
         label.text = "(최대 소모 60초)"
-        label.textColor = UIColor().getColor(.grayTextColor)
+        label.textColor = UIColor.getColor(.grayTextColor)
         return label
     }()
     
@@ -61,7 +61,7 @@ class LoginPhoneVerifyViewController : UIViewController {
     let timerLabel : UILabel = {
        let label = UILabel()
         label.text = "01:00"
-        label.textColor = UIColor().getColor(.activeColor)
+        label.textColor = UIColor.getColor(.activeColor)
        return label
     }()
     
@@ -69,8 +69,8 @@ class LoginPhoneVerifyViewController : UIViewController {
         
         let button = UIButton()
         button.setTitle("재전송", for: .normal)
-        button.layer.backgroundColor = UIColor().getColor(.activeColor).cgColor
-        button.setTitleColor(UIColor().getColor(.whiteTextColor), for: .normal)
+        button.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
+        button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
         button.layer.cornerRadius = 8
         button.addTarget(self, action: #selector(sendPhoneNumber), for: .touchUpInside)
         
@@ -80,8 +80,8 @@ class LoginPhoneVerifyViewController : UIViewController {
     let verifyStartButton : UIButton = {
        let button = UIButton()
         button.setTitle("인증하고 시작하기", for: .normal)
-        button.layer.backgroundColor = UIColor().getColor(.inactiveColor).cgColor
-        button.setTitleColor(UIColor().getColor(.whiteTextColor), for: .normal)
+        button.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
+        button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
         button.layer.cornerRadius = 8
         button.addTarget(self, action: #selector(handleDoneBtn), for: .touchUpInside)
         return button
@@ -193,6 +193,10 @@ class LoginPhoneVerifyViewController : UIViewController {
 
 private extension LoginPhoneVerifyViewController {
     
+    @objc func closeButtonClicked(){
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     
     func startTimer() {
         /// 기존에 타이머 동작중이면 중지 처리
@@ -236,10 +240,10 @@ private extension LoginPhoneVerifyViewController {
         
         if self.isCheckCode(str: code) && codeArr.count >= 6 {
             
-            verifyStartButton.layer.backgroundColor = UIColor().getColor(.activeColor).cgColor
+            verifyStartButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
             
         } else {
-            verifyStartButton.layer.backgroundColor = UIColor().getColor(.inactiveColor).cgColor
+            verifyStartButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
         }
         
 
@@ -289,22 +293,49 @@ private extension LoginPhoneVerifyViewController {
             if error == nil {
                 print("User signed in.. ")
                 
-                /// Firebase 토근 가져오기
-                Auth.auth().currentUser?.getIDToken(completion: { idtoken, error in
+               /// Firebase 토큰 가져오기
+              Auth.auth().currentUser?.getIDToken(completion: { idtoken, error in
                     guard let idtoken = idtoken else {
                         print(error!)
                         self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
                         return
                    }
                    
-                  self.loginPhoneViewModel.getUser(idtoken: idtoken)
+                  /// 유저 정보 가져오기
+                   self.loginPhoneViewModel.getUser(idtoken: idtoken) { User, APIStatus in
+
+                       switch APIStatus {
+                           
+                           
+                        case .success:
+                           print("200 로직 ")
+                    
+                           
+                           
+                        case .unregisterdUser:
+                           print("닉네임 뷰로 이동")
+                        
+                           
+                           
+                           
+                        case .expiredToken :
+                           print("토큰 만료")
+                        
+                           
+                           
+                       case .noData , .invalidData ,.clientError,.serverError ,.failed,.none:
+                           self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                       
+                            
+                    }
+                        
+                   }
                     
                     
                  
             })
                 
-                
-                
+            
                 
             } else {
                 print( error.debugDescription)
@@ -317,7 +348,6 @@ private extension LoginPhoneVerifyViewController {
     }
 
     
-    @objc func closeButtonClicked(){
-        self.navigationController?.popViewController(animated: true)
-    }
+    
+    
 }

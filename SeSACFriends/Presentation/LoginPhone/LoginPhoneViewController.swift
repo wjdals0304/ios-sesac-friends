@@ -17,9 +17,9 @@ class LoginPhoneViewController: UIViewController {
     
     let descLabel:UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "NotoSansKR-Regular", size: 20)
+        label.font = UIFont.getRegularFont(.regular_20)
         label.text = "새싹 서비스 이용을 위해\n휴대폰 번호를 입력해 주세요"
-        label.textColor = UIColor().getColor(.defaultTextColor)
+        label.textColor = UIColor.getColor(.defaultTextColor)
         label.textAlignment = .center
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
@@ -38,28 +38,13 @@ class LoginPhoneViewController: UIViewController {
     let verifySendButton : UIButton = {
         let button = UIButton()
         button.setTitle("인증 문자 받기", for: .normal)
-        button.titleLabel?.font = UIFont(name: "NotoSansKR-Regular", size: 14)
-        button.setTitleColor(UIColor().getColor(.whiteTextColor), for: .normal)
+        button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
+        button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
         button.layer.cornerRadius = 8
-        button.layer.backgroundColor = UIColor().getColor(.inactiveColor).cgColor
+        button.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
         button.addTarget(self, action: #selector(sendPhoneNumber), for: .touchUpInside)
         return button
     }()
-        
-//    let varificationCodeTextField : UITextField = {
-//       let textField = UITextField()
-//        textField.placeholder = "인증코드"
-//        textField.layer.borderWidth = 1
-//        return textField
-//    }()
-    
-//    let doneButton : UIButton = {
-//       let button = UIButton()
-//        button.setTitle("확인", for: .normal)
-//        button.setTitleColor(.black, for: .normal)
-//        button.addTarget(self, action: #selector(handleDoneBtn), for: .touchUpInside)
-//       return button
-//    }()
 
     
     override func viewDidLoad() {
@@ -88,7 +73,6 @@ class LoginPhoneViewController: UIViewController {
         descLabel.snp.makeConstraints{
             $0.leading.equalToSuperview().offset(74)
             $0.top.equalToSuperview().offset(169)
-            $0.width.equalTo(view.snp.width).multipliedBy(0.6)
         }
         
         phoneNumberTextField.snp.makeConstraints {
@@ -181,11 +165,11 @@ private extension LoginPhoneViewController {
             }
             
             phoneNumberTextField.text = modString
-            verifySendButton.layer.backgroundColor = UIColor().getColor(.activeColor).cgColor
+            verifySendButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
             
         } else  {
             
-            verifySendButton.layer.backgroundColor = UIColor().getColor(.inactiveColor).cgColor
+            verifySendButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
             return
 
         }

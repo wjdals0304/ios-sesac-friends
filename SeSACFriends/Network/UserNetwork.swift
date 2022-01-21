@@ -11,14 +11,13 @@ import Alamofire
 
 enum APIStatus   {
     case success
-    case invalidResponse
     case noData
     case failed
     case invalidData
     case expiredToken
     case clientError
     case serverError
-    case existUser
+    case unregisterdUser
 }
 
 struct UserAPI {
@@ -54,6 +53,10 @@ class UserNetwork {
                           , "idtoken" : self.idtoken ]
     }
     
+    
+    
+    /// 내 유저 정보가져오기
+    /// - Parameter completion: user, apistatus 리턴
     func getUser(completion: @escaping(User?, APIStatus?) -> Void ){
         
         let url = userApi.getUser().url!
@@ -69,7 +72,7 @@ class UserNetwork {
             switch response.result {
                
             case .success:
-                
+
                 guard let statusCode = response.response?.statusCode else {
                     completion(nil,.failed)
                     return
@@ -80,10 +83,10 @@ class UserNetwork {
                     return
                 }
                 
+                
                 switch statusCode  {
                     
                 case 200 :
-                    
                     let decoder = JSONDecoder()
                     
                     guard let userData = try? decoder.decode(User.self, from: value)
@@ -96,7 +99,7 @@ class UserNetwork {
                     completion(userData,.success)
                                     
                 case 201 :
-                    completion(nil,.existUser)
+                    completion(nil,.unregisterdUser)
                 case 401 :
                     completion(nil,.expiredToken)
                 case 500 :
