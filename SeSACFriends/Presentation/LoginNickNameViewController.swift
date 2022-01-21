@@ -72,7 +72,6 @@ class LoginNickNameViewController : UIViewController {
             $0.leading.equalToSuperview().offset(16)
             $0.top.equalTo(nickDescLabel.snp.bottom).offset(80)
             $0.width.equalTo(UIScreen.main.bounds.size.width - 32)
-            
         }
         
         nextButton.snp.makeConstraints {
@@ -90,7 +89,7 @@ class LoginNickNameViewController : UIViewController {
         let nickName = nickNameTextField.text!.replacingOccurrences(of: "-", with: "")
         let nickNameArr = Array(nickName)
         
-        if nickNameArr.count >= 1 && nickNameArr.count < 10{
+        if nickNameArr.count >= 1 && nickNameArr.count < 10 {
             
             nextButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
             
