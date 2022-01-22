@@ -159,8 +159,26 @@ class LoginBirthViewController : UIViewController {
         }
         
         yearLabel.snp.makeConstraints{
-            $0.leading.equalTo(yearTextField.snp.leading)
+            $0.trailing.equalTo(yearView.snp.trailing)
             $0.top.equalTo(yearView.snp.top).offset(10)
+        }
+        
+        monthTextField.snp.makeConstraints {
+            $0.top.equalTo(monthView.snp.top)
+            $0.leading.equalTo(monthView.snp.leading)
+            $0.trailing.equalTo(monthView.snp.trailing).inset(19)
+            $0.bottom.equalTo(monthView.snp.bottom)
+        }
+        
+        monthLabel.snp.makeConstraints {
+            $0.trailing.equalTo(monthView.snp.trailing)
+            $0.top.equalTo(monthView.snp.top).offset(10)
+            
+        }
+        
+        dayLabel.snp.makeConstraints {
+            $0.trailing.equalTo(dayView.snp.trailing)
+            $0.top.equalTo(dayView.snp.top).offset(10)
         }
         
         

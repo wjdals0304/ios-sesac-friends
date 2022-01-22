@@ -34,29 +34,20 @@ print(user.getUser().url!)
 
 
 
+//
+//
+//struct APIResult {
+//    let data : Any?
+//    let status : Strig
+//
+//    init(data: Any , status: APIStatus) {
+//        self.data = data
+//        self.status = status
+//    }
+//}
+//
+//
+//a = APIResult(data: nil, status: .success)
+//print(a)
 
-class UserNetwork {
-    
-    private let idtoken : String
-    
-    let userApi = UserAPI()
-    let header: HTTPHeaders
-    
-    init(idtoken: String) {
-        self.idtoken = idtoken
-        self.header =  [ "Content-Type": "application/json"
-                          , "idtoken" : self.idtoken ]
-    }
-    
-    func getUser(  ) {
-        
-        let url = userApi.getUser().Re
-        
-        AF.request(url, method: .get, parameters: nil, encoder: <#T##ParameterEncoder#>, headers: header, interceptor: <#T##RequestInterceptor?#>, requestModifier: <#T##Session.RequestModifier?##Session.RequestModifier?##(inout URLRequest) throws -> Void#>)
-        
-        
-
-    }
-    
-    
-}
+let aa: Any? = nil
