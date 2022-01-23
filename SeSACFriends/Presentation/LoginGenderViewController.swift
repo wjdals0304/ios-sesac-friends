@@ -168,14 +168,22 @@ private extension LoginGenderViewController {
             
             sender.isSelected = true
             buttonIndex = arrayButtons.firstIndex(of: sender)
-                        
+        }
+    
+
+        if sender.isSelected {
+            arrayButtons[buttonIndex!].setBackgroundColor(UIColor.getColor(.selectedButtonColor) ,for: .selected)
+            
+            nextButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
+    
+        } else {
+            
+            nextButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
             
         }
         
-        print( sender.isSelected , buttonIndex  )
-
-        
         
     }
+    
 }
 

@@ -29,6 +29,9 @@ enum Color {
     // 회색 텍스트색
     case grayTextColor
     
+    // 선택 버튼색
+    case selectedButtonColor
+    
     
 }
 
@@ -54,6 +57,9 @@ extension UIColor {
             
         case .grayTextColor :
             return UIColor(red: 0.533, green: 0.533, blue: 0.533, alpha: 1)
+            
+        case .selectedButtonColor :
+            return UIColor(red: 0.804, green: 0.958, blue: 0.881, alpha: 1)
             
         }
         
