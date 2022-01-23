@@ -17,6 +17,10 @@
 		645EA7A1279A870600DD1CE8 /* UIFont+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA7A0279A870600DD1CE8 /* UIFont+extension.swift */; };
 		645EA7A3279A9E6E00DD1CE8 /* LoginBirthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA7A2279A9E6E00DD1CE8 /* LoginBirthViewController.swift */; };
 		645EA7A5279D28DF00DD1CE8 /* LoginEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA7A4279D28DF00DD1CE8 /* LoginEmailViewController.swift */; };
+		645EA7A7279D42BD00DD1CE8 /* LoginGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA7A6279D42BD00DD1CE8 /* LoginGenderViewController.swift */; };
+		645EA7AA279D474400DD1CE8 /* man.png in Resources */ = {isa = PBXBuildFile; fileRef = 645EA7A8279D474400DD1CE8 /* man.png */; };
+		645EA7AB279D474400DD1CE8 /* woman.png in Resources */ = {isa = PBXBuildFile; fileRef = 645EA7A9279D474400DD1CE8 /* woman.png */; };
+		645EA7AE279D63CF00DD1CE8 /* UIButton+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA7AD279D63CF00DD1CE8 /* UIButton+extension.swift */; };
 		6495F9362795197F00A9F6E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6495F9352795197F00A9F6E0 /* AppDelegate.swift */; };
 		6495F9382795197F00A9F6E0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6495F9372795197F00A9F6E0 /* SceneDelegate.swift */; };
 		6495F93F2795198300A9F6E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6495F93E2795198300A9F6E0 /* Assets.xcassets */; };
@@ -50,6 +54,10 @@
 		645EA7A0279A870600DD1CE8 /* UIFont+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+extension.swift"; sourceTree = "<group>"; };
 		645EA7A2279A9E6E00DD1CE8 /* LoginBirthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginBirthViewController.swift; sourceTree = "<group>"; };
 		645EA7A4279D28DF00DD1CE8 /* LoginEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginEmailViewController.swift; sourceTree = "<group>"; };
+		645EA7A6279D42BD00DD1CE8 /* LoginGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginGenderViewController.swift; sourceTree = "<group>"; };
+		645EA7A8279D474400DD1CE8 /* man.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = man.png; sourceTree = "<group>"; };
+		645EA7A9279D474400DD1CE8 /* woman.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = woman.png; sourceTree = "<group>"; };
+		645EA7AD279D63CF00DD1CE8 /* UIButton+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+extension.swift"; sourceTree = "<group>"; };
 		6495F9322795197F00A9F6E0 /* SeSACFriends.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeSACFriends.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6495F9352795197F00A9F6E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6495F9372795197F00A9F6E0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -94,6 +102,7 @@
 				645EA79E279A817D00DD1CE8 /* LoginNickNameViewController.swift */,
 				645EA7A2279A9E6E00DD1CE8 /* LoginBirthViewController.swift */,
 				645EA7A4279D28DF00DD1CE8 /* LoginEmailViewController.swift */,
+				645EA7A6279D42BD00DD1CE8 /* LoginGenderViewController.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -124,6 +133,15 @@
 			path = LoginPhone;
 			sourceTree = "<group>";
 		};
+		645EA7AC279D476600DD1CE8 /* image */ = {
+			isa = PBXGroup;
+			children = (
+				645EA7A9279D474400DD1CE8 /* woman.png */,
+				645EA7A8279D474400DD1CE8 /* man.png */,
+			);
+			path = image;
+			sourceTree = "<group>";
+		};
 		6495F9292795197F00A9F6E0 = {
 			isa = PBXGroup;
 			children = (
@@ -145,6 +163,7 @@
 		6495F9342795197F00A9F6E0 /* SeSACFriends */ = {
 			isa = PBXGroup;
 			children = (
+				645EA7AC279D476600DD1CE8 /* image */,
 				645EA79C27998EDB00DD1CE8 /* GoogleService-Info.plist */,
 				64A2EC92279697B800192FF2 /* Font */,
 				6495F95627953A6A00A9F6E0 /* SeSACFriends.entitlements */,
@@ -181,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				6495F959279681DE00A9F6E0 /* UIColor+extension.swift */,
+				645EA7AD279D63CF00DD1CE8 /* UIButton+extension.swift */,
 				64A2EC9027968EFE00192FF2 /* UITextField+extension.swift */,
 				64A2ECA127969B0F00192FF2 /* UILabel+extension.swift */,
 				645EA78B2797C27000DD1CE8 /* String+extension.swift */,
@@ -273,6 +293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				64A2EC9F2796984200192FF2 /* NotoSansKR-Black.otf in Resources */,
+				645EA7AA279D474400DD1CE8 /* man.png in Resources */,
 				64A2EC9C2796984200192FF2 /* NotoSansKR-Medium.otf in Resources */,
 				64A2EC9D2796984200192FF2 /* NotoSansKR-Thin.otf in Resources */,
 				6495F9422795198300A9F6E0 /* LaunchScreen.storyboard in Resources */,
@@ -281,6 +302,7 @@
 				6495F93F2795198300A9F6E0 /* Assets.xcassets in Resources */,
 				645EA79D27998EDB00DD1CE8 /* GoogleService-Info.plist in Resources */,
 				64A2EC9A2796984200192FF2 /* NotoSansKR-Bold.otf in Resources */,
+				645EA7AB279D474400DD1CE8 /* woman.png in Resources */,
 				64A2EC9E2796984200192FF2 /* OFL.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -341,6 +363,7 @@
 				645EA7A1279A870600DD1CE8 /* UIFont+extension.swift in Sources */,
 				6495F9362795197F00A9F6E0 /* AppDelegate.swift in Sources */,
 				645EA79F279A817D00DD1CE8 /* LoginNickNameViewController.swift in Sources */,
+				645EA7A7279D42BD00DD1CE8 /* LoginGenderViewController.swift in Sources */,
 				6495F95A279681DF00A9F6E0 /* UIColor+extension.swift in Sources */,
 				645EA7952799353700DD1CE8 /* UserNetwork.swift in Sources */,
 				645EA7A5279D28DF00DD1CE8 /* LoginEmailViewController.swift in Sources */,
@@ -350,6 +373,7 @@
 				645EA7932799303600DD1CE8 /* User.swift in Sources */,
 				64A2ECA227969B0F00192FF2 /* UILabel+extension.swift in Sources */,
 				645EA799279958F700DD1CE8 /* LoginPhoneViewModel.swift in Sources */,
+				645EA7AE279D63CF00DD1CE8 /* UIButton+extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
