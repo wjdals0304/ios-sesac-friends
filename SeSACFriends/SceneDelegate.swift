@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //
 //        window?.rootViewController = UINavigationController(rootViewController: LoginPhoneViewController())
         
-        window?.rootViewController = UINavigationController(rootViewController: LoginBirthViewController())
+        window?.rootViewController = UINavigationController(rootViewController: LoginEmailViewController())
 //        window?.tintColor = .label
         window?.makeKeyAndVisible()
     }

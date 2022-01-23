@@ -255,7 +255,7 @@ private extension LoginBirthViewController {
     @objc func handelDoneBtn() {
         
         
-        /// 만 17세이상만
+        /// 만 17세이상만 
         if age < 17 {
             self.view.makeToast("새싹친구는 만 17세 이상만 사용할 수 있습니다.")
         } else {

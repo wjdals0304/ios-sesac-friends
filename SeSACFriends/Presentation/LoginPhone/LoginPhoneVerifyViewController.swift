@@ -105,6 +105,10 @@ class LoginPhoneVerifyViewController : UIViewController {
         self.verificationCodeTextField.setUnderLine()
     }
     
+    init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+    
     init(phoneNumber: String , verifyID : String ) {
         self.phoneNumber = phoneNumber
         self.verifyID = verifyID
