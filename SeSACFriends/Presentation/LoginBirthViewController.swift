@@ -11,6 +11,8 @@ import SnapKit
 
 class LoginBirthViewController : UIViewController {
     
+    var age = 0
+    
     let birthLabel : UILabel = {
        let label = UILabel()
         label.text = "생년월일을 알려주세요."
@@ -87,7 +89,18 @@ class LoginBirthViewController : UIViewController {
         button.backgroundColor = UIColor.getColor(.inactiveColor)
         button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
         button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(handelDoneBtn), for: .touchUpInside)
         return button
+    }()
+    
+    let datePicker : UIDatePicker = {
+       let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        datePicker.locale = Locale(identifier: "ko-KR")
+        datePicker.timeZone = .autoupdatingCurrent
+        datePicker.preferredDatePickerStyle = .wheels
+        datePicker.addTarget(self, action: #selector(onDidChangeDate), for: .valueChanged)
+        return datePicker
     }()
     
 
@@ -95,10 +108,12 @@ class LoginBirthViewController : UIViewController {
         super.viewDidLoad()
         setup()
         setupConstraint()
+        onDidChangeDate()
     }
     
 
     override func viewDidLayoutSubviews() {
+        
         self.yearTextField.setUnderLine()
         self.monthTextField.setUnderLine()
         self.dayTextField.setUnderLine()
@@ -114,7 +129,8 @@ class LoginBirthViewController : UIViewController {
         [
          birthLabel,
          birthViewStack,
-         nextButton
+         nextButton,
+         datePicker
         ].forEach { self.view.addSubview($0)}
         
         [
@@ -153,31 +169,39 @@ class LoginBirthViewController : UIViewController {
         
         yearTextField.snp.makeConstraints {
             $0.top.equalTo(yearView.snp.top)
-            $0.leading.equalTo(yearView.snp.leading)
+            $0.leading.equalTo(yearView.snp.leading).offset(15)
             $0.trailing.equalTo(yearView.snp.trailing).inset(19)
-            $0.bottom.equalTo(yearView.snp.bottom)
+            $0.bottom.equalToSuperview()
+            
         }
         
         yearLabel.snp.makeConstraints{
-            $0.trailing.equalTo(yearView.snp.trailing)
+            $0.trailing.equalTo(yearView.snp.trailing).inset(10)
             $0.top.equalTo(yearView.snp.top).offset(10)
         }
         
         monthTextField.snp.makeConstraints {
             $0.top.equalTo(monthView.snp.top)
-            $0.leading.equalTo(monthView.snp.leading)
+            $0.leading.equalTo(monthView.snp.leading).offset(15)
             $0.trailing.equalTo(monthView.snp.trailing).inset(19)
             $0.bottom.equalTo(monthView.snp.bottom)
         }
         
         monthLabel.snp.makeConstraints {
-            $0.trailing.equalTo(monthView.snp.trailing)
+            $0.trailing.equalTo(monthView.snp.trailing).inset(10)
             $0.top.equalTo(monthView.snp.top).offset(10)
             
         }
         
+        dayTextField.snp.makeConstraints {
+            $0.top.equalTo(dayView.snp.top)
+            $0.leading.equalTo(dayView.snp.leading).offset(15)
+            $0.trailing.equalTo(dayView.snp.trailing).inset(19)
+            $0.bottom.equalTo(dayView.snp.bottom)
+        }
+        
         dayLabel.snp.makeConstraints {
-            $0.trailing.equalTo(dayView.snp.trailing)
+            $0.trailing.equalTo(dayView.snp.trailing).inset(10)
             $0.top.equalTo(dayView.snp.top).offset(10)
         }
         
@@ -188,11 +212,63 @@ class LoginBirthViewController : UIViewController {
             $0.trailing.equalTo(birthViewStack.snp.trailing)
             $0.height.equalTo(48)
         }
+    
+        datePicker.snp.makeConstraints {
+            $0.top.equalTo(nextButton.snp.bottom).offset(131)
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.width.equalTo(self.view.frame.width)
+            $0.height.equalTo(220)
+        }
+        
+    }
+    
+    
+}
+
+private extension LoginBirthViewController {
+    
+    
+    @objc func onDidChangeDate()  {
+                
+        let calendar = Calendar.current
+        
+        let birthDayDate = calendar.dateComponents([.day,.year,.month], from: datePicker.date)
+
+        self.yearTextField.text = String(birthDayDate.year!)
+        self.monthTextField.text = String(birthDayDate.month!)
+        self.dayTextField.text = String(birthDayDate.day!)
+    
+        
+        let now = calendar.dateComponents([.year ,.month,.day], from: Date())
+        
+        let ageComponets = calendar.dateComponents([.year], from: birthDayDate,to : now)
+        
+        
+        age = ageComponets.year!
+        
+        nextButton.setTitleColor(UIColor.getColor(.activeColor), for: .normal)
+        
+        
+    }
+    
+    
+    @objc func handelDoneBtn() {
+        
+        
+        /// 만 17세이상만
+        if age < 17 {
+            self.view.makeToast("새싹친구는 만 17세 이상만 사용할 수 있습니다.")
+        } else {
+            print("성공")
+            
+        }
         
         
         
         
     }
+    
+    
     
     
 }
