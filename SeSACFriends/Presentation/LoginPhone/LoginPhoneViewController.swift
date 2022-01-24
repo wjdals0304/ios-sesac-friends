@@ -107,7 +107,7 @@ private extension LoginPhoneViewController {
              self.view.makeToast("잘못된 전화번호 형식입니다.")
              return
         }
-        
+                
         phoneNumber = "+82" + phoneNumber.substring(from: 1)
         
         PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil )

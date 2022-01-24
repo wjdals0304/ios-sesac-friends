@@ -60,6 +60,10 @@ class LoginEmailViewController : UIViewController {
     }
     
     func setup() {
+        
+        view.backgroundColor = .systemBackground
+
+        
         [
           emailDescLabel,
           emailSubDescLabel,
@@ -105,7 +109,11 @@ private extension LoginEmailViewController {
     
     @objc func textFieldDidChange() {
         
-        if self.isValidEmail(testStr: emailTextField.text!) {
+        guard let emailText = emailTextField.text else {
+            return
+        }
+        
+        if self.isValidEmail(testStr: emailText ) {
         
             nextButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
             
@@ -118,7 +126,25 @@ private extension LoginEmailViewController {
     }
     
     @objc func handelDoneBtn() {
-        print("b")
+        
+        
+        guard let emailText = emailTextField.text else {
+            
+            self.view.makeToast("이메일 형식이 올바르지 않습니다.")
+            return
+        }
+        
+        if self.isValidEmail(testStr: emailText) {
+            
+            UserManager.email = emailText
+            
+            let vc = LoginGenderViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+            
+        } else {
+            self.view.makeToast("이메일 형식이 올바르지 않습니다.")
+        }
+        
     }
     
     

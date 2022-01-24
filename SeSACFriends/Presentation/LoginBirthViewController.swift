@@ -10,9 +10,7 @@ import UIKit
 import SnapKit
 
 class LoginBirthViewController : UIViewController {
-    
-    var age = 0
-    
+        
     let birthLabel : UILabel = {
        let label = UILabel()
         label.text = "생년월일을 알려주세요."
@@ -120,6 +118,7 @@ class LoginBirthViewController : UIViewController {
     }
     
     func setup() {
+        view.backgroundColor = .systemBackground
         
         self.birthViewStack = UIStackView(arrangedSubviews: [yearView,monthView,dayView])
         self.birthViewStack.spacing = 5
@@ -231,22 +230,14 @@ private extension LoginBirthViewController {
     @objc func onDidChangeDate()  {
                 
         let calendar = Calendar.current
-        
+
         let birthDayDate = calendar.dateComponents([.day,.year,.month], from: datePicker.date)
 
         self.yearTextField.text = String(birthDayDate.year!)
         self.monthTextField.text = String(birthDayDate.month!)
         self.dayTextField.text = String(birthDayDate.day!)
-    
-        
-        let now = calendar.dateComponents([.year ,.month,.day], from: Date())
-        
-        let ageComponets = calendar.dateComponents([.year], from: birthDayDate,to : now)
-        
-        
-        age = ageComponets.year!
-        
-        nextButton.setTitleColor(UIColor.getColor(.activeColor), for: .normal)
+                
+        nextButton.setBackgroundColor(UIColor.getColor(.activeColor), for: .normal)
         
         
     }
@@ -255,12 +246,32 @@ private extension LoginBirthViewController {
     @objc func handelDoneBtn() {
         
         
+        let calendar = Calendar.current
+
+        let birthDayDate = calendar.dateComponents([.day,.year,.month], from: datePicker.date)
+        
+        let now = calendar.dateComponents([.year ,.month,.day], from: Date())
+        
+        let ageComponets = calendar.dateComponents([.year], from: birthDayDate,to : now)
+        
+        let age = ageComponets.year!
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let dateString = dateFormatter.string(from: datePicker.date)
+        
+        UserManager.birthday = dateString
+        
         /// 만 17세이상만 
         if age < 17 {
             self.view.makeToast("새싹친구는 만 17세 이상만 사용할 수 있습니다.")
         } else {
-            print("성공")
             
+            
+            let vc = LoginEmailViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+                        
         }
         
         

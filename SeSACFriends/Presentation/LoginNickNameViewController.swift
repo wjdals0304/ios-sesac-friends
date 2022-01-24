@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import SnapKit
-
+import Toast_Swift
 
 class LoginNickNameViewController : UIViewController {
     
@@ -36,6 +36,7 @@ class LoginNickNameViewController : UIViewController {
         button.backgroundColor = UIColor.getColor(.inactiveColor)
         button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
         button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(handleDoneBtn), for: .touchUpInside)
         
         return button
     }()
@@ -53,6 +54,7 @@ class LoginNickNameViewController : UIViewController {
     }
     
     func setup() {
+        view.backgroundColor = .systemBackground
         [
             nickDescLabel,
             nickNameTextField,
@@ -62,6 +64,7 @@ class LoginNickNameViewController : UIViewController {
     }
     
     func setupConstraint() {
+        
         
         nickDescLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(94)
@@ -94,11 +97,29 @@ class LoginNickNameViewController : UIViewController {
             nextButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
             
         } else {
-            
+        
             nextButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
         }
+    }
+    
+    
+    @objc func handleDoneBtn() {
         
-
+        let nickName = nickNameTextField.text!
+        let nickNameArr = Array(nickName)
+        
+        
+        if nickNameArr.count >= 1 && nickNameArr.count < 10 {
+            UserManager.nickName = nickName
+            
+            let vc = LoginBirthViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+            
+        } else {
+            self.view.makeToast("닉네임은 1자 이상 10자 이내로 부탁드려요.")
+        }
+        
+        
     }
     
     

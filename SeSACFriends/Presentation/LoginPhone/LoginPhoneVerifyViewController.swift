@@ -88,7 +88,7 @@ class LoginPhoneVerifyViewController : UIViewController {
     }()
     
     lazy var backBarButton : UIBarButtonItem = {
-        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
+        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
         return barButtonItem
     }()
     
@@ -296,7 +296,7 @@ private extension LoginPhoneVerifyViewController {
              ( success , error  ) in
             if error == nil {
                 print("User signed in.. ")
-                
+                              
                /// Firebase 토큰 가져오기
               Auth.auth().currentUser?.getIDToken(completion: { idtoken, error in
                     guard let idtoken = idtoken else {
@@ -304,7 +304,10 @@ private extension LoginPhoneVerifyViewController {
                         self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
                         return
                    }
-                   
+                  
+                  print(idtoken)
+                  
+                  UserManager.phoneNumber = self.phoneNumber!
                   /// 유저 정보 가져오기
                    self.loginPhoneViewModel.getUser(idtoken: idtoken) { User, APIStatus in
 
@@ -318,12 +321,16 @@ private extension LoginPhoneVerifyViewController {
                            
                         case .unregisterdUser:
                            print("닉네임 뷰로 이동")
-                        
+                           let vc = LoginNickNameViewController()
+                           self.navigationController?.pushViewController(vc, animated: true)
                            
                            
                            
                         case .expiredToken :
                            print("토큰 만료")
+                           self.handleDoneBtn()
+                           
+                           
                         
                            
                            

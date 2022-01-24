@@ -87,7 +87,8 @@ class LoginGenderViewController : UIViewController {
     }
     
     func setup(){
-        
+        view.backgroundColor = .systemBackground
+
         self.genderStackView = UIStackView(arrangedSubviews: [manUIButton,womanUIButton])
         self.genderStackView.spacing = 10
         self.genderStackView.axis = .horizontal
@@ -141,6 +142,18 @@ class LoginGenderViewController : UIViewController {
 private extension LoginGenderViewController {
     
     @objc func handleDoneBtn() {
+        
+        if manUIButton.isSelected == true {
+            UserManager.gender = Gender.man
+            
+        } else if womanUIButton.isSelected == true {
+            UserManager.gender = Gender.woman
+            
+        } else {
+            UserManager.gender = Gender.none
+        }
+        
+        
         
     }
 
