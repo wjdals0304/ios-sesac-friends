@@ -9,16 +9,7 @@ import Foundation
 import Alamofire
 
 
-enum APIStatus   {
-    case success
-    case noData
-    case failed
-    case invalidData
-    case expiredToken
-    case clientError
-    case serverError
-    case unregisterdUser
-}
+
 
 struct UserAPI {
     static let scheme = "http"
@@ -36,6 +27,21 @@ struct UserAPI {
         
         return components
     }
+    
+    func postUser() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = UserAPI.scheme
+        components.host = UserAPI.host
+        components.port = UserAPI.port
+        components.path = UserAPI.path
+        
+        
+        return components
+    }
+    
+    
+    
 }
 
 
@@ -44,16 +50,13 @@ class UserNetwork {
     private let idtoken : String
     
     let userApi = UserAPI()
-    let header: HTTPHeaders
-
+    var header: HTTPHeaders
+    
     
     init(idtoken: String) {
         self.idtoken = idtoken
-        self.header =  [ "Content-Type": "application/json"
-                          , "idtoken" : self.idtoken ]
+        self.header =  [ "idtoken" : self.idtoken ]
     }
-    
-    
     
     /// 내 유저 정보가져오기
     /// - Parameter completion: user, apistatus 리턴
@@ -118,4 +121,89 @@ class UserNetwork {
            }
         }
     }
+    
+
+    
+    func postUser(completion: @escaping(APIStatus?) -> Void ) {
+
+        guard let phoneNumber = UserManager.phoneNumber ,
+              let FCMtoken = UserManager.fcmtoken ,
+              let nick = UserManager.nickName,
+              let birth = UserManager.birthday ,
+              let email = UserManager.email,
+              let gender = UserManager.gender?.rawValue
+        else {
+            return
+        }
+
+
+        let param : Parameters =  [
+            "phoneNumber" : phoneNumber,
+            "FCMtoken" : FCMtoken,
+            "nick" : nick,
+            "birth" : birth,
+            "email" : email,
+            "gender" : gender
+        ]
+        
+        let url = userApi.postUser().url!
+        self.header["Content-Type"] = "application/x-www-form-urlencoded"
+
+
+        let dataRequest = AF.request(url
+                                     ,method: .post
+                                     ,parameters : param
+                                     ,encoding: URLEncoding.httpBody
+                                     ,headers: self.header
+                                    )
+
+
+        dataRequest.responseData { response in
+
+            switch response.result  {
+
+            case .success :
+
+                guard let statusCode = response.response?.statusCode else {
+                    completion(.failed)
+                    return
+                }
+
+
+                switch statusCode {
+
+                case 200 :
+                    completion(.success)
+                
+                case 201:
+                    completion(.registerdUser)
+                case 202:
+                    completion(.banNick)
+                case 401:
+                    completion(.expiredToken)
+                case 500:
+                    completion(.serverError)
+                case 501:
+                    completion(.clientError)
+                default:
+                    completion(.failed)
+                }
+
+
+
+            case .failure(let error):
+                print(error)
+                completion(.failed)
+
+            }
+
+        }
+
+
+
+    }
+    
+    
+    
+    
 }
