@@ -59,4 +59,15 @@ class UserManager {
         set { UserDefaults.standard.set(newValue, forKey: "birthday")}
     }
     
+    static func isFirst() -> Bool {
+        let defaults = UserDefaults.standard
+        if defaults.object(forKey: "isFirst") == nil {
+           defaults.set("No", forKey: "isFirst")
+           return true
+        } else {
+            return false
+        }
+        
+    }
+    
 }

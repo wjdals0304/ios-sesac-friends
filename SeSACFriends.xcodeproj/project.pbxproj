@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		644AADFC279E8AFC00EEB85B /* APIStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AADFB279E8AFC00EEB85B /* APIStatus.swift */; };
 		644AADFF279E8CA800EEB85B /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AADFE279E8CA800EEB85B /* SignUpViewModel.swift */; };
+		644AAE02279ED9A700EEB85B /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AAE01279ED9A700EEB85B /* OnboardingViewController.swift */; };
+		644AAE04279EE8AB00EEB85B /* OnboardingFirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AAE03279EE8AB00EEB85B /* OnboardingFirstViewController.swift */; };
+		644AAE06279EEC7A00EEB85B /* OnboardingSecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AAE05279EEC7A00EEB85B /* OnboardingSecondViewController.swift */; };
 		645EA78C2797C27000DD1CE8 /* String+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA78B2797C27000DD1CE8 /* String+extension.swift */; };
 		645EA78E2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA78D2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift */; };
 		645EA7932799303600DD1CE8 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA7922799303600DD1CE8 /* User.swift */; };
@@ -48,6 +51,9 @@
 		55BFDB73B7F7CECD6612D105 /* Pods_SeSACFriends.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SeSACFriends.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		644AADFB279E8AFC00EEB85B /* APIStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIStatus.swift; sourceTree = "<group>"; };
 		644AADFE279E8CA800EEB85B /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
+		644AAE01279ED9A700EEB85B /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		644AAE03279EE8AB00EEB85B /* OnboardingFirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFirstViewController.swift; sourceTree = "<group>"; };
+		644AAE05279EEC7A00EEB85B /* OnboardingSecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSecondViewController.swift; sourceTree = "<group>"; };
 		645EA78B2797C27000DD1CE8 /* String+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+extension.swift"; sourceTree = "<group>"; };
 		645EA78D2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPhoneVerifyViewController.swift; sourceTree = "<group>"; };
 		645EA7922799303600DD1CE8 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -112,12 +118,23 @@
 			path = SignUp;
 			sourceTree = "<group>";
 		};
+		644AAE00279ED75A00EEB85B /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				644AAE01279ED9A700EEB85B /* OnboardingViewController.swift */,
+				644AAE03279EE8AB00EEB85B /* OnboardingFirstViewController.swift */,
+				644AAE05279EEC7A00EEB85B /* OnboardingSecondViewController.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		645EA78F279812FF00DD1CE8 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
 				6495F94927951AD600A9F6E0 /* TabBarController.swift */,
 				645EA797279958DE00DD1CE8 /* LoginPhone */,
 				644AADFD279E8C7400EEB85B /* SignUp */,
+				644AAE00279ED75A00EEB85B /* Onboarding */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -382,11 +399,14 @@
 				645EA7A1279A870600DD1CE8 /* UIFont+extension.swift in Sources */,
 				6495F9362795197F00A9F6E0 /* AppDelegate.swift in Sources */,
 				645EA79F279A817D00DD1CE8 /* LoginNickNameViewController.swift in Sources */,
+				644AAE02279ED9A700EEB85B /* OnboardingViewController.swift in Sources */,
 				645EA7A7279D42BD00DD1CE8 /* LoginGenderViewController.swift in Sources */,
 				6495F95A279681DF00A9F6E0 /* UIColor+extension.swift in Sources */,
 				645EA7952799353700DD1CE8 /* UserNetwork.swift in Sources */,
+				644AAE06279EEC7A00EEB85B /* OnboardingSecondViewController.swift in Sources */,
 				645EA7A5279D28DF00DD1CE8 /* LoginEmailViewController.swift in Sources */,
 				644AADFF279E8CA800EEB85B /* SignUpViewModel.swift in Sources */,
+				644AAE04279EE8AB00EEB85B /* OnboardingFirstViewController.swift in Sources */,
 				645EA7A3279A9E6E00DD1CE8 /* LoginBirthViewController.swift in Sources */,
 				6495F94C27951C1400A9F6E0 /* LoginPhoneViewController.swift in Sources */,
 				6495F9382795197F00A9F6E0 /* SceneDelegate.swift in Sources */,
