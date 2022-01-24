@@ -7,9 +7,11 @@
 
 import Foundation
 import UIKit
-
+import FirebaseAuth
 
 class LoginGenderViewController : UIViewController {
+    
+    let signUpViewModel = SignUpViewModel()
     
     var buttonIndex: Int?
     
@@ -144,6 +146,7 @@ private extension LoginGenderViewController {
     @objc func handleDoneBtn() {
         
         if manUIButton.isSelected == true {
+            print(Gender.man)
             UserManager.gender = Gender.man
             
         } else if womanUIButton.isSelected == true {
@@ -152,6 +155,45 @@ private extension LoginGenderViewController {
         } else {
             UserManager.gender = Gender.none
         }
+                
+        signUpViewModel.postUser { APIStatus in
+            
+            switch APIStatus {
+                
+            case .success :
+                print("회원가입 성공!!")
+                
+            case .registerdUser:
+                print("이미 유저")
+                
+            case .banNick :
+                print("닉네임 화면으로 ")
+            case .expiredToken:
+                
+                print("토큰 만료")
+                let currentUser = FirebaseAuth.Auth.auth().currentUser
+                currentUser?.getIDToken(completion: { idtoken, error in
+                guard let idtoken = idtoken else {
+                        print(error!)
+                        self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                        return
+                 }
+                
+                 UserManager.idtoken = idtoken
+                 self.handleDoneBtn()
+                    
+                })
+
+            default :
+                print("실패")
+                
+                
+            }
+            
+
+        }
+        
+        
         
         
         

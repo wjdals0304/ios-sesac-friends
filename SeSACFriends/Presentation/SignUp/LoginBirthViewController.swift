@@ -257,10 +257,10 @@ private extension LoginBirthViewController {
         let age = ageComponets.year!
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         
         let dateString = dateFormatter.string(from: datePicker.date)
-        
+        print(dateString)
         UserManager.birthday = dateString
         
         /// 만 17세이상만 

@@ -69,6 +69,12 @@ class LoginPhoneViewModel {
                 print(".failed")
                 completion(nil,.failed)
                 
+            default :
+                print(#function)
+                print("default")
+                completion(nil,.failed)
+
+                
             }
             
             

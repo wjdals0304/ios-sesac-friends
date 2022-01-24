@@ -305,8 +305,8 @@ private extension LoginPhoneVerifyViewController {
                         return
                    }
                   
-                  print(idtoken)
                   
+                  UserManager.idtoken = idtoken
                   UserManager.phoneNumber = self.phoneNumber!
                   /// 유저 정보 가져오기
                    self.loginPhoneViewModel.getUser(idtoken: idtoken) { User, APIStatus in
@@ -318,12 +318,10 @@ private extension LoginPhoneVerifyViewController {
                            print("200 로직 ")
                     
                            
-                           
                         case .unregisterdUser:
                            print("닉네임 뷰로 이동")
                            let vc = LoginNickNameViewController()
                            self.navigationController?.pushViewController(vc, animated: true)
-                           
                            
                            
                         case .expiredToken :
@@ -331,12 +329,12 @@ private extension LoginPhoneVerifyViewController {
                            self.handleDoneBtn()
                            
                            
-                        
-                           
-                           
                        case .noData , .invalidData ,.clientError,.serverError ,.failed,.none:
                            self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
-                       
+                           
+                       default :
+                           self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+
                             
                     }
                         
