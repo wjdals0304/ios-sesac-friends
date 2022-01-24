@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		644AADFC279E8AFC00EEB85B /* APIStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AADFB279E8AFC00EEB85B /* APIStatus.swift */; };
+		644AADFF279E8CA800EEB85B /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AADFE279E8CA800EEB85B /* SignUpViewModel.swift */; };
 		645EA78C2797C27000DD1CE8 /* String+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA78B2797C27000DD1CE8 /* String+extension.swift */; };
 		645EA78E2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA78D2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift */; };
 		645EA7932799303600DD1CE8 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA7922799303600DD1CE8 /* User.swift */; };
@@ -44,6 +46,8 @@
 
 /* Begin PBXFileReference section */
 		55BFDB73B7F7CECD6612D105 /* Pods_SeSACFriends.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SeSACFriends.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		644AADFB279E8AFC00EEB85B /* APIStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIStatus.swift; sourceTree = "<group>"; };
+		644AADFE279E8CA800EEB85B /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		645EA78B2797C27000DD1CE8 /* String+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+extension.swift"; sourceTree = "<group>"; };
 		645EA78D2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPhoneVerifyViewController.swift; sourceTree = "<group>"; };
 		645EA7922799303600DD1CE8 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -96,15 +100,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		644AADFD279E8C7400EEB85B /* SignUp */ = {
+			isa = PBXGroup;
+			children = (
+				645EA79E279A817D00DD1CE8 /* LoginNickNameViewController.swift */,
+				645EA7A2279A9E6E00DD1CE8 /* LoginBirthViewController.swift */,
+				645EA7A4279D28DF00DD1CE8 /* LoginEmailViewController.swift */,
+				645EA7A6279D42BD00DD1CE8 /* LoginGenderViewController.swift */,
+				644AADFE279E8CA800EEB85B /* SignUpViewModel.swift */,
+			);
+			path = SignUp;
+			sourceTree = "<group>";
+		};
 		645EA78F279812FF00DD1CE8 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
 				6495F94927951AD600A9F6E0 /* TabBarController.swift */,
 				645EA797279958DE00DD1CE8 /* LoginPhone */,
-				645EA79E279A817D00DD1CE8 /* LoginNickNameViewController.swift */,
-				645EA7A2279A9E6E00DD1CE8 /* LoginBirthViewController.swift */,
-				645EA7A4279D28DF00DD1CE8 /* LoginEmailViewController.swift */,
-				645EA7A6279D42BD00DD1CE8 /* LoginGenderViewController.swift */,
+				644AADFD279E8C7400EEB85B /* SignUp */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -114,6 +127,7 @@
 			children = (
 				645EA7922799303600DD1CE8 /* User.swift */,
 				6461E887279E481300F252E8 /* UserManager.swift */,
+				644AADFB279E8AFC00EEB85B /* APIStatus.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -363,6 +377,7 @@
 				645EA78C2797C27000DD1CE8 /* String+extension.swift in Sources */,
 				6461E888279E481300F252E8 /* UserManager.swift in Sources */,
 				6495F94A27951AD600A9F6E0 /* TabBarController.swift in Sources */,
+				644AADFC279E8AFC00EEB85B /* APIStatus.swift in Sources */,
 				64A2EC9127968EFE00192FF2 /* UITextField+extension.swift in Sources */,
 				645EA7A1279A870600DD1CE8 /* UIFont+extension.swift in Sources */,
 				6495F9362795197F00A9F6E0 /* AppDelegate.swift in Sources */,
@@ -371,6 +386,7 @@
 				6495F95A279681DF00A9F6E0 /* UIColor+extension.swift in Sources */,
 				645EA7952799353700DD1CE8 /* UserNetwork.swift in Sources */,
 				645EA7A5279D28DF00DD1CE8 /* LoginEmailViewController.swift in Sources */,
+				644AADFF279E8CA800EEB85B /* SignUpViewModel.swift in Sources */,
 				645EA7A3279A9E6E00DD1CE8 /* LoginBirthViewController.swift in Sources */,
 				6495F94C27951C1400A9F6E0 /* LoginPhoneViewController.swift in Sources */,
 				6495F9382795197F00A9F6E0 /* SceneDelegate.swift in Sources */,

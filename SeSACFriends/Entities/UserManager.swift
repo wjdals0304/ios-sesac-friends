@@ -16,6 +16,12 @@ enum Gender : Int {
 class UserManager {
     
     
+    static var idtoken : String? {
+        get { return UserDefaults.standard.string(forKey: "idtoken")}
+        set { UserDefaults.standard.set(newValue, forKey: "idtoken")}
+    }
+    
+    
     static var nickName : String? {
         get { return UserDefaults.standard.string(forKey: "nickName") }
         set { UserDefaults.standard.set(newValue, forKey: "nickName")}
@@ -38,8 +44,8 @@ class UserManager {
     
     
     static var gender : Gender? {
-        get { return Gender(rawValue: UserDefaults.standard.integer(forKey: "gender")) ?? Gender.none }
-        set { UserDefaults.standard.set(newValue, forKey: "gender")}
+        get { return Gender(rawValue: UserDefaults.standard.object(forKey: "gender") as! Int) ?? Gender.none }
+        set { UserDefaults.standard.set(newValue?.rawValue, forKey: "gender") }
     }
     
     static var fcmtoken : String? {
