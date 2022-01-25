@@ -12,6 +12,7 @@
 		644AAE02279ED9A700EEB85B /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AAE01279ED9A700EEB85B /* OnboardingViewController.swift */; };
 		644AAE04279EE8AB00EEB85B /* OnboardingFirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AAE03279EE8AB00EEB85B /* OnboardingFirstViewController.swift */; };
 		644AAE06279EEC7A00EEB85B /* OnboardingSecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AAE05279EEC7A00EEB85B /* OnboardingSecondViewController.swift */; };
+		644AAE08279F9D1E00EEB85B /* OnboardingThirdViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AAE07279F9D1E00EEB85B /* OnboardingThirdViewController.swift */; };
 		645EA78C2797C27000DD1CE8 /* String+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA78B2797C27000DD1CE8 /* String+extension.swift */; };
 		645EA78E2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA78D2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift */; };
 		645EA7932799303600DD1CE8 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 645EA7922799303600DD1CE8 /* User.swift */; };
@@ -54,6 +55,7 @@
 		644AAE01279ED9A700EEB85B /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		644AAE03279EE8AB00EEB85B /* OnboardingFirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFirstViewController.swift; sourceTree = "<group>"; };
 		644AAE05279EEC7A00EEB85B /* OnboardingSecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSecondViewController.swift; sourceTree = "<group>"; };
+		644AAE07279F9D1E00EEB85B /* OnboardingThirdViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingThirdViewController.swift; sourceTree = "<group>"; };
 		645EA78B2797C27000DD1CE8 /* String+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+extension.swift"; sourceTree = "<group>"; };
 		645EA78D2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPhoneVerifyViewController.swift; sourceTree = "<group>"; };
 		645EA7922799303600DD1CE8 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				644AAE01279ED9A700EEB85B /* OnboardingViewController.swift */,
 				644AAE03279EE8AB00EEB85B /* OnboardingFirstViewController.swift */,
 				644AAE05279EEC7A00EEB85B /* OnboardingSecondViewController.swift */,
+				644AAE07279F9D1E00EEB85B /* OnboardingThirdViewController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -404,6 +407,7 @@
 				6495F95A279681DF00A9F6E0 /* UIColor+extension.swift in Sources */,
 				645EA7952799353700DD1CE8 /* UserNetwork.swift in Sources */,
 				644AAE06279EEC7A00EEB85B /* OnboardingSecondViewController.swift in Sources */,
+				644AAE08279F9D1E00EEB85B /* OnboardingThirdViewController.swift in Sources */,
 				645EA7A5279D28DF00DD1CE8 /* LoginEmailViewController.swift in Sources */,
 				644AADFF279E8CA800EEB85B /* SignUpViewModel.swift in Sources */,
 				644AAE04279EE8AB00EEB85B /* OnboardingFirstViewController.swift in Sources */,

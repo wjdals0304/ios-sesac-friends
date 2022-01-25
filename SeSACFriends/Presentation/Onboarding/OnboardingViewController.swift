@@ -14,19 +14,30 @@ class OnboardingViewController : UIViewController {
     let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
         
     lazy var dataViewControllers : [UIViewController] = {
-       return [ OnboardingFirstViewController() , OnboardingSecondViewController() ]
+       return [ OnboardingFirstViewController() , OnboardingSecondViewController() , OnboardingThirdViewController() ]
     }()
     
     lazy var pageControl: UIPageControl = {
         let pageControl: UIPageControl = UIPageControl()
         pageControl.currentPage = 0
-        pageControl.numberOfPages = 2
+        pageControl.numberOfPages = 3
         pageControl.backgroundColor = .white
         pageControl.pageIndicatorTintColor = .gray
         pageControl.currentPageIndicatorTintColor  = .black
            
        return pageControl
     }()
+    
+    let startButton: UIButton = {
+       let button = UIButton()
+        button.setTitle("시작하기", for: .normal)
+        button.setBackgroundColor(UIColor.getColor(.activeColor), for: .normal)
+        button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 10
+        return button
+    }()
+    
     
     override func viewDidLoad() {
         setup()
@@ -37,7 +48,8 @@ class OnboardingViewController : UIViewController {
         
         [
           pageViewController.view,
-          pageControl
+          pageControl,
+          startButton
         ].forEach{ view.addSubview($0) }
         
         view.addSubview(pageViewController.view)
@@ -57,14 +69,21 @@ class OnboardingViewController : UIViewController {
         
         pageViewController.view.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().inset(100)
+            make.height.equalTo(view.frame.height - 204)
         }
         pageViewController.didMove(toParent: self)
         
         pageControl.snp.makeConstraints { make in
-            make.top.equalTo(pageViewController.view.snp.bottom)
+            make.top.equalTo(pageViewController.view.snp.bottom).offset(70)
             make.leading.trailing.equalToSuperview()
-            
+        }
+        
+        startButton.snp.makeConstraints { make in
+            make.top.equalTo(pageControl.snp.bottom).offset(30)
+            make.leading.equalToSuperview().offset(16)
+            make.width.equalTo(view.frame.width - 40)
+            make.height.equalTo(48)
+            make.bottom.equalToSuperview().inset(50)
         }
         
     
@@ -114,8 +133,9 @@ extension OnboardingViewController: UIPageViewControllerDelegate {
                 
             } else if let currentViewController = pageViewController.viewControllers?.first as? OnboardingSecondViewController {
                 pageControl.currentPage = dataViewControllers.firstIndex(of: currentViewController)!
-                
-            }
+            } else if let currentViewController = pageViewController.viewControllers?.first as? OnboardingThirdViewController {
+                pageControl.currentPage = dataViewControllers.firstIndex(of: currentViewController)!
         }
+      }
     }
 }

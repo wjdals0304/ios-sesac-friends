@@ -1,33 +1,33 @@
 //
-//  OnboardingSecondViewController.swift
+//  OnboardingThirdViewController.swift
 //  SeSACFriends
 //
-//  Created by 김정민 on 2022/01/24.
+//  Created by 김정민 on 2022/01/25.
 //
 
 import Foundation
-import UIKit
 import SnapKit
+import UIKit
 
-
-class OnboardingSecondViewController: UIViewController {
+class OnboardingThirdViewController : UIViewController {
+    
+    
     
     let textLabel : UILabel = {
        let label = UILabel()
-        label.text =  "관심사가 같은 친구를\n찾을 수 있어요"
+        label.text =  "SeSAC Friends"
         label.font = UIFont.getRegularFont(.regular_24)
         label.textColor = UIColor.getColor(.defaultTextColor)
         label.textAlignment = .center
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.spasing = 1.08
-        label.asColor(targetString: "관심사가 같은 친구", color: UIColor.getColor(.activeColor))
        return label
     }()
     
     let imageView : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "onboarding_img2")
+        image.image = UIImage(named: "onboarding_img3")
         return image
     }()
     
@@ -52,7 +52,7 @@ class OnboardingSecondViewController: UIViewController {
         
         textLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(116)
-            $0.leading.equalTo(85)
+            $0.leading.equalTo(109)
         }
         
         imageView.snp.makeConstraints{
@@ -64,4 +64,6 @@ class OnboardingSecondViewController: UIViewController {
         }
         
     }
+    
+    
 }
