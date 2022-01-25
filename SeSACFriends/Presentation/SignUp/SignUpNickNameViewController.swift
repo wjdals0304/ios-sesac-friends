@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 import Toast_Swift
 
-class LoginNickNameViewController : UIViewController {
+class SignUpNickNameViewController : UIViewController {
     
     let nickDescLabel: UILabel = {
         let label = UILabel()
@@ -112,7 +112,7 @@ class LoginNickNameViewController : UIViewController {
         if nickNameArr.count >= 1 && nickNameArr.count < 10 {
             UserManager.nickName = nickName
             
-            let vc = LoginBirthViewController()
+            let vc = SignUpBirthViewController()
             self.navigationController?.pushViewController(vc, animated: true)
             
         } else {

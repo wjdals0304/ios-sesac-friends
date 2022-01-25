@@ -90,7 +90,10 @@ class UserNetwork {
                 switch statusCode  {
                     
                 case 200 :
+                    
                     let decoder = JSONDecoder()
+                    
+                    print(value)
                     
                     guard let userData = try? decoder.decode(User.self, from: value)
                     else {

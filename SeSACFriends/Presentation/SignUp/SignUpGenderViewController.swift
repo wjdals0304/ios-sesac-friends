@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import FirebaseAuth
 
-class LoginGenderViewController : UIViewController {
+class SignUpGenderViewController : UIViewController {
     
     let signUpViewModel = SignUpViewModel()
     
@@ -141,7 +141,7 @@ class LoginGenderViewController : UIViewController {
     
 }
 
-private extension LoginGenderViewController {
+private extension SignUpGenderViewController {
     
     @objc func handleDoneBtn() {
         

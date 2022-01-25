@@ -19,11 +19,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         setRootViewController(scene)
  
-//
-//        window?.rootViewController = UINavigationController(rootViewController: LoginPhoneViewController())
-        
-//        window?.rootViewController = UINavigationController(rootViewController: LoginGenderViewController())
-   
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-class LoginBirthViewController : UIViewController {
+class SignUpBirthViewController : UIViewController {
         
     let birthLabel : UILabel = {
        let label = UILabel()
@@ -224,7 +224,7 @@ class LoginBirthViewController : UIViewController {
     
 }
 
-private extension LoginBirthViewController {
+private extension SignUpBirthViewController {
     
     
     @objc func onDidChangeDate()  {
@@ -269,7 +269,7 @@ private extension LoginBirthViewController {
         } else {
             
             
-            let vc = LoginEmailViewController()
+            let vc = SignUpEmailViewController()
             self.navigationController?.pushViewController(vc, animated: true)
                         
         }

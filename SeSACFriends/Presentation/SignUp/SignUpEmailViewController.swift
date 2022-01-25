@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-class LoginEmailViewController : UIViewController {
+class SignUpEmailViewController : UIViewController {
     
     let emailDescLabel:UILabel = {
         let label = UILabel()
@@ -105,7 +105,7 @@ class LoginEmailViewController : UIViewController {
 }
 
 
-private extension LoginEmailViewController {
+private extension SignUpEmailViewController {
     
     @objc func textFieldDidChange() {
         
@@ -138,7 +138,7 @@ private extension LoginEmailViewController {
             
             UserManager.email = emailText
             
-            let vc = LoginGenderViewController()
+            let vc = SignUpGenderViewController()
             self.navigationController?.pushViewController(vc, animated: true)
             
         } else {

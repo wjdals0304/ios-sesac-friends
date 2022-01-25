@@ -320,7 +320,7 @@ private extension LoginPhoneVerifyViewController {
                            
                         case .unregisterdUser:
                            print("닉네임 뷰로 이동")
-                           let vc = LoginNickNameViewController()
+                           let vc = SignUpNickNameViewController()
                            self.navigationController?.pushViewController(vc, animated: true)
                            
                            
