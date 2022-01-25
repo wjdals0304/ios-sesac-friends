@@ -59,6 +59,7 @@ class LoginPhoneViewController: UIViewController {
     }
     
     func setup() {
+        view.backgroundColor = .systemBackground
         
         [
             descLabel,

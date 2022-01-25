@@ -35,6 +35,7 @@ class OnboardingViewController : UIViewController {
         button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(clickStartButton), for: .touchUpInside)
         return button
     }()
     
@@ -85,17 +86,23 @@ class OnboardingViewController : UIViewController {
             make.height.equalTo(48)
             make.bottom.equalToSuperview().inset(50)
         }
-        
-    
     }
     
+    @objc func clickStartButton() {
+        
+        let firstVC = LoginPhoneViewController()
+        let nv = UINavigationController(rootViewController: firstVC)
+        nv.modalPresentationStyle = .fullScreen
+        self.present(nv, animated: true, completion: nil)
+        
+        
+    }
 }
 
 extension OnboardingViewController : UIPageViewControllerDataSource {
 
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        print("before")
         
         guard let index = dataViewControllers.firstIndex(of: viewController) else { return nil }
         let previousIndex = index - 1
@@ -109,7 +116,7 @@ extension OnboardingViewController : UIPageViewControllerDataSource {
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        print("after")
+
         guard let index = dataViewControllers.firstIndex(of: viewController) else { return nil }
         let nextIndex = index + 1
         if nextIndex == dataViewControllers.count {
