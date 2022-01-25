@@ -16,6 +16,16 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
         
         
+        
+        let myInfoViewController = UINavigationController(rootViewController: MyInfoViewController())
+        
+        
+        myInfoViewController.tabBarItem = UITabBarItem(title:"내정보", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person"))
+        
+        
+        viewControllers = [ myInfoViewController ]
+        
+        
     }
     
     
