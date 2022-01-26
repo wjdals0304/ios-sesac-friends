@@ -12,6 +12,17 @@ import UIKit
 
 class MyInfoViewController: UIViewController {
     
+    private var userData : User!
+    
+    init(user: User) {
+        self.userData = user
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private lazy var collectionView : UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.estimatedItemSize = CGSize(width: self.view.frame.width - 20 , height: 74)
@@ -21,7 +32,7 @@ class MyInfoViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .systemBackground
         collectionView.register(MyInfoCollectionViewCell.self, forCellWithReuseIdentifier: MyInfoCollectionViewCell.identifier)
-        collectionView.register(MyInfoCollectionHeaderVIew.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MyInfoCollectionHeaderVIew.identifier)
+        collectionView.register(MyInfoCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MyInfoCollectionHeaderView.identifier)
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -36,14 +47,16 @@ class MyInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "내정보"
-
+        self.navigationItem.title = "내정보"
+        
         setup()
         setupConstraint()
+        print("bbb")
+        print(userData.nick)
     }
     
     func setup() {
-        
+
         [
           collectionView
         ].forEach { view.addSubview($0) }
@@ -52,14 +65,9 @@ class MyInfoViewController: UIViewController {
     
     func setupConstraint() {
         
-    
-                
         collectionView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-//
-//            make.top.equalTo(view.safeAreaLayoutGuide).offset(100)
-////            make.leading.trailing.bottom.equalToSuperview()
-            
+            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide)
         }
         
     }
@@ -93,11 +101,19 @@ extension MyInfoViewController : UICollectionViewDataSource {
         switch kind {
           case UICollectionView.elementKindSectionHeader :
             
-            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: MyInfoCollectionHeaderVIew.identifier, for: indexPath) as? MyInfoCollectionHeaderVIew else {
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: MyInfoCollectionHeaderView.identifier, for: indexPath) as? MyInfoCollectionHeaderView else {
                 return UICollectionReusableView()
             }
+
+
+            let tapGestureRecognizer = UITapGestureRecognizer(target:self,action:#selector(tapHeader))
             
-            header.update()
+            header.addGestureRecognizer(tapGestureRecognizer)
+            
+            
+            header.update(userData: userData)
+           
+        
             return header
 
         default :
@@ -106,12 +122,19 @@ extension MyInfoViewController : UICollectionViewDataSource {
 
     }
     
+    @objc func tapHeader() {
+        
+        let vc = MyInfoDetailViewController()
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     
 }
 
 extension MyInfoViewController : UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        print("bb")
+
         let width: CGFloat = collectionView.frame.width
         let height: CGFloat = 100
         return CGSize(width: width, height: height)
