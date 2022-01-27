@@ -33,7 +33,7 @@ enum Color {
     case selectedButtonColor
     
     // top 라인 색
-    case topGrayLineColor
+    case grayLineColor
     
     
 }
@@ -64,7 +64,7 @@ extension UIColor {
         case .selectedButtonColor :
             return UIColor(red: 0.804, green: 0.958, blue: 0.881, alpha: 1)
             
-        case .topGrayLineColor :
+        case .grayLineColor :
             return UIColor(red: 0.937, green: 0.937, blue: 0.937, alpha: 1)
             
         }

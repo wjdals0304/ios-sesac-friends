@@ -36,7 +36,7 @@ class MyInfoCollectionHeaderView : UICollectionReusableView {
         
 
         let border = CALayer()
-        border.borderColor = UIColor.getColor(.topGrayLineColor).cgColor
+        border.borderColor = UIColor.getColor(.grayLineColor).cgColor
         border.frame = CGRect(x: 0, y: 0, width: frame.width , height: 1)
         border.borderWidth = 1
         layer.addSublayer(border)

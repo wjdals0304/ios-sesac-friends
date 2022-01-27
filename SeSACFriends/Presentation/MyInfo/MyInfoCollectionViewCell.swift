@@ -31,7 +31,7 @@ final class MyInfoCollectionViewCell : UICollectionViewCell {
         
         
         let border = CALayer()
-        border.borderColor = UIColor.getColor(.topGrayLineColor).cgColor
+        border.borderColor = UIColor.getColor(.grayLineColor).cgColor
         border.frame = CGRect(x: 0, y: 0, width: frame.width - 20 , height: 1)
         border.borderWidth = 1
         
@@ -41,7 +41,6 @@ final class MyInfoCollectionViewCell : UICollectionViewCell {
         imageView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(19)
             $0.top.equalToSuperview().offset(27)
-            
         }
         
         textLabel.snp.makeConstraints {

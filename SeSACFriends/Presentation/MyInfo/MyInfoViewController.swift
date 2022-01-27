@@ -125,7 +125,6 @@ extension MyInfoViewController : UICollectionViewDataSource {
     @objc func tapHeader() {
         
         let vc = MyInfoDetailViewController()
-        
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
