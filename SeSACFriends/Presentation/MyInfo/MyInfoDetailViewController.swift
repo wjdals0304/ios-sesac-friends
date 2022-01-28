@@ -7,23 +7,43 @@
 
 import Foundation
 import UIKit
-
+import SnapKit
 
 class MyInfoDetailViewController : UIViewController {
+    
+    private lazy var scrollView : UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.bounces = false
+        scrollView.isScrollEnabled = true
+        return scrollView
+    }()
+    
+    let contentView = UIView()
+    
     
     let profileViewHeight : CGFloat = 252
 
     private lazy var profileView = ProfileView(profileImage: "man", nick: "테스트", profileHeight: profileViewHeight)
     
-    private lazy var profileSubViewWidth: CGFloat = self.view.frame.width - 32
-    private lazy var profileSubView = ProfileSubView(viewWidth: profileSubViewWidth)
-
-    private var isExpand = false
-
-    var butttonImage: String {
-        return isExpand ? "chevron.down" : "chevron.up"
-    }
-
+    let textContentView : UIView = {
+        let view = UIView()
+        view.layer.borderWidth = 1
+        return view
+    }()
+    
+    let genderLabel : UILabel = {
+       let label = UILabel()
+        label.text = "text"
+        return label
+    }()
+    let genderLabel2 : UILabel = {
+       let label = UILabel()
+        label.text = "text"
+        return label
+    }()
+    
+    
+    
     override func viewDidLoad() {
         view.backgroundColor = .white
         setup()
@@ -31,34 +51,63 @@ class MyInfoDetailViewController : UIViewController {
     }
     
     func setup() {
+    
+        self.view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        self.contentView.addSubview(profileView)
+        self.contentView.addSubview(textContentView)
+        
         [
-            profileView
-//            profileSubView
-        ].forEach{ view.addSubview($0) }
-             
-//        self.profileView.showMoreButton.addTarget(self, action: #selector(buttonTap), for: .touchUpInside)
+            genderLabel,
+            genderLabel2
+        ].forEach { textContentView.addSubview($0)}
 
     }
     
     func setupConstraint() {
         
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(self.view)
+        }
+        contentView.snp.makeConstraints { make in
+            make.width.equalTo(self.scrollView.snp.width)
+            make.height.greaterThanOrEqualTo(view.snp.height).priority(.low)
+            make.edges.equalTo(scrollView.contentLayoutGuide)
+        }
+        
+        
         profileView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            $0.top.equalToSuperview().offset(20)
             $0.leading.equalToSuperview().offset(16)
-            $0.width.equalTo( self.view.frame.width - 32)
+            $0.width.equalTo( view.frame.width - 32)
             $0.height.equalTo(profileViewHeight)
         }
         
-//        profileSubView.snp.makeConstraints {
-//            $0.top.equalTo(profileView.snp.bottom)
-//            $0.leading.equalTo(profileView.snp.leading)
-//            $0.trailing.equalTo(profileView.snp.trailing)
-//            $0.width.equalTo(profileView.snp.width)
-//            $0.height.equalTo(0)
-//        }
-//
-    }
+        textContentView.snp.makeConstraints {
+            $0.top.equalTo(self.profileView.profileSubView.snp.bottom).offset(30)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(contentView.snp.bottom)
+            $0.height.equalTo(500)
+            
+        }
+        
+        genderLabel.snp.makeConstraints {
+            $0.bottom.equalToSuperview().inset(20)
+            $0.leading.equalToSuperview().offset(20)
+            
+        }
+           
+        genderLabel2.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
+
+        }
     
+        
+        
+        
+    }
     
     
 }
