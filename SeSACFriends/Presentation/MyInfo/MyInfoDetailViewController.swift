@@ -19,11 +19,9 @@ class MyInfoDetailViewController : UIViewController {
     }()
     
     let contentView = UIView()
-    
-    
+        
     let profileViewHeight : CGFloat = 252
-
-    private lazy var profileView = ProfileView(profileImage: "man", nick: "테스트", profileHeight: profileViewHeight)
+    private lazy var profileView = ProfileView(profileImage: "default_profile_img", nick: "테스트", profileHeight: profileViewHeight)
     
     let textContentView : UIView = {
         let view = UIView()
@@ -31,17 +29,20 @@ class MyInfoDetailViewController : UIViewController {
         return view
     }()
     
-    let genderLabel : UILabel = {
-       let label = UILabel()
-        label.text = "text"
-        return label
-    }()
-    let genderLabel2 : UILabel = {
-       let label = UILabel()
-        label.text = "text"
-        return label
+    let genderView : UIView = {
+        let view = UIView()
+        view.layer.borderWidth = 1
+        return view
     }()
     
+    let genderLabel : UILabel = {
+       let label = UILabel()
+        label.text = "내 성별"
+        label.font = UIFont.getRegularFont(.regular_14)
+        label.textColor = UIColor.getColor(.defaultTextColor)
+        return label
+    }()
+ 
     
     
     override func viewDidLoad() {
@@ -59,8 +60,7 @@ class MyInfoDetailViewController : UIViewController {
         self.contentView.addSubview(textContentView)
         
         [
-            genderLabel,
-            genderLabel2
+            genderLabel
         ].forEach { textContentView.addSubview($0)}
 
     }
@@ -76,7 +76,6 @@ class MyInfoDetailViewController : UIViewController {
             make.edges.equalTo(scrollView.contentLayoutGuide)
         }
         
-        
         profileView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(20)
             $0.leading.equalToSuperview().offset(16)
@@ -84,29 +83,23 @@ class MyInfoDetailViewController : UIViewController {
             $0.height.equalTo(profileViewHeight)
         }
         
-        textContentView.snp.makeConstraints {
-            $0.top.equalTo(self.profileView.profileSubView.snp.bottom).offset(30)
-            $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(contentView.snp.bottom)
-            $0.height.equalTo(500)
+        
+        self.textContentView.snp.makeConstraints {
             
+            $0.top.equalTo(self.profileView.snp.bottom).offset(10)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(self.contentView.snp.bottom)
+            $0.height.equalTo(500)
         }
         
-        genderLabel.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(20)
+  
+        self.genderLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(20)
             $0.leading.equalToSuperview().offset(20)
             
         }
            
-        genderLabel2.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(20)
-            $0.leading.equalToSuperview().offset(20)
-
-        }
     
-        
-        
-        
     }
     
     

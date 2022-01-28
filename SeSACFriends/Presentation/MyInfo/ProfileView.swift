@@ -16,14 +16,7 @@ class ProfileView : UIView {
     
     private let profileViewHight : CGFloat
     let profileImgHeight : CGFloat = 194
-        
-    private var stackView : UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 3
-        stackView.distribution = .fillEqually
-        return stackView
-    }()
+   
     private lazy var nickLabel: UILabel = {
        let label = UILabel()
        label.text = "\(nick)"
@@ -31,7 +24,7 @@ class ProfileView : UIView {
        label.frame.size = label.intrinsicContentSize
        return label
     }()
-
+    
     private lazy var profileImageView : UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "\(profileImage)")
@@ -44,12 +37,6 @@ class ProfileView : UIView {
         view.layer.borderWidth = 1
         view.layer.cornerRadius = 8
         view.layer.borderColor = UIColor.getColor(.grayLineColor).cgColor
-        return view
-    }()
-    
-     var profileSubView : UIView = {
-       let view = UIView()
-        view.layer.borderWidth = 1
         return view
     }()
     
@@ -83,18 +70,17 @@ class ProfileView : UIView {
         return label
     }()
     
-    var superViewCompletion: (() -> Void)?
+    var superViewCompletion: ( () -> Void)?
 
     
     let collectionTitleData = [ "좋은 매너" , "정확한 시각 약속" , "빠른 응답" ,"친절한 성격" ,"능숙한 취미 실력" ,"유익한 시간"]
     
     private lazy var collectionView : UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumInteritemSpacing = 5
         
         layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-        // 아이템간의 거리
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 5, right: 5)
+        // 셀간 거리
         layout.minimumInteritemSpacing = 5
           // 줄 간의 거리 (단위는 포인트)
         layout.minimumLineSpacing = 5
@@ -139,21 +125,17 @@ class ProfileView : UIView {
         
         [
             profileImageView,
-            profileMainView,
-            profileSubView
+            profileMainView
         ].forEach{ addSubview($0) }
         
         [
           nickLabel,
-          showMoreButton
+          showMoreButton,
+          titleLabel,
+          collectionView,
+          reviewLabel,
+          reviewTextLabel
         ].forEach { profileMainView.addSubview($0) }
-        
-        [
-            titleLabel,
-            collectionView,
-            reviewLabel,
-            reviewTextLabel
-        ].forEach { profileSubView.addSubview($0)}
         
         
         profileImageView.snp.makeConstraints { make in
@@ -176,23 +158,17 @@ class ProfileView : UIView {
             $0.trailing.equalToSuperview().inset(26)
             $0.centerY.equalTo(nickLabel.snp.centerY)
         }
-
-        profileSubView.snp.makeConstraints {
-            $0.top.equalTo(profileMainView.snp.bottom)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(0)
-        }
         
         titleLabel.snp.makeConstraints {
+            $0.top.equalTo(nickLabel.snp.bottom).offset(10)
             $0.leading.equalToSuperview().offset(16)
-            $0.top.equalToSuperview().offset(8)
             $0.height.equalTo(0)
 
         }
         collectionView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(16)
             $0.leading.equalTo(titleLabel.snp.leading)
-            $0.trailing.equalTo(profileSubView.snp.trailing)
+            $0.trailing.equalTo(self.snp.trailing)
             $0.height.equalTo(0)
         }
         
@@ -213,10 +189,9 @@ class ProfileView : UIView {
     
     @objc func buttonTap() {
         
+        let zeroHeightDict : [String: Double] = ["view": profileViewHight ,"profileMainView" : profileViewHight - profileImgHeight , "titleLabel": 0 , "collectionView" : 0 , "reviewLabel" : 0 , "reviewTextLabel": 0]
         
-        let zeroHeightDict : [String: Double] = [ "view" : 0 , "titleLabel": 0 , "collectionView" : 0 , "reviewLabel" : 0 , "reviewTextLabel": 0]
-        
-        let updateHeightDict : [String: Double] = [ "view" : 310 , "titleLabel": 18 , "collectionView" : 112 , "reviewLabel" : 18 , "reviewTextLabel": 24]
+        let updateHeightDict : [String: Double] = ["view": profileViewHight + 310 - (profileViewHight - profileImgHeight) ,"profileMainView" : 310 , "titleLabel": 18 , "collectionView" : 140 , "reviewLabel" : 18 , "reviewTextLabel": 24]
        
 
         if isExpand {
@@ -232,10 +207,10 @@ class ProfileView : UIView {
           
        self.isExpand = isExpand
         
-       self.profileSubView.snp.updateConstraints {
-           $0.height.equalTo(heightConstraint["view"]!)
+       self.profileMainView.snp.updateConstraints {
+           $0.height.equalTo(heightConstraint["profileMainView"]!)
        }
-        
+     
         self.titleLabel.snp.updateConstraints {
             $0.height.equalTo(heightConstraint["titleLabel"]!)
         }
@@ -251,12 +226,15 @@ class ProfileView : UIView {
             $0.height.equalTo(heightConstraint["reviewTextLabel"]!)
         }
         
+        self.snp.updateConstraints {
+            $0.height.equalTo(heightConstraint["view"]!)
+        }
         
         self.showMoreButton.setImage(UIImage(systemName: buttonImage), for: .normal)
 
         UIView.animate(withDuration: 0.3){
-           self.superViewCompletion?()
-
+            
+            self.superViewCompletion?()
         }
         
     }
