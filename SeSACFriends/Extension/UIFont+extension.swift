@@ -21,6 +21,8 @@ enum FontSize {
     
     case regular_24
 
+    case medium_14
+    
     case medium_16
 
     
@@ -43,10 +45,11 @@ extension UIFont {
             return UIFont(name: "NotoSansKR-Regular", size: 16)!
         case .regular_20 :
             return UIFont(name: "NotoSansKR-Regular", size: 20)!
-            
         case .regular_24 :
             return UIFont(name: "NotoSansKR-Regular", size: 24)!
 
+        case .medium_14 :
+            return UIFont(name: "NotoSansKR-Medium", size: 14)!
         case .medium_16 :
             return UIFont(name: "NotoSansKR-Medium", size: 16)!
             

@@ -29,9 +29,17 @@ class MyInfoDetailViewController : UIViewController {
         return view
     }()
     
+    let stackView : UIStackView = {
+       let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 5
+        stackView.distribution = .fillProportionally
+        return stackView
+    }()
+    
     let genderView : UIView = {
         let view = UIView()
-        view.layer.borderWidth = 1
+        view.layer.borderWidth = 2
         return view
     }()
     
@@ -40,15 +48,126 @@ class MyInfoDetailViewController : UIViewController {
         label.text = "내 성별"
         label.font = UIFont.getRegularFont(.regular_14)
         label.textColor = UIColor.getColor(.defaultTextColor)
+        label.frame.size = label.intrinsicContentSize
+
         return label
     }()
- 
     
+    let manUIButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("남자", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.layer.cornerRadius = 8
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.getColor(.bottomlineColor).cgColor
+
+        return button
+    }()
+    
+
+    let womanUIButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("여자", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.layer.cornerRadius = 8
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.getColor(.bottomlineColor).cgColor
+        return button
+    }()
+ 
+    let hobbyView : UIView = {
+        let view = UIView()
+        view.layer.borderWidth = 1
+        return view
+    }()
+    
+    let hobbyLabel : UILabel = {
+        let label = UILabel()
+        label.text = "자주 하는 취미"
+        label.font = UIFont.getRegularFont(.regular_14)
+        label.textColor = UIColor.getColor(.defaultTextColor)
+        label.frame.size = label.intrinsicContentSize
+        return label
+    }()
+    
+    let hobbyTextField : UITextField = {
+       let textField = UITextField()
+        textField.placeholder = "취미를 입력해 주세요"
+
+       return textField
+        
+    }()
+    
+    let phoneNumberCheckView : UIView = {
+        let view = UIView()
+        view.layer.borderWidth = 1
+        return view
+    }()
+    
+    let phoneNumberCheckLabel: UILabel = {
+       let label = UILabel()
+        label.text = "내 번호 검색 허용"
+        label.font = UIFont.getRegularFont(.regular_14)
+        label.textColor = UIColor.getColor(.defaultTextColor)
+        label.frame.size = label.intrinsicContentSize
+        return label
+    }()
+    
+    let phoneNumberCheckSwitch: UISwitch = {
+        let switchUI = UISwitch ()
+        switchUI.isOn = false
+        return switchUI
+    }()
+    
+    let ageView : UIView = {
+        let view = UIView()
+        view.layer.borderWidth = 1
+        return view
+    }()
+    
+    let ageLabel : UILabel = {
+        let label = UILabel()
+        label.text = "상대방 연령대"
+        label.font = UIFont.getRegularFont(.regular_14)
+        label.textColor = UIColor.getColor(.defaultTextColor)
+        label.frame.size = label.intrinsicContentSize
+        return label
+    }()
+    
+    let ageSlider : UISlider = {
+        let slider = UISlider()
+        slider.minimumValue = 18
+        slider.maximumValue = 65
+        slider.addTarget(self, action: #selector(changeAgeValue), for: .valueChanged)
+        return slider
+    }()
+    
+    let ageValueLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.getRegularFont(.medium_14)
+        return label
+    }()
+    
+    let withdrawView : UIView = {
+        let view = UIView()
+        view.layer.borderWidth = 1
+        return view
+    }()
+    
+    let withdrawButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("회원탈퇴", for: .normal)
+        return button
+    }()
     
     override func viewDidLoad() {
         view.backgroundColor = .white
         setup()
         setupConstraint()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        self.hobbyTextField.setUnderLine()
     }
     
     func setup() {
@@ -60,9 +179,40 @@ class MyInfoDetailViewController : UIViewController {
         self.contentView.addSubview(textContentView)
         
         [
-            genderLabel
+            stackView
         ].forEach { textContentView.addSubview($0)}
+        
+        [
+           genderLabel,
+           manUIButton,
+           womanUIButton
+        ].forEach { genderView.addSubview($0)}
+        
+        [
+           hobbyLabel,
+           hobbyTextField
+        ].forEach { hobbyView.addSubview($0)}
+        
+        [
+         phoneNumberCheckLabel,
+         phoneNumberCheckSwitch
+        ].forEach { phoneNumberCheckView.addSubview($0)}
+        
+        [
+          ageLabel,
+          ageSlider,
+          ageValueLabel
+        ].forEach { ageView.addSubview($0)}
+        
+        [
+          withdrawButton
+        ].forEach { withdrawView.addSubview($0)}
 
+        stackView.addArrangedSubview(genderView)
+        stackView.addArrangedSubview(hobbyView)
+        stackView.addArrangedSubview(phoneNumberCheckView)
+        stackView.addArrangedSubview(ageView)
+        stackView.addArrangedSubview(withdrawView)
     }
     
     func setupConstraint() {
@@ -83,23 +233,96 @@ class MyInfoDetailViewController : UIViewController {
             $0.height.equalTo(profileViewHeight)
         }
         
-        
-        self.textContentView.snp.makeConstraints {
-            
+        textContentView.snp.makeConstraints {
             $0.top.equalTo(self.profileView.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(self.contentView.snp.bottom)
             $0.height.equalTo(500)
         }
         
-  
-        self.genderLabel.snp.makeConstraints {
+        stackView.snp.makeConstraints {
+//            $0.edges.equalTo(textContentView)
+            
+            $0.top.equalToSuperview().offset(24)
+            $0.leading.equalToSuperview().offset(16)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalToSuperview()
+        }
+        
+    
+        genderLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(30)
+            $0.leading.equalToSuperview()
+        }
+        
+        manUIButton.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.centerY.equalTo(genderLabel.snp.centerY)
+            $0.width.equalTo(56)
+        }
+        
+        womanUIButton.snp.makeConstraints {
+            $0.leading.equalTo(manUIButton.snp.trailing).offset(5)
+            $0.top.equalToSuperview()
+            $0.centerY.equalTo(genderLabel.snp.centerY)
+            $0.width.equalTo(56)
+
+            $0.trailing.equalToSuperview()
+         }
+        
+        hobbyLabel.snp.makeConstraints {
+            $0.leading.equalToSuperview()
             $0.top.equalToSuperview().offset(20)
-            $0.leading.equalToSuperview().offset(20)
+        }
+        
+        hobbyTextField.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.centerY.equalTo(hobbyLabel.snp.centerY)
+            $0.trailing.equalToSuperview()
+        }
+       
+        phoneNumberCheckLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview()
+        }
+        
+        phoneNumberCheckSwitch.snp.makeConstraints {
+           $0.centerY.equalTo(phoneNumberCheckLabel.snp.centerY)
+            $0.trailing.equalToSuperview()
+        }
+    
+        ageLabel.snp.makeConstraints {
+            $0.leading.top.equalToSuperview()
+        }
+        ageValueLabel.snp.makeConstraints {
+            $0.centerY.equalTo(ageLabel.snp.centerY)
+            $0.trailing.equalToSuperview()
             
         }
-           
+        ageSlider.snp.makeConstraints {
+            $0.top.equalTo(ageLabel.snp.bottom).offset(20)
+            $0.leading.trailing.equalToSuperview()
+        }
+        withdrawButton.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview()
+        }
+        
+
+    }
     
+    
+}
+
+
+private extension MyInfoDetailViewController {
+    
+    
+    @objc func changeAgeValue() {
+        
+        print("bb")
+        ageValueLabel.text = "\(ageSlider.minimumValue) - \(ageSlider.maximumValue)"
+        
     }
     
     
