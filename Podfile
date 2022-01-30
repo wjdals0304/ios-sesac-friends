@@ -12,6 +12,9 @@ target 'SeSACFriends' do
   pod 'Toast-Swift', '~> 5.0.1'
   pod 'Alamofire', '~> 5.1'
   pod 'Firebase/Messaging'
-  pod 'GoogleSignIn'
+  pod 'GoogleSignIn' 
+  pod 'MultiSlider'
+  pod 'WARangeSlider'
+  pod 'RangeSeekSlider'
 
 end

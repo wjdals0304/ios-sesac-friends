@@ -5,6 +5,7 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
+  - AvailableHapticFeedback (1.0.2)
   - Firebase/Auth (8.10.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 8.10.0)
@@ -70,29 +71,39 @@ PODS:
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
   - GTMSessionFetcher/Core (1.7.0)
+  - MultiSlider (1.11.2):
+    - AvailableHapticFeedback
+    - SweeterSwift
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
   - PromisesObjC (2.0.0)
+  - RangeSeekSlider (1.8.0)
   - SnapKit (5.0.1)
+  - SweeterSwift (1.1.4)
   - TextFieldEffects (1.6.0)
   - Toast-Swift (5.0.1)
+  - WARangeSlider (1.1.1)
 
 DEPENDENCIES:
   - Alamofire (~> 5.1)
   - Firebase/Auth
   - Firebase/Messaging
   - GoogleSignIn
+  - MultiSlider
+  - RangeSeekSlider
   - SnapKit (~> 5.0.0)
   - TextFieldEffects
   - Toast-Swift (~> 5.0.1)
+  - WARangeSlider
 
 SPEC REPOS:
   trunk:
     - Alamofire
     - AppAuth
+    - AvailableHapticFeedback
     - Firebase
     - FirebaseAuth
     - FirebaseCore
@@ -104,15 +115,20 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
+    - MultiSlider
     - nanopb
     - PromisesObjC
+    - RangeSeekSlider
     - SnapKit
+    - SweeterSwift
     - TextFieldEffects
     - Toast-Swift
+    - WARangeSlider
 
 SPEC CHECKSUMS:
   Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
+  AvailableHapticFeedback: 9b21b9f6d3e4566015988b5de35b40abefe6c09a
   Firebase: 44213362f1dcc52555b935dc925ed35ac55f1b20
   FirebaseAuth: 59a2d2b933b5b79e18fb1e6ad230c6abdaa73d26
   FirebaseCore: 04186597c095da37d90ff9fd3e53bc61a1ff2440
@@ -124,12 +140,16 @@ SPEC CHECKSUMS:
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
+  MultiSlider: 944d00877d371bbb5ce0a512fec517de87958775
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
+  RangeSeekSlider: 650b11fa1edcb92e1e0ede797669d98622570fb5
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  SweeterSwift: 8a90cf3156f5a1b6f39785c479369a16633b5ea9
   TextFieldEffects: 529b8aff706fb40f82c41c780c0777941a893796
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
+  WARangeSlider: 54b3e0853b8d16c444fd539005901aecee86837d
 
-PODFILE CHECKSUM: 200492442ae214be9738b7fc87e97c52564fef33
+PODFILE CHECKSUM: 333b574d924e55614f26d4b89c0b49aef2e27b00
 
 COCOAPODS: 1.11.2

@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SnapKit
+import RangeSeekSlider
 
 class MyInfoDetailViewController : UIViewController {
     
@@ -134,17 +135,26 @@ class MyInfoDetailViewController : UIViewController {
         return label
     }()
     
-    let ageSlider : UISlider = {
-        let slider = UISlider()
-        slider.minimumValue = 18
-        slider.maximumValue = 65
-        slider.addTarget(self, action: #selector(changeAgeValue), for: .valueChanged)
+    let ageSlider : RangeSeekSlider = {
+        let slider = RangeSeekSlider()
+      
+        slider.minValue = 18
+        slider.maxValue = 65
+        slider.tintColor = UIColor.getColor(.inactiveColor)
+        slider.colorBetweenHandles = UIColor.getColor(.activeColor)
+        slider.handleColor = UIColor.getColor(.activeColor)
+        slider.hideLabels = true
+        slider.lineHeight = 4
+        slider.handleDiameter = 20
+
+        slider.addTarget(self, action: #selector(changeAgeValue(sender:)), for: .touchUpInside)
         return slider
     }()
     
     let ageValueLabel : UILabel = {
         let label = UILabel()
         label.font = UIFont.getRegularFont(.medium_14)
+        label.textColor = UIColor.getColor(.activeColor)
         return label
     }()
     
@@ -157,8 +167,13 @@ class MyInfoDetailViewController : UIViewController {
     let withdrawButton : UIButton = {
         let button = UIButton()
         button.setTitle("회원탈퇴", for: .normal)
+        button.setTitleColor(UIColor.getColor(.defaultTextColor), for: .normal)
+        button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
+        button.addTarget(self, action: #selector(tapWithdrawButton), for: .touchUpInside)
         return button
     }()
+    
+    let popUpWindowView = PopUpWindow(title: "test", text: "test입니다.")
     
     override func viewDidLoad() {
         view.backgroundColor = .white
@@ -300,8 +315,9 @@ class MyInfoDetailViewController : UIViewController {
             
         }
         ageSlider.snp.makeConstraints {
-            $0.top.equalTo(ageLabel.snp.bottom).offset(20)
+            $0.top.equalTo(ageLabel.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview()
+            
         }
         withdrawButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(20)
@@ -317,13 +333,15 @@ class MyInfoDetailViewController : UIViewController {
 
 private extension MyInfoDetailViewController {
     
+
     
-    @objc func changeAgeValue() {
-        
-        print("bb")
-        ageValueLabel.text = "\(ageSlider.minimumValue) - \(ageSlider.maximumValue)"
-        
+    @objc func changeAgeValue(sender: RangeSeekSlider) {
+        ageValueLabel.text = "\(Int(sender.selectedMinValue)) - \(Int(sender.selectedMaxValue))"
     }
     
+    
+    @objc func tapWithdrawButton() {
+        self.present(popUpWindowView ,animated: true, completion: nil)
+    }
     
 }

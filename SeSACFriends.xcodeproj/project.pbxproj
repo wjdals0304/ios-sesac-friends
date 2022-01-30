@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		640FCDC327A67184004AC780 /* PopUpWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640FCDC227A67183004AC780 /* PopUpWindowView.swift */; };
 		644AADFC279E8AFC00EEB85B /* APIStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AADFB279E8AFC00EEB85B /* APIStatus.swift */; };
 		644AADFF279E8CA800EEB85B /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AADFE279E8CA800EEB85B /* SignUpViewModel.swift */; };
 		644AAE02279ED9A700EEB85B /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AAE01279ED9A700EEB85B /* OnboardingViewController.swift */; };
@@ -56,6 +57,7 @@
 
 /* Begin PBXFileReference section */
 		55BFDB73B7F7CECD6612D105 /* Pods_SeSACFriends.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SeSACFriends.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		640FCDC227A67183004AC780 /* PopUpWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpWindowView.swift; sourceTree = "<group>"; };
 		644AADFB279E8AFC00EEB85B /* APIStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIStatus.swift; sourceTree = "<group>"; };
 		644AADFE279E8CA800EEB85B /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		644AAE01279ED9A700EEB85B /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 				646F231427A03DCF00DFDA68 /* MyInfoCollectionHeaderView.swift */,
 				646F231A27A13BBC00DFDA68 /* MyInfoDetailViewController.swift */,
 				646F231C27A1661900DFDA68 /* ProfileView.swift */,
+				640FCDC227A67183004AC780 /* PopUpWindowView.swift */,
 			);
 			path = MyInfo;
 			sourceTree = "<group>";
@@ -442,6 +445,7 @@
 				646F231727A11AF800DFDA68 /* HomeViewController.swift in Sources */,
 				644AADFF279E8CA800EEB85B /* SignUpViewModel.swift in Sources */,
 				644AAE04279EE8AB00EEB85B /* OnboardingFirstViewController.swift in Sources */,
+				640FCDC327A67184004AC780 /* PopUpWindowView.swift in Sources */,
 				645EA7A3279A9E6E00DD1CE8 /* SignUpBirthViewController.swift in Sources */,
 				6495F94C27951C1400A9F6E0 /* LoginPhoneViewController.swift in Sources */,
 				6495F9382795197F00A9F6E0 /* SceneDelegate.swift in Sources */,
