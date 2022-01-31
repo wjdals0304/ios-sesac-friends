@@ -173,7 +173,7 @@ class MyInfoDetailViewController : UIViewController {
         return button
     }()
     
-    let popUpWindowView = PopUpWindow(title: "test", text: "test입니다.")
+    let popUpWindowView = PopUpWindow(title: "정말 탈퇴하시겠습니까?", text: "탈퇴하시면 새싹 프렌즈를 이용할 수 없어요ㅠ")
     
     override func viewDidLoad() {
         view.backgroundColor = .white

@@ -15,12 +15,14 @@ class PopUpWindowView : UIView {
     let titleLabel : UILabel = {
        let label = UILabel()
         label.textAlignment = .center
+        label.font = UIFont.getRegularFont(.medium_16)
        return label
     }()
     
     let textLabel : UILabel = {
         let label = UILabel()
         label.textAlignment = .center
+        label.font = UIFont.getRegularFont(.regular_14)
         return label
     }()
     
@@ -29,6 +31,8 @@ class PopUpWindowView : UIView {
         button.setTitle("취소", for: .normal)
         button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
         button.setTitleColor(UIColor.getColor(.defaultTextColor), for: .normal)
+        button.backgroundColor = UIColor.getColor(.grayLineColor)
+        button.layer.cornerRadius = 8
         return button
     }()
     
@@ -36,14 +40,16 @@ class PopUpWindowView : UIView {
         let button = UIButton()
         button.setTitle("확인", for: .normal)
         button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
-        button.setTitleColor(UIColor.getColor(.activeColor), for: .normal) 
+        button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
+        button.backgroundColor = UIColor.getColor(.activeColor)
+        button.layer.cornerRadius = 8
         return button
     }()
     
     let buttonStackView : UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.spacing = 4
+        stackView.spacing = 8
         stackView.distribution = .fillEqually
         return stackView
     }()
@@ -81,28 +87,34 @@ class PopUpWindowView : UIView {
     func setupConstraints() {
         
         popupView.snp.makeConstraints {
-            $0.width.equalTo(293)
+            $0.width.equalTo(UIScreen.main.bounds.width - 32)
+            $0.height.equalTo(156)
             $0.centerX.equalTo(self.snp.centerX)
             $0.centerY.equalTo(self.snp.centerY)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
-            $0.top.equalToSuperview()
-            $0.height.equalTo(55)
+            $0.top.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(16)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(30)
+
         }
         
         textLabel.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(8)
-            $0.leading.equalToSuperview().offset(10)
-            $0.trailing.equalToSuperview().inset(10)
+            $0.leading.equalToSuperview().offset(16)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(22)
         }
         
         buttonStackView.snp.makeConstraints {
-            $0.top.equalTo(textLabel.snp.bottom).offset(8)
-            $0.leading.trailing.bottom.equalToSuperview()
-            $0.height.equalTo(44)
+            $0.top.equalTo(textLabel.snp.bottom).offset(16)
+            $0.leading.equalToSuperview().offset(16)
+            $0.bottom.equalToSuperview().inset(16)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(48)
+//            $0.width.equalTo(UIScreen.main.bounds.width - 32)
         }
         
         
