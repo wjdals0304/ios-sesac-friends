@@ -44,7 +44,6 @@ class ProfileView : UIView {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
         button.tintColor = .black
-        button.addTarget(self, action: #selector(buttonTap), for: .touchUpInside)
         return button
     }()
     
@@ -88,7 +87,7 @@ class ProfileView : UIView {
         
         
         let halfWidth: CGFloat = UIScreen.main.bounds.width / 2.0
-        layout.estimatedItemSize = CGSize(width: halfWidth - 35 , height: 32)
+        layout.estimatedItemSize = CGSize(width: halfWidth - 40 , height: 32)
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         
@@ -122,6 +121,10 @@ class ProfileView : UIView {
     }
     
     func setupConstraints() {
+    
+        let tapGestureRecognizer = UITapGestureRecognizer(target:self,action:#selector(tapHeader))
+        
+        profileMainView.addGestureRecognizer(tapGestureRecognizer)
         
         [
             profileImageView,
@@ -163,12 +166,12 @@ class ProfileView : UIView {
             $0.top.equalTo(nickLabel.snp.bottom).offset(10)
             $0.leading.equalToSuperview().offset(16)
             $0.height.equalTo(0)
-
         }
+        
         collectionView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(16)
             $0.leading.equalTo(titleLabel.snp.leading)
-            $0.trailing.equalTo(self.snp.trailing)
+            $0.trailing.equalTo(self.snp.trailing).inset(16)
             $0.height.equalTo(0)
         }
         
@@ -187,11 +190,11 @@ class ProfileView : UIView {
    }
 
     
-    @objc func buttonTap() {
+    @objc func tapHeader() {
         
         let zeroHeightDict : [String: Double] = ["view": profileViewHight ,"profileMainView" : profileViewHight - profileImgHeight , "titleLabel": 0 , "collectionView" : 0 , "reviewLabel" : 0 , "reviewTextLabel": 0]
         
-        let updateHeightDict : [String: Double] = ["view": profileViewHight + 310 - (profileViewHight - profileImgHeight) ,"profileMainView" : 310 , "titleLabel": 18 , "collectionView" : 140 , "reviewLabel" : 18 , "reviewTextLabel": 24]
+        let updateHeightDict : [String: Double] = ["view": profileViewHight + 310 - (profileViewHight - profileImgHeight) ,"profileMainView" : 310 , "titleLabel": 18 , "collectionView" : 120 , "reviewLabel" : 18 , "reviewTextLabel": 24]
        
 
         if isExpand {
