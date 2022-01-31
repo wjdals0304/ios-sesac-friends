@@ -23,10 +23,10 @@ class MyInfoDetailViewController : UIViewController {
         
     let profileViewHeight : CGFloat = 252
     private lazy var profileView = ProfileView(profileImage: "default_profile_img", nick: "테스트", profileHeight: profileViewHeight)
+
     
     let textContentView : UIView = {
         let view = UIView()
-        view.layer.borderWidth = 1
         return view
     }()
     
@@ -40,7 +40,6 @@ class MyInfoDetailViewController : UIViewController {
     
     let genderView : UIView = {
         let view = UIView()
-        view.layer.borderWidth = 2
         return view
     }()
     
@@ -59,9 +58,8 @@ class MyInfoDetailViewController : UIViewController {
         button.setTitle("남자", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 8
-        button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.getColor(.bottomlineColor).cgColor
-
+        button.layer.borderWidth = 1
         return button
     }()
     
@@ -71,14 +69,13 @@ class MyInfoDetailViewController : UIViewController {
         button.setTitle("여자", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 8
-        button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.getColor(.bottomlineColor).cgColor
+        button.layer.borderWidth = 1 
         return button
     }()
  
     let hobbyView : UIView = {
         let view = UIView()
-        view.layer.borderWidth = 1
         return view
     }()
     
@@ -101,7 +98,6 @@ class MyInfoDetailViewController : UIViewController {
     
     let phoneNumberCheckView : UIView = {
         let view = UIView()
-        view.layer.borderWidth = 1
         return view
     }()
     
@@ -122,7 +118,6 @@ class MyInfoDetailViewController : UIViewController {
     
     let ageView : UIView = {
         let view = UIView()
-        view.layer.borderWidth = 1
         return view
     }()
     
@@ -146,7 +141,6 @@ class MyInfoDetailViewController : UIViewController {
         slider.hideLabels = true
         slider.lineHeight = 4
         slider.handleDiameter = 20
-
         slider.addTarget(self, action: #selector(changeAgeValue(sender:)), for: .touchUpInside)
         return slider
     }()
@@ -160,7 +154,6 @@ class MyInfoDetailViewController : UIViewController {
     
     let withdrawView : UIView = {
         let view = UIView()
-        view.layer.borderWidth = 1
         return view
     }()
     
@@ -249,15 +242,13 @@ class MyInfoDetailViewController : UIViewController {
         }
         
         textContentView.snp.makeConstraints {
-            $0.top.equalTo(self.profileView.snp.bottom).offset(10)
+            $0.top.equalTo(self.profileView.snp.bottom)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(self.contentView.snp.bottom)
-            $0.height.equalTo(500)
+            $0.height.equalTo(350)
         }
         
         stackView.snp.makeConstraints {
-//            $0.edges.equalTo(textContentView)
-            
             $0.top.equalToSuperview().offset(24)
             $0.leading.equalToSuperview().offset(16)
             $0.trailing.equalToSuperview().inset(16)
@@ -266,7 +257,7 @@ class MyInfoDetailViewController : UIViewController {
         
     
         genderLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(30)
+            $0.top.equalToSuperview().offset(13)
             $0.leading.equalToSuperview()
         }
         
@@ -281,13 +272,12 @@ class MyInfoDetailViewController : UIViewController {
             $0.top.equalToSuperview()
             $0.centerY.equalTo(genderLabel.snp.centerY)
             $0.width.equalTo(56)
-
             $0.trailing.equalToSuperview()
          }
         
         hobbyLabel.snp.makeConstraints {
             $0.leading.equalToSuperview()
-            $0.top.equalToSuperview().offset(20)
+            $0.top.equalToSuperview().offset(13)
         }
         
         hobbyTextField.snp.makeConstraints {
@@ -297,7 +287,7 @@ class MyInfoDetailViewController : UIViewController {
         }
        
         phoneNumberCheckLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(20)
+            $0.top.equalToSuperview().offset(13)
             $0.leading.equalToSuperview()
         }
         
@@ -307,7 +297,8 @@ class MyInfoDetailViewController : UIViewController {
         }
     
         ageLabel.snp.makeConstraints {
-            $0.leading.top.equalToSuperview()
+            $0.top.equalToSuperview().offset(10)
+            $0.leading.equalToSuperview()
         }
         ageValueLabel.snp.makeConstraints {
             $0.centerY.equalTo(ageLabel.snp.centerY)
@@ -316,11 +307,13 @@ class MyInfoDetailViewController : UIViewController {
         }
         ageSlider.snp.makeConstraints {
             $0.top.equalTo(ageLabel.snp.bottom).offset(10)
-            $0.leading.trailing.equalToSuperview()
-            
+            $0.leading.equalToSuperview().offset(10)
+            $0.width.equalTo(UIScreen.main.bounds.width - 46)
+            $0.height.equalTo(25)
         }
+        
         withdrawButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(20)
+            $0.top.equalToSuperview().offset(13)
             $0.leading.equalToSuperview()
         }
         
