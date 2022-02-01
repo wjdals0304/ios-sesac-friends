@@ -40,11 +40,12 @@ class ProfileView : UIView {
         return view
     }()
     
-    let showMoreButton : UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
-        button.tintColor = .black
-        return button
+    let showMoreButton : UIImageView = {
+        
+        let image = UIImageView()
+        image.image = UIImage(systemName: "chevron.down")
+        image.tintColor = .black
+        return image
     }()
     
     let titleLabel : UILabel = {
@@ -233,7 +234,7 @@ class ProfileView : UIView {
             $0.height.equalTo(heightConstraint["view"]!)
         }
         
-        self.showMoreButton.setImage(UIImage(systemName: buttonImage), for: .normal)
+        self.showMoreButton.image = UIImage(systemName: buttonImage)
 
         UIView.animate(withDuration: 0.3){
             
