@@ -38,7 +38,7 @@ class TabBarController: UITabBarController {
         
         
         //test 용
-        self.userData = User(id: "11111", v: 0, uid: "", phoneNumber: "", email: "", fcMtoken: "", nick: "테스트입니다.", birth: "", gender: 0, hobby: "", comment: [], reputation: [], sesac: 0, sesacCollection: [], background: 0, backgroundCollection: [], purchaseToken: [], transactionID: [], reviewedBefore: [], reportedNum: 0, reportedUser: [], dodgepenalty: 0, dodgeNum: 0, ageMin: 0, ageMax: 0, searchable: 0, createdAt: "")
+        self.userData = User(id: "11111", v: 0, uid: "", phoneNumber: "", email: "", fcMtoken: "", nick: "테스트입니다.", birth: "", gender: 0, hobby: "자전거타기", comment: [], reputation: [1,0,0,0,0,1], sesac: 0, sesacCollection: [], background: 0, backgroundCollection: [], purchaseToken: [], transactionID: [], reviewedBefore: [], reportedNum: 0, reportedUser: [], dodgepenalty: 0, dodgeNum: 0, ageMin: 23, ageMax: 30, searchable: 1, createdAt: "")
         
         
         let myInfoViewController = UINavigationController(rootViewController: MyInfoViewController(user: userData!))

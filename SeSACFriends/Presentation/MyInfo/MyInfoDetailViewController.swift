@@ -12,6 +12,8 @@ import RangeSeekSlider
 
 class MyInfoDetailViewController : UIViewController {
     
+    private let userData : User!
+    
     private lazy var scrollView : UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.bounces = false
@@ -22,7 +24,7 @@ class MyInfoDetailViewController : UIViewController {
     let contentView = UIView()
         
     let profileViewHeight : CGFloat = 252
-    private lazy var profileView = ProfileView(profileImage: "default_profile_img", nick: "테스트", profileHeight: profileViewHeight)
+    private lazy var profileView = ProfileView(profileImage: "default_profile_img", userData: userData, profileHeight: profileViewHeight)
 
     
     let textContentView : UIView = {
@@ -172,10 +174,46 @@ class MyInfoDetailViewController : UIViewController {
         view.backgroundColor = .white
         setup()
         setupConstraint()
+        setupValue()
     }
     
     override func viewDidLayoutSubviews() {
         self.hobbyTextField.setUnderLine()
+    }
+    
+    init(userData: User) {
+        self.userData = userData
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setupValue() {
+        
+        if userData.gender == 0 {
+            womanUIButton.backgroundColor = UIColor.getColor(.activeColor)
+            womanUIButton.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
+        } else if userData.gender == 1 {
+            manUIButton.backgroundColor = UIColor.getColor(.activeColor)
+            womanUIButton.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
+        }
+        
+        
+        ageValueLabel.text = "\(userData.ageMin) - \(userData.ageMax)"
+        ageSlider.selectedMinValue = CGFloat(userData.ageMin)
+        ageSlider.selectedMaxValue = CGFloat(userData.ageMax)
+        
+        if userData.searchable == 0 {
+            phoneNumberCheckSwitch.isOn = false
+        } else if userData.searchable == 1 {
+            phoneNumberCheckSwitch.isOn = true
+        }
+        
+        hobbyTextField.text = userData.hobby
+        
+        
     }
     
     func setup() {

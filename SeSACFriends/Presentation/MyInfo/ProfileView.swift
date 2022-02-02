@@ -12,14 +12,13 @@ import SnapKit
 class ProfileView : UIView {
     
     private let profileImage: String
-    private let nick: String
-    
+    private let userData : User
     private let profileViewHight : CGFloat
     let profileImgHeight : CGFloat = 194
    
     private lazy var nickLabel: UILabel = {
        let label = UILabel()
-       label.text = "\(nick)"
+       label.text = "\(userData.nick)"
        label.font = UIFont.getRegularFont(.medium_16)
        label.frame.size = label.intrinsicContentSize
        return label
@@ -109,12 +108,13 @@ class ProfileView : UIView {
     }
     
     
-    init(profileImage: String, nick: String , profileHeight: CGFloat) {
+    init(profileImage: String, userData: User , profileHeight: CGFloat) {
         self.profileImage = profileImage
-        self.nick = nick
+        self.userData = userData
         self.profileViewHight = profileHeight
         super.init(frame: .zero)
         setupConstraints()
+        
     }
     
     required init?(coder: NSCoder) {
@@ -188,6 +188,7 @@ class ProfileView : UIView {
             $0.height.equalTo(0)
         }
         
+        
    }
 
     
@@ -253,10 +254,17 @@ extension ProfileView : UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.layer.borderWidth = 1
         cell.layer.cornerRadius = 8
         
         cell.textLabel.text = collectionTitleData[indexPath.row]
+        
+        if userData.reputation[indexPath.row] >= 1 {
+            cell.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
+            cell.textLabel.textColor = UIColor.getColor(.whiteTextColor)
+        } else {
+            cell.layer.borderWidth = 1
+            cell.layer.borderColor = UIColor.getColor(.inactiveColor).cgColor
+        }
         
         return cell
     }
