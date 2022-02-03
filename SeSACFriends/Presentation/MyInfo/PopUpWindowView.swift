@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import FirebaseAuth
 
 class PopUpWindowView : UIView {
     
@@ -127,6 +128,8 @@ class PopUpWindow: UIViewController {
     
     private let popUpWindowView = PopUpWindowView()
     
+    let myInfoViewModel = MyInfoViewModel()
+
     
     init(title: String , text: String) {
         super.init(nibName: nil, bundle: nil)
@@ -137,6 +140,8 @@ class PopUpWindow: UIViewController {
         popUpWindowView.textLabel.text = text
         
         popUpWindowView.cancelButton.addTarget(self, action: #selector(dismissView), for: .touchUpInside)
+        
+        popUpWindowView.okButton.addTarget(self, action: #selector(okView), for: .touchUpInside)
         
         view = popUpWindowView
         
@@ -149,6 +154,55 @@ class PopUpWindow: UIViewController {
     
     @objc func dismissView() {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func okView() {
+        
+        myInfoViewModel.withDrawUser { response in
+            
+            switch response {
+                
+               case .success :
+                 print("온보딩화면으로")
+                 let onboardingVC = OnboardingViewController()
+                onboardingVC.modalPresentationStyle = .fullScreen
+                self.present(onboardingVC, animated: true, completion: nil)
+//                self.window?.rootViewController = onboardingVC
+//                self.window?.makeKeyAndVisible()
+//
+                 
+                
+               case .unregisterdUser:
+                 self.view.makeToast("이미 탈퇴가 된 상태입니다.")
+                
+               case .expiredToken :
+                
+                let currentUser = FirebaseAuth.Auth.auth().currentUser
+                currentUser?.getIDToken(completion: { idtoken, error in
+                guard let idtoken = idtoken else {
+                        print(error!)
+                        self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                        return
+                 }
+                
+                 UserManager.idtoken = idtoken
+                 self.okView()
+
+                })
+                
+                
+               case .serverError :
+                  self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+
+                
+              default :
+                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+
+                
+            }
+            
+        }
+        
     }
     
 }

@@ -36,10 +36,20 @@ struct UserAPI {
         components.port = UserAPI.port
         components.path = UserAPI.path
         
-        
         return components
     }
     
+    
+    func withdrawUser() -> URLComponents {
+        
+        var componets = URLComponents()
+        componets.scheme = UserAPI.scheme
+        componets.host = UserAPI.host
+        componets.port = UserAPI.port
+        componets.path = UserAPI.path  + "/withdraw"
+        
+        return componets
+    }
     
     
 }
@@ -85,8 +95,7 @@ class UserNetwork {
                     completion(nil,.noData)
                     return
                 }
-                
-                
+                print(statusCode)
                 switch statusCode  {
                     
                 case 200 :
@@ -104,7 +113,7 @@ class UserNetwork {
                     
                     completion(userData,.success)
                                     
-                case 201 :
+                case 406 :
                     completion(nil,.unregisterdUser)
                 case 401 :
                     completion(nil,.expiredToken)
@@ -127,6 +136,8 @@ class UserNetwork {
     
 
     
+    /// 회원가입
+    /// - Parameter completion: api 상태코드
     func postUser(completion: @escaping(APIStatus?) -> Void ) {
 
         guard let phoneNumber = UserManager.phoneNumber ,
@@ -177,7 +188,6 @@ class UserNetwork {
 
                 case 200 :
                     completion(.success)
-                
                 case 201:
                     completion(.registerdUser)
                 case 202:
@@ -192,8 +202,6 @@ class UserNetwork {
                     completion(.failed)
                 }
 
-
-
             case .failure(let error):
                 print(error)
                 completion(.failed)
@@ -201,9 +209,52 @@ class UserNetwork {
             }
 
         }
-
-
-
+    }
+    
+    
+    /// 회원가입탈퇴
+    /// - Parameter completion: api 상태코드
+    func withdrawUser(completion: @escaping(APIStatus?) -> Void) {
+        
+        let url = userApi.withdrawUser().url!
+        
+        let dataRequest = AF.request(url,method: .post, headers: self.header)
+        
+        dataRequest.responseData { response in
+            
+            switch response.result {
+                
+            case .success :
+                
+                guard let statusCode = response.response?.statusCode else {
+                    completion(.failed)
+                    return
+                }
+                                
+                switch statusCode {
+                    
+                case 200 :
+                    completion(.success)
+                case 401:
+                    completion(.expiredToken)
+                case 406:
+                    completion(.unregisterdUser)
+                case 500:
+                    completion(.serverError)
+                    
+                default:
+                    completion(.failed)
+                }
+                
+            case .failure(let error):
+                print(error)
+                completion(.failed)
+                
+            }
+            
+        }
+        
+        
     }
     
     

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		640FCDC327A67184004AC780 /* PopUpWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640FCDC227A67183004AC780 /* PopUpWindowView.swift */; };
+		640FCDC527AB8B01004AC780 /* MyInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640FCDC427AB8B01004AC780 /* MyInfoViewModel.swift */; };
+		640FCDC727ABA7B3004AC780 /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640FCDC627ABA7B3004AC780 /* StatusCode.swift */; };
 		644AADFC279E8AFC00EEB85B /* APIStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AADFB279E8AFC00EEB85B /* APIStatus.swift */; };
 		644AADFF279E8CA800EEB85B /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AADFE279E8CA800EEB85B /* SignUpViewModel.swift */; };
 		644AAE02279ED9A700EEB85B /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 644AAE01279ED9A700EEB85B /* OnboardingViewController.swift */; };
@@ -58,6 +60,8 @@
 /* Begin PBXFileReference section */
 		55BFDB73B7F7CECD6612D105 /* Pods_SeSACFriends.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SeSACFriends.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		640FCDC227A67183004AC780 /* PopUpWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpWindowView.swift; sourceTree = "<group>"; };
+		640FCDC427AB8B01004AC780 /* MyInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyInfoViewModel.swift; sourceTree = "<group>"; };
+		640FCDC627ABA7B3004AC780 /* StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCode.swift; sourceTree = "<group>"; };
 		644AADFB279E8AFC00EEB85B /* APIStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIStatus.swift; sourceTree = "<group>"; };
 		644AADFE279E8CA800EEB85B /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		644AAE01279ED9A700EEB85B /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
@@ -164,6 +168,7 @@
 				645EA7922799303600DD1CE8 /* User.swift */,
 				6461E887279E481300F252E8 /* UserManager.swift */,
 				644AADFB279E8AFC00EEB85B /* APIStatus.swift */,
+				640FCDC627ABA7B3004AC780 /* StatusCode.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -204,6 +209,7 @@
 				646F231A27A13BBC00DFDA68 /* MyInfoDetailViewController.swift */,
 				646F231C27A1661900DFDA68 /* ProfileView.swift */,
 				640FCDC227A67183004AC780 /* PopUpWindowView.swift */,
+				640FCDC427AB8B01004AC780 /* MyInfoViewModel.swift */,
 			);
 			path = MyInfo;
 			sourceTree = "<group>";
@@ -422,6 +428,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				640FCDC727ABA7B3004AC780 /* StatusCode.swift in Sources */,
 				645EA78E2797D68900DD1CE8 /* LoginPhoneVerifyViewController.swift in Sources */,
 				645EA78C2797C27000DD1CE8 /* String+extension.swift in Sources */,
 				646F231527A03DCF00DFDA68 /* MyInfoCollectionHeaderView.swift in Sources */,
@@ -442,6 +449,7 @@
 				644AAE0A279FE16600EEB85B /* MyInfoViewController.swift in Sources */,
 				646F231D27A1661900DFDA68 /* ProfileView.swift in Sources */,
 				644AAE0C27A0005500EEB85B /* MyInfoCollectionViewCell.swift in Sources */,
+				640FCDC527AB8B01004AC780 /* MyInfoViewModel.swift in Sources */,
 				646F231727A11AF800DFDA68 /* HomeViewController.swift in Sources */,
 				644AADFF279E8CA800EEB85B /* SignUpViewModel.swift in Sources */,
 				644AAE04279EE8AB00EEB85B /* OnboardingFirstViewController.swift in Sources */,

@@ -46,6 +46,7 @@ class OnboardingViewController : UIViewController {
     }
     
     func setup() {
+        view.backgroundColor = .systemBackground
         
         [
           pageViewController.view,

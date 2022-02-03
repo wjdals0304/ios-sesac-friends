@@ -170,6 +170,13 @@ class MyInfoDetailViewController : UIViewController {
     
     let popUpWindowView = PopUpWindow(title: "정말 탈퇴하시겠습니까?", text: "탈퇴하시면 새싹 프렌즈를 이용할 수 없어요ㅠ")
     
+    
+    lazy var rightButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(rightButtonPressed))
+        return button
+    }()
+
+    
     override func viewDidLoad() {
         view.backgroundColor = .white
         setup()
@@ -358,21 +365,27 @@ class MyInfoDetailViewController : UIViewController {
 
     }
     
+
     
+ 
 }
 
 
 private extension MyInfoDetailViewController {
     
-
-    
     @objc func changeAgeValue(sender: RangeSeekSlider) {
         ageValueLabel.text = "\(Int(sender.selectedMinValue)) - \(Int(sender.selectedMaxValue))"
     }
-    
     
     @objc func tapWithdrawButton() {
         self.present(popUpWindowView ,animated: true, completion: nil)
     }
     
+    
+    @objc func rightButtonPressed() {
+        
+        print("bb")
+        
+    }
+  
 }
