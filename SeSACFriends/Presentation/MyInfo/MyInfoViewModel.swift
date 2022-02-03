@@ -38,8 +38,40 @@ class MyInfoViewModel {
             }
             
         }
+    }
+    
+    
+    func updateMypage(searchable: Int, ageMin: Int, ageMax:Int, gender: Int, hobby:String,completion:@escaping(APIStatus?) -> Void) {
+        
+        let idtoken = UserManager.idtoken!
+        let userNetwork = UserNetwork(idtoken: idtoken)
+        
+        userNetwork.updateMypage(searchable: searchable, ageMin: ageMin, ageMax: ageMax, gender: gender, hobby: hobby) { APIStatus in
+            
+            switch APIStatus {
+                 
+            case .success :
+                completion(.success)
+            case .expiredToken :
+                completion(.expiredToken)
+            case .unregisterdUser :
+                print(#function)
+                print("unregisterdUser")
+                completion(.failed)
+            case .serverError :
+                print(#function)
+                print("serverError")
+                completion(.failed)
+            default :
+                completion(.failed)
+        
+                
+            }
+            
+            
+        }
         
         
     }
-    
+     
 }

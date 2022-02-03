@@ -162,6 +162,9 @@ private extension SignUpGenderViewController {
                 
             case .success :
                 print("회원가입 성공!!")
+                let tabBarVC = TabBarController()
+                tabBarVC.modalPresentationStyle = .fullScreen
+                self.present(tabBarVC, animated: true, completion: nil)
                 
             case .registerdUser:
                 print("이미 유저")

@@ -42,13 +42,25 @@ struct UserAPI {
     
     func withdrawUser() -> URLComponents {
         
-        var componets = URLComponents()
-        componets.scheme = UserAPI.scheme
-        componets.host = UserAPI.host
-        componets.port = UserAPI.port
-        componets.path = UserAPI.path  + "/withdraw"
+        var components = URLComponents()
+        components.scheme = UserAPI.scheme
+        components.host = UserAPI.host
+        components.port = UserAPI.port
+        components.path = UserAPI.path  + "/withdraw"
         
-        return componets
+        return components
+    }
+    
+    func updateMypage() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = UserAPI.scheme
+        components.host = UserAPI.host
+        components.port = UserAPI.port
+        components.path = UserAPI.path + "/update/mypage"
+        
+        return components
+        
     }
     
     
@@ -95,7 +107,7 @@ class UserNetwork {
                     completion(nil,.noData)
                     return
                 }
-                print(statusCode)
+
                 switch statusCode  {
                     
                 case 200 :
@@ -140,10 +152,10 @@ class UserNetwork {
     /// - Parameter completion: api 상태코드
     func postUser(completion: @escaping(APIStatus?) -> Void ) {
 
-        guard let phoneNumber = UserManager.phoneNumber ,
-              let FCMtoken = UserManager.fcmtoken ,
+        guard let phoneNumber = UserManager.phoneNumber,
+              let FCMtoken = UserManager.fcmtoken,
               let nick = UserManager.nickName,
-              let birth = UserManager.birthday ,
+              let birth = UserManager.birthday,
               let email = UserManager.email,
               let gender = UserManager.gender?.rawValue
         else {
@@ -251,6 +263,61 @@ class UserNetwork {
                 completion(.failed)
                 
             }
+            
+        }
+        
+        
+    }
+    
+    func updateMypage(searchable: Int, ageMin: Int ,ageMax : Int, gender: Int,hobby: String ,completion:@escaping(APIStatus?) -> Void ) {
+        
+        let param : Parameters = [
+            "searchable" : searchable,
+            "ageMin" : ageMin ,
+            "ageMax" : ageMax,
+            "gender" : gender,
+            "hobby" : hobby
+        ]
+        
+        let url = userApi.withdrawUser().url!
+        self.header["Content-Type"] = "application/x-www-form-urlencoded"
+
+        let dataRequest = AF.request(url,method: .post,parameters: param,encoding: URLEncoding.httpBody , headers: self.header)
+
+        dataRequest.responseData { response in
+             
+            switch response.result {
+                
+            case .success :
+                
+                guard let statusCode = response.response?.statusCode else  {
+                    completion(.failed)
+                    return
+                }
+                
+                switch statusCode {
+                    
+                case 200 :
+                    completion(.success)
+                case 401 :
+                    completion(.expiredToken)
+                case 406 :
+                    completion(.unregisterdUser)
+                case 500 :
+                    completion(.serverError)
+                case 501 :
+                    completion(.clientError)
+                default :
+                    completion(.failed)
+                }
+                
+            
+            case .failure(let error) :
+                print(error)
+                completion(.failed)
+                
+            }
+           
             
         }
         

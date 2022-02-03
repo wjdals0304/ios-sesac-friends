@@ -167,10 +167,7 @@ class PopUpWindow: UIViewController {
                  let onboardingVC = OnboardingViewController()
                 onboardingVC.modalPresentationStyle = .fullScreen
                 self.present(onboardingVC, animated: true, completion: nil)
-//                self.window?.rootViewController = onboardingVC
-//                self.window?.makeKeyAndVisible()
-//
-                 
+
                 
                case .unregisterdUser:
                  self.view.makeToast("이미 탈퇴가 된 상태입니다.")

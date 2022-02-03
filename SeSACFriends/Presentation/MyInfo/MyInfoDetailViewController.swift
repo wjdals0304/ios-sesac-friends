@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 import RangeSeekSlider
+import FirebaseAuth
 
 class MyInfoDetailViewController : UIViewController {
     
@@ -175,7 +176,9 @@ class MyInfoDetailViewController : UIViewController {
         let button = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(rightButtonPressed))
         return button
     }()
-
+    
+    let myInfoViewModel = MyInfoViewModel()
+    
     
     override func viewDidLoad() {
         view.backgroundColor = .white
@@ -266,6 +269,10 @@ class MyInfoDetailViewController : UIViewController {
         stackView.addArrangedSubview(phoneNumberCheckView)
         stackView.addArrangedSubview(ageView)
         stackView.addArrangedSubview(withdrawView)
+        
+        self.navigationItem.rightBarButtonItem = self.rightButton
+        
+        
     }
     
     func setupConstraint() {
@@ -384,7 +391,43 @@ private extension MyInfoDetailViewController {
     
     @objc func rightButtonPressed() {
         
-        print("bb")
+        let searchable = phoneNumberCheckSwitch.isOn ? 1 : 0
+        let ageMin = ageSlider.selectedMinValue
+        let ageMax = ageSlider.selectedMaxValue
+        let gender = userData.gender
+        let hobby = hobbyTextField.text ?? ""
+        
+        
+        myInfoViewModel.updateMypage(searchable: searchable , ageMin: Int(ageMin), ageMax: Int(ageMax), gender: gender, hobby: hobby ) { response in
+            
+            switch response {
+                
+             case .success :
+                self.navigationController?.popViewController(animated: true)
+            
+            case .expiredToken :
+                
+                let currentUser = FirebaseAuth.Auth.auth().currentUser
+                currentUser?.getIDToken(completion: { idtoken, error in
+                guard let idtoken = idtoken else {
+                        print(error!)
+                        self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                        return
+                 }
+                
+                 UserManager.idtoken = idtoken
+                })
+                
+                self.rightButtonPressed()
+
+            default :
+                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                
+            }
+            
+        }
+        
+
         
     }
   
