@@ -48,11 +48,11 @@ class MyInfoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "내정보"
+
         
         setup()
         setupConstraint()
-        print("bbb")
-        print(userData.nick)
+       
     }
     
     func setup() {
@@ -109,8 +109,6 @@ extension MyInfoViewController : UICollectionViewDataSource {
             let tapGestureRecognizer = UITapGestureRecognizer(target:self,action:#selector(tapHeader))
             
             header.addGestureRecognizer(tapGestureRecognizer)
-            
-            
             header.update(userData: userData)
            
         
