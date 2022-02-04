@@ -263,12 +263,19 @@ class UserNetwork {
                 completion(.failed)
                 
             }
-            
         }
-        
-        
     }
     
+    
+    
+    /// 회원 업데이트
+    /// - Parameters:
+    ///   - searchable: 검색허용 여부
+    ///   - ageMin: 나이 최소값
+    ///   - ageMax: 나이 최고값
+    ///   - gender: 성별
+    ///   - hobby: 취미
+    ///   - completion: API 상태
     func updateMypage(searchable: Int, ageMin: Int ,ageMax : Int, gender: Int,hobby: String ,completion:@escaping(APIStatus?) -> Void ) {
         
         let param : Parameters = [
