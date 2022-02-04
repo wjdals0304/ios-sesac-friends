@@ -179,6 +179,10 @@ class MyInfoDetailViewController : UIViewController {
     
     let myInfoViewModel = MyInfoViewModel()
     
+    lazy var backBarButton : UIBarButtonItem = {
+        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
+        return barButtonItem
+    }()
     
     override func viewDidLoad() {
         view.backgroundColor = .white
@@ -271,8 +275,10 @@ class MyInfoDetailViewController : UIViewController {
         stackView.addArrangedSubview(withdrawView)
         
         self.navigationItem.rightBarButtonItem = self.rightButton
+        self.navigationItem.title = "정보관리"
         
-        
+        navigationItem.leftBarButtonItem = backBarButton
+        self.navigationController?.navigationBar.tintColor = .black
     }
     
     func setupConstraint() {
@@ -371,10 +377,6 @@ class MyInfoDetailViewController : UIViewController {
         
 
     }
-    
-
-    
- 
 }
 
 
@@ -426,9 +428,9 @@ private extension MyInfoDetailViewController {
             }
             
         }
-        
-
-        
     }
   
+    @objc func closeButtonClicked(){
+        self.navigationController?.popViewController(animated: true)
+    }
 }
