@@ -19,6 +19,10 @@ class HomeViewController: UIViewController {
     let locationManager = CLLocationManager()
     let homeViewModel = HomeViewModel()
     
+    var arrayButtons : [UIButton] = [UIButton]()
+    
+    var runTimeInterval: TimeInterval? // 마지막 작업을 설정할 시간
+    let mTimer : Selector = #selector(Tick_TimeConsole) // 위치 확인 타이머
     
     let buttonStackView : UIStackView = {
         let stackView = UIStackView()
@@ -75,19 +79,7 @@ class HomeViewController: UIViewController {
         return button
     }()
     
-    var arrayButtons : [UIButton] = [UIButton]()
-    
-    var runTimeInterval: TimeInterval? // 마지막 작업을 설정할 시간
-    let mTimer : Selector = #selector(Tick_TimeConsole) // 위치 확인 타이머
-    
-    private var centerAnnotation: MKPointAnnotation? {
-        didSet {
-            if let oldValue = oldValue {
-                deleteAnnotation(oldValue)
-            }
-        }
-    }
-    
+  
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         searchButton.layer.cornerRadius = searchButton.frame.size.width / 2
@@ -119,8 +111,8 @@ class HomeViewController: UIViewController {
         // 위치보기값
         mkMapView.showsUserLocation = true
 
+        // 초기 화면
         setUpGoLation()
-        
         
         
         [
@@ -229,26 +221,30 @@ extension HomeViewController : CLLocationManagerDelegate {
         
     }
     
-    
     // MARK: 중앙 고정 핀 설치
     func setCenterAnnotation( latitudeValue: CLLocationDegrees, longitudeValue: CLLocationDegrees , delta span : Double ) {
         
         let centerAnnotation = mkMapView.annotations.filter{ $0.title == "중앙 고정 핀" }.first
+        
+        let centerOverlay = mkMapView.overlays.first
 
         if centerAnnotation != nil {
             deleteAnnotation(centerAnnotation!)
+            mkMapView.removeOverlay(centerOverlay!)
         }
         
         let annotation = MKPointAnnotation()
         annotation.coordinate = goLocation(latitudeValue: latitudeValue, longitudeValue: longitudeValue, delta: span)
         annotation.title = "중앙 고정 핀"
         annotation.subtitle = "새싹 찾기 기준 위치"
+        
+        let circle =  MKCircle(center: annotation.coordinate, radius: 700)
+        
+        mkMapView.addOverlay(circle)
         mkMapView.addAnnotation(annotation)
     
     }
-    
 
-    
 }
 
 extension HomeViewController : MKMapViewDelegate {
@@ -295,13 +291,21 @@ extension HomeViewController : MKMapViewDelegate {
    
 
         let region = calculateRegion(lat: lat, long: long)
-        
         setCenterAnnotation(latitudeValue: lat, longitudeValue: long, delta: 0.01)
 
         postOnqueue(region: region, lat: lat, long: long)
 
         runTimeInterval = nil
         
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let circleRenderer = MKCircleRenderer(overlay: overlay)
+        circleRenderer.strokeColor = .white
+        circleRenderer.fillColor = UIColor.gray.withAlphaComponent(0.3)
+        circleRenderer.lineWidth = 1.0
+        
+        return circleRenderer
     }
     
 }
@@ -350,16 +354,6 @@ private extension HomeViewController {
         mkMapView.showsUserLocation = true
         mkMapView.setUserTrackingMode(.follow, animated: true)
         
-//
-//        let lat = currentLocation.coordinate.latitude
-//        let long = currentLocation.coordinate.longitude
-//
-//        setAnnotation(latitudeValue: lat, longitudeValue: long, delta: 0.01, title: "", strSubtitle: "")
-//        let region = calculateRegion(lat: lat, long: long)
-//
-//        postOnqueue(region: region, lat: lat, long: long)
-        
-        
     }
     
     func postOnqueue(region: Int , lat: Double, long : Double) {
@@ -398,15 +392,10 @@ private extension HomeViewController {
             }
             
         }
-        
-        
-        
     }
     
     
     func calculateRegion(lat: Double, long: Double) -> Int {
-        
-         
         
         let calLat = String(lat + 90).replacingOccurrences(of: ".", with: "").substring(to:5)
         let calLong = String(long + 180).replacingOccurrences(of: ".", with: "").substring(to:5)
