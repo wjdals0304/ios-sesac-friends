@@ -150,6 +150,18 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
+		643B642527B15B1B00013A19 /* Hobby */ = {
+			isa = PBXGroup;
+			children = (
+				642F156027AF9135007E04A6 /* HobbyViewController.swift */,
+				642F156227AFAA0D007E04A6 /* HobbyTableViewCell.swift */,
+				643B641F27AFB0AD00013A19 /* HobbyCollectionViewCell.swift */,
+				643B642127AFB1B000013A19 /* HobbyDynamicHeightCollectionView.swift */,
+				643B642327AFB47B00013A19 /* HobbyCollectionViewFlowLayout.swift */,
+			);
+			path = Hobby;
+			sourceTree = "<group>";
+		};
 		644AADFD279E8C7400EEB85B /* SignUp */ = {
 			isa = PBXGroup;
 			children = (
@@ -181,11 +193,7 @@
 				644AAE00279ED75A00EEB85B /* Onboarding */,
 				646F231927A1264200DFDA68 /* MyInfo */,
 				642F155F27AF908F007E04A6 /* Home */,
-				642F156027AF9135007E04A6 /* HobbyViewController.swift */,
-				642F156227AFAA0D007E04A6 /* HobbyTableViewCell.swift */,
-				643B641F27AFB0AD00013A19 /* HobbyCollectionViewCell.swift */,
-				643B642127AFB1B000013A19 /* HobbyDynamicHeightCollectionView.swift */,
-				643B642327AFB47B00013A19 /* HobbyCollectionViewFlowLayout.swift */,
+				643B642527B15B1B00013A19 /* Hobby */,
 				6495F94927951AD600A9F6E0 /* TabBarController.swift */,
 				640FCDC827ABC0E7004AC780 /* SesacFriendViewController.swift */,
 			);
