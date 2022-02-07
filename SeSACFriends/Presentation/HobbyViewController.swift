@@ -24,8 +24,20 @@ class HobbyViewController : UIViewController {
         return barButtonItem
     }()
     
-    let tableView = UITableView()
+    lazy var tableView : UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(HobbyTableViewCell.self, forCellReuseIdentifier: HobbyTableViewCell.identifier)
+        tableView.isScrollEnabled = false
+        tableView.separatorStyle = .none
+        return tableView
+    }()
     
+    let viewButton : UIView = {
+        let view = UIView()
+        return view
+    }()
 
     let sesacSearchButton : UIButton = {
         let button = UIButton()
@@ -45,14 +57,18 @@ class HobbyViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(HobbyTableViewCell.self, forCellReuseIdentifier: HobbyTableViewCell.identifier)
-//        tableView.isScrollEnabled = false
-        
+    
         setup()
         setupConstraint()
+        
+        // MARK: 키보드 디텍션
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustButtonView), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustButtonView), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapBG))
+        tap.isEnabled = true
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
     
     func setup() {
@@ -64,9 +80,12 @@ class HobbyViewController : UIViewController {
     
         [
          tableView,
-         sesacSearchButton
+         viewButton
         ].forEach {  view.addSubview($0) }
         
+        [
+            sesacSearchButton
+        ].forEach { viewButton.addSubview($0) }
     }
     
     func setupConstraint() {
@@ -78,15 +97,24 @@ class HobbyViewController : UIViewController {
             make.height.equalTo(324)
         }
         
-        sesacSearchButton.snp.makeConstraints { make in
-            make.top.equalTo(tableView.snp.bottom).offset(280)
+        
+        viewButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
+            make.bottom.equalToSuperview().inset(50)
             make.width.equalTo(view.frame.width - 32)
             make.height.equalTo(48)
         }
+        
+        sesacSearchButton.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
     }
-    
-
+ 
+    @objc func tapBG(_ sender: Any) {
+        print("tapBG")
+        self.view.endEditing(true)
+    }
 }
 
 
@@ -104,17 +132,58 @@ extension HobbyViewController : UISearchBarDelegate {
         print(#function)
     }
     
-    
-}
-
-private extension HobbyViewController  {
-    
-    @objc func closeButtonClicked(){
-        self.navigationController?.popViewController(animated: true)
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
     }
     
 }
 
+private extension HobbyViewController  {
+  
+    @objc func closeButtonClicked(){
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+   
+     
+    @objc private func adjustButtonView(noti: Notification) {
+        
+        guard let userInfo = noti.userInfo else { return }
+        
+        guard let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
+        
+        if noti.name == UIResponder.keyboardWillShowNotification {
+            
+            let adjustmentHeight = keyboardFrame.height - view.safeAreaInsets.bottom + 40
+            
+            viewButton.snp.removeConstraints()
+            sesacSearchButton.layer.cornerRadius = 0
+
+            viewButton.snp.makeConstraints { make in
+                make.width.equalTo(self.view.snp.width)
+                make.bottom.equalToSuperview().inset(adjustmentHeight)
+                make.height.equalTo(48)
+            }
+           
+            
+        } else {
+            viewButton.snp.removeConstraints()
+            
+
+            viewButton.snp.makeConstraints { make in
+                make.leading.equalToSuperview().offset(16)
+                make.bottom.equalToSuperview().inset(50)
+                make.width.equalTo(view.frame.width - 32)
+                make.height.equalTo(48)
+            }
+        }
+    }
+    
+    
+    
+    
+}
 
 extension HobbyViewController: UITableViewDataSource,UITableViewDelegate {
     
@@ -126,11 +195,15 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: HobbyTableViewCell.identifier, for: indexPath) as! HobbyTableViewCell
         
-        cell.configure(around: aroundHobbyArray, my: myHobbyArray)
+        cell.selectionStyle = .none
+        
+        if indexPath.section == 0 {
+            cell.configure(around: aroundHobbyArray, my: myHobbyArray,hobbyArray: aroundHobbyArray)
+        } else {
+            cell.configure(around: aroundHobbyArray, my: myHobbyArray,hobbyArray: myHobbyArray)
+        }
         
         return cell
-        
-        
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -140,6 +213,6 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
     }
-    
+  
   
 }
