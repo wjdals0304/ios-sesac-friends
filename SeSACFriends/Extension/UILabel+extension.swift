@@ -33,7 +33,19 @@ extension UILabel {
     }
     
     
-    
-    
-    
+    func addTrailing(image: UIImage, with text: String) {
+      let attachment = NSTextAttachment()
+      attachment.image = image
+      attachment.bounds = CGRect(x: 0, y: 0, width: 14, height: 13)
+        
+
+      let attachmentStr = NSAttributedString(attachment: attachment)
+
+      let textString = NSMutableAttributedString(string: text, attributes: [.font: UIFont.getRegularFont(.regular_14)])
+      textString.append(attachmentStr)
+     
+      self.attributedText = textString
+    }
+        
+
 }
