@@ -8,10 +8,17 @@
 import Foundation
 import UIKit
 import SnapKit
+import FirebaseAuth
+import Toast_Swift
 
-
-class HobbyViewController : UIViewController {
-      
+class HobbyViewController : UIViewController  {
+    
+    private let region : Int
+    private let lat : Double
+    private let long : Double
+    
+    let homeViewModel = HomeViewModel()
+    
     lazy var searchBar : UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.placeholder = "띄어쓰기로 복수 입력이 가능해요"
@@ -50,28 +57,41 @@ class HobbyViewController : UIViewController {
     
     let sections:[String] = ["지금 주변에는","내가 하고 싶은"]
     
-    var aroundHobbyArray = ["아무거나","SeSAC","코딩","맛집탐방","공원산책","독서모임"
-             ,"다육이","쓰레기줍기"]
-    var myHobbyArray = ["코딩","클라이밍", "달리기","오일파스텔","축구","배드민턴","테니스"]
+    var aroundHobbyArray = [String]()
+    var fromRecommendArray = [String]()
+    
+    var myHobbyArray = UserManager.myHobbyArray
 
     
+    init(region: Int, lat: Double ,long: Double) {
+        self.region = region
+        self.lat = lat
+        self.long = long
+        super.init(nibName: nil, bundle: nil)
+
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        print(#function)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+
         setup()
         setupConstraint()
         
         // MARK: 키보드 디텍션
         NotificationCenter.default.addObserver(self, selector: #selector(adjustButtonView), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(adjustButtonView), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tapBG))
-        tap.isEnabled = true
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
+        apiPostOnqueue()
     }
     
     func setup() {
+
         view.backgroundColor = .systemBackground
         navigationItem.titleView = searchBar
         navigationItem.leftBarButtonItem = backBarButton
@@ -110,11 +130,56 @@ class HobbyViewController : UIViewController {
         }
         
     }
- 
-    @objc func tapBG(_ sender: Any) {
-        print("tapBG")
-        self.view.endEditing(true)
+    
+    func apiPostOnqueue() {
+        
+        homeViewModel.postOnqueue(region: region, lat: lat, long: long) { queue, APIStatus in
+            
+            switch APIStatus {
+                
+            case .success :
+                
+                guard let queue = queue else {
+                    self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                    return
+                }
+                self.aroundHobbyArray += queue.fromQueueDB.flatMap{$0.hf}
+                self.aroundHobbyArray += queue.fromQueueDBRequested.flatMap {$0.hf}
+
+                self.aroundHobbyArray = Array(Set(self.aroundHobbyArray))
+                
+                self.fromRecommendArray = queue.fromRecommend
+
+                for i in self.aroundHobbyArray {
+                    if self.fromRecommendArray.contains(i) {
+                        self.aroundHobbyArray.removeAll(where: { $0 == i} )
+                    }
+                }
+
+                self.aroundHobbyArray = self.fromRecommendArray + self.aroundHobbyArray
+                                
+            case .expiredToken :
+                let currentUser = FirebaseAuth.Auth.auth().currentUser
+                currentUser?.getIDToken(completion: { idtoken, error in
+                guard let idtoken = idtoken else {
+                        print(error!)
+                        self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                        return
+                 }
+                 UserManager.idtoken = idtoken
+                })
+                self.apiPostOnqueue()
+                
+                
+            default :
+                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+            }
+        }
+        
+        
     }
+    
+ 
 }
 
 
@@ -129,10 +194,21 @@ extension HobbyViewController : UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        print(searchText)
         print(#function)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        guard let searchBarText = searchBar.text else {
+            return
+        }
+        
+        print(searchBarText)
+        UserManager.myHobbyArray.append(searchBarText)
+        
+        NotificationCenter.default.post(name: NSNotification.Name("load"), object: nil)
+
         searchBar.text = ""
         searchBar.resignFirstResponder()
     }
@@ -165,12 +241,11 @@ private extension HobbyViewController  {
                 make.bottom.equalToSuperview().inset(adjustmentHeight)
                 make.height.equalTo(48)
             }
-           
-            
+                    
         } else {
-            viewButton.snp.removeConstraints()
             
-
+            viewButton.snp.removeConstraints()
+        
             viewButton.snp.makeConstraints { make in
                 make.leading.equalToSuperview().offset(16)
                 make.bottom.equalToSuperview().inset(50)
@@ -180,12 +255,9 @@ private extension HobbyViewController  {
         }
     }
     
-    
-    
-    
 }
 
-extension HobbyViewController: UITableViewDataSource,UITableViewDelegate {
+extension HobbyViewController: UITableViewDataSource,UITableViewDelegate   {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
@@ -193,15 +265,20 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        aroundHobbyArray = ["테스트","테스트2"]
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: HobbyTableViewCell.identifier, for: indexPath) as! HobbyTableViewCell
         
-        cell.selectionStyle = .none
+        let hobbyType = sections[indexPath.section] == "지금 주변에는" ? "arround" : "myHobby"
         
         if indexPath.section == 0 {
-            cell.configure(around: aroundHobbyArray, my: myHobbyArray,hobbyArray: aroundHobbyArray)
+            cell.configure(from: fromRecommendArray, arroundArray: aroundHobbyArray, hobbyArray: aroundHobbyArray, hobbyType: hobbyType )
         } else {
-            cell.configure(around: aroundHobbyArray, my: myHobbyArray,hobbyArray: myHobbyArray)
+            cell.myHobbyConfigure(myHobbyArray: myHobbyArray, hobbyType: hobbyType)
         }
+    
+        cell.selectionStyle = .none
+        cell.cellDelegate  = self
         
         return cell
     }
@@ -213,6 +290,16 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
     }
-  
+    
   
 }
+
+
+extension HobbyViewController : CollectionViewCellDelegate {
+    
+    func collectionView(collectionviewcell: HobbyCollectionViewCell?, index: Int, didTappedInTableViewCell: HobbyTableViewCell) {
+        
+        
+    }
+}
+ 
