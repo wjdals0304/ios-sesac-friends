@@ -24,7 +24,7 @@ class HobbyCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
-    func setup(with text: String) {
+    func setup(with text: String , from fromRecommendArray : Array<String>) {
         
         [
          textLabel
@@ -35,15 +35,25 @@ class HobbyCollectionViewCell: UICollectionViewCell {
             make.centerY.equalTo(self.snp.centerY)
         }
         
-        self.layer.borderWidth = 1
-        self.layer.cornerRadius = 8
-        
-        textLabel.text = text
-        self.contentView.isUserInteractionEnabled  = true 
+        if fromRecommendArray.contains( text ) {
+            self.layer.borderWidth = 1
+            self.layer.cornerRadius = 8
+            self.layer.borderColor = UIColor.getColor(.redColor).cgColor
+            textLabel.text = text
+            textLabel.textColor = UIColor.getColor(.redColor)
+            
+        } else {
+            self.layer.borderWidth = 1
+            self.layer.cornerRadius = 8
+            self.layer.borderColor = UIColor.getColor(.defaultTextColor).cgColor
+            textLabel.text = text
+            textLabel.textColor = UIColor.getColor(.defaultTextColor)
+        }
+   
+
     }
     
     func setupMyHobby(with text : String) {
-        
         [
          textLabel
         ].forEach { addSubview($0) }

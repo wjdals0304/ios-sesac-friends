@@ -57,6 +57,8 @@ class HobbyViewController : UIViewController  {
     
     let sections:[String] = ["지금 주변에는","내가 하고 싶은"]
     
+    var hobbyArray : Hobby!
+    
     var aroundHobbyArray = [String]()
     var fromRecommendArray = [String]()
     
@@ -74,9 +76,7 @@ class HobbyViewController : UIViewController  {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    override func viewWillAppear(_ animated: Bool) {
-        print(#function)
-    }
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -106,6 +106,15 @@ class HobbyViewController : UIViewController  {
         [
             sesacSearchButton
         ].forEach { viewButton.addSubview($0) }
+        
+         hobbyArray = Hobby(objectsArray: [
+            TableViewCellModel(category: "지금 주변에는", texts: [   CollectionViewCellModel(name: "코딩" , subcategory: 0) ,    CollectionViewCellModel(name: "야구" , subcategory: 0)  ]) ,
+            TableViewCellModel(category: "내가 하고 싶은",texts: [  CollectionViewCellModel(name: "배구" , subcategory: 1) ,
+                                                              CollectionViewCellModel(name: "축구" , subcategory: 1)])
+         ]
+        )
+     
+        
     }
     
     func setupConstraint() {
@@ -186,16 +195,13 @@ class HobbyViewController : UIViewController  {
 extension HobbyViewController : UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        print(#function)
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        print(#function)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
-        print(#function)
+    
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -204,7 +210,6 @@ extension HobbyViewController : UISearchBarDelegate {
             return
         }
         
-        print(searchBarText)
         UserManager.myHobbyArray.append(searchBarText)
         
         NotificationCenter.default.post(name: NSNotification.Name("load"), object: nil)
@@ -264,18 +269,11 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate   {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        aroundHobbyArray = ["테스트","테스트2"]
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: HobbyTableViewCell.identifier, for: indexPath) as! HobbyTableViewCell
+        let rowArray = hobbyArray.objectsArray[indexPath.section].texts
         
-        let hobbyType = sections[indexPath.section] == "지금 주변에는" ? "arround" : "myHobby"
-        
-        if indexPath.section == 0 {
-            cell.configure(from: fromRecommendArray, arroundArray: aroundHobbyArray, hobbyArray: aroundHobbyArray, hobbyType: hobbyType )
-        } else {
-            cell.myHobbyConfigure(myHobbyArray: myHobbyArray, hobbyType: hobbyType)
-        }
+        cell.updateCellWith(row: rowArray)
+
     
         cell.selectionStyle = .none
         cell.cellDelegate  = self
@@ -284,11 +282,11 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate   {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section]
+        return hobbyArray.objectsArray[section].category
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        return hobbyArray.objectsArray.count
     }
     
   
@@ -298,8 +296,10 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate   {
 extension HobbyViewController : CollectionViewCellDelegate {
     
     func collectionView(collectionviewcell: HobbyCollectionViewCell?, index: Int, didTappedInTableViewCell: HobbyTableViewCell) {
-        
+        print(index)
         
     }
+    
+    
 }
  
