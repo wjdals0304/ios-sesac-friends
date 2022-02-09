@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct Hobby {
+struct HobbyModel {
     
     var objectsArray : [
         TableViewCellModel
@@ -27,6 +27,13 @@ struct CollectionViewCellModel : Equatable {
 
 }
 
+
+enum HobbyCategory: Int {
+    
+    case arroundHobby = 0
+    case myHobby = 1 
+    
+}
 
 
 
