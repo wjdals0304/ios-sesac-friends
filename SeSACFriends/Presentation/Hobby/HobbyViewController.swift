@@ -33,9 +33,6 @@ class HobbyViewController : UIViewController  {
     
     lazy var tableView : UITableView = {
         let tableView = UITableView()
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(HobbyTableViewCell.self, forCellReuseIdentifier: HobbyTableViewCell.identifier)
         tableView.isScrollEnabled = false
         tableView.separatorStyle = .none
         return tableView
@@ -57,7 +54,7 @@ class HobbyViewController : UIViewController  {
     
     let sections:[String] = ["지금 주변에는","내가 하고 싶은"]
     
-    var hobbyArray : Hobby!
+    var hobbyArray : HobbyModel!
     
     var aroundHobbyArray = [String]()
     var fromRecommendArray = [String]()
@@ -80,14 +77,14 @@ class HobbyViewController : UIViewController  {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        apiPostOnqueue()
         setup()
         setupConstraint()
         
         // MARK: 키보드 디텍션
         NotificationCenter.default.addObserver(self, selector: #selector(adjustButtonView), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(adjustButtonView), name: UIResponder.keyboardWillHideNotification, object: nil)
-        apiPostOnqueue()
+        
     }
     
     func setup() {
@@ -104,17 +101,8 @@ class HobbyViewController : UIViewController  {
         ].forEach {  view.addSubview($0) }
         
         [
-            sesacSearchButton
+          sesacSearchButton
         ].forEach { viewButton.addSubview($0) }
-
-        hobbyArray = Hobby(objectsArray: [
-            TableViewCellModel(category: "지금 주변에는", texts: [   CollectionViewCellModel(name: "코딩" , subcategory: 0) ,    CollectionViewCellModel(name: "야구" , subcategory: 0)  ]) ,
-            TableViewCellModel(category: "내가 하고 싶은",texts: [  CollectionViewCellModel(name: "배구" , subcategory: 1) ,
-                                                              CollectionViewCellModel(name: "축구" , subcategory: 1)])  
-         ]
-        )
-     
-        
     }
     
     func setupConstraint() {
@@ -123,7 +111,7 @@ class HobbyViewController : UIViewController  {
             make.top.equalTo(view.safeAreaLayoutGuide).offset(32)
             make.leading.equalToSuperview().offset(16)
             make.width.equalTo(view.frame.width - 32)
-            make.height.equalTo(324)
+            make.height.equalTo(400)
         }
         
         
@@ -141,7 +129,9 @@ class HobbyViewController : UIViewController  {
     }
     
     func apiPostOnqueue() {
-        
+
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
         homeViewModel.postOnqueue(region: region, lat: lat, long: long) { queue, APIStatus in
             
             switch APIStatus {
@@ -166,7 +156,18 @@ class HobbyViewController : UIViewController  {
                 }
 
                 self.aroundHobbyArray = self.fromRecommendArray + self.aroundHobbyArray
-                                
+                self.hobbyArray = HobbyModel(objectsArray: [TableViewCellModel(category: "지금 주변에는", texts: []) , TableViewCellModel(category: "내가 하고 싶은", texts: [])])
+                
+                for hobby in self.aroundHobbyArray {
+                    self.hobbyArray.objectsArray[HobbyCategory.arroundHobby.rawValue].texts.append(CollectionViewCellModel(name: hobby, subcategory: HobbyCategory.arroundHobby.rawValue))
+                }
+                
+                for hobby in UserManager.myHobbyArray {
+                    print("function")
+                    self.hobbyArray.objectsArray[HobbyCategory.myHobby.rawValue].texts.append(CollectionViewCellModel(name: hobby, subcategory: HobbyCategory.myHobby.rawValue))
+                }
+                
+                dispatchGroup.leave()
             case .expiredToken :
                 let currentUser = FirebaseAuth.Auth.auth().currentUser
                 currentUser?.getIDToken(completion: { idtoken, error in
@@ -185,7 +186,15 @@ class HobbyViewController : UIViewController  {
             }
         }
         
+        dispatchGroup.notify(queue: DispatchQueue.main){
+            
+            self.tableView.delegate = self
+            self.tableView.dataSource = self
+            self.tableView.register(HobbyTableViewCell.self, forCellReuseIdentifier: HobbyTableViewCell.identifier)
+            self.tableView.reloadData()
+        }
         
+
     }
     
  
@@ -201,7 +210,7 @@ extension HobbyViewController : UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    
+
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -210,9 +219,15 @@ extension HobbyViewController : UISearchBarDelegate {
             return
         }
         
+        if UserManager.myHobbyArray.count > 8 {
+            self.view.makeToast("취미를 더 이상 추가할 수 없습니다.")
+        }
+        
         UserManager.myHobbyArray.append(searchBarText)
         
-        NotificationCenter.default.post(name: NSNotification.Name("load"), object: nil)
+        self.hobbyArray.objectsArray[HobbyCategory.myHobby.rawValue].texts.append(CollectionViewCellModel(name: searchBarText, subcategory: HobbyCategory.myHobby.rawValue))
+        
+        self.tableView.reloadData()
 
         searchBar.text = ""
         searchBar.resignFirstResponder()
@@ -226,8 +241,6 @@ private extension HobbyViewController  {
         self.navigationController?.popViewController(animated: true)
     }
     
-   
-     
     @objc private func adjustButtonView(noti: Notification) {
         
         guard let userInfo = noti.userInfo else { return }
@@ -250,7 +263,8 @@ private extension HobbyViewController  {
         } else {
             
             viewButton.snp.removeConstraints()
-        
+            sesacSearchButton.layer.cornerRadius = 8
+            
             viewButton.snp.makeConstraints { make in
                 make.leading.equalToSuperview().offset(16)
                 make.bottom.equalToSuperview().inset(50)
@@ -269,13 +283,12 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate   {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print(#function)
+
         let cell = tableView.dequeueReusableCell(withIdentifier: HobbyTableViewCell.identifier, for: indexPath) as! HobbyTableViewCell
         let rowArray = hobbyArray.objectsArray[indexPath.section].texts
         
-        cell.updateCellWith(row: rowArray)
-
-    
+        cell.updateCellWith(row: rowArray,fromRecommendArray: self.fromRecommendArray)
+        
         cell.selectionStyle = .none
         cell.cellDelegate  = self
         
@@ -297,22 +310,37 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate   {
 extension HobbyViewController : CollectionViewCellDelegate {
     
     func collectionView(collectionviewcell: HobbyCollectionViewCell?, index: Int, didTappedInTableViewCell: HobbyTableViewCell) {
+
     }
     
     
+    // MARK: 지금 주변에는 -> 내가 하고 싶은 이동
     func changeHobby(addCollectionViewModel: CollectionViewCellModel, addCategory: Int, delCollectionViewModel: CollectionViewCellModel, delCategory: Int) {
         
+        UserManager.myHobbyArray.append(addCollectionViewModel.name)
         
-        self.hobbyArray.objectsArray[addCategory].texts.append(addCollectionViewModel)
-        
-        
-        let delIndex = self.hobbyArray.objectsArray[delCategory].texts.firstIndex(of: delCollectionViewModel)
-        
-        self.hobbyArray.objectsArray[delCategory].texts.remove(at: delIndex!)
-        
+        self.hobbyArray.objectsArray[addCategory].texts.removeAll()
+            
+        for hobby in UserManager.myHobbyArray {
+            self.hobbyArray.objectsArray[addCategory].texts.append(CollectionViewCellModel(name: hobby, subcategory: 1))
+        }
+
+        self.tableView.reloadData()
+
+    }
+    
+    
+    func reloadTable() {
         self.tableView.reloadData()
     }
     
+    func showCountToast() {
+        self.view.makeToast("취미를 더 이상 추가할 수 없습니다.")
+    }
+    
+    func showContainToast() {
+        self.view.makeToast("이미 등록된 취미입니다.")
+    }
     
     
 }
