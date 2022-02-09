@@ -24,6 +24,10 @@ class HomeViewController: UIViewController {
     var runTimeInterval: TimeInterval? // 마지막 작업을 설정할 시간
     let mTimer : Selector = #selector(Tick_TimeConsole) // 위치 확인 타이머
     
+    var region = 0
+    var lat = 0.0
+    var long = 0.0
+    
     let buttonStackView : UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -76,6 +80,7 @@ class HomeViewController: UIViewController {
         let button = UIButton()
         button.setImage(UIImage(named: "search"), for: .normal)
         button.backgroundColor = .black
+        button.addTarget(self, action: #selector(touchSearchButton), for: .touchUpInside)
         return button
     }()
     
@@ -91,6 +96,7 @@ class HomeViewController: UIViewController {
         setup()
         setupConstraint()
     }
+    
 
     func setup(){
         
@@ -113,7 +119,6 @@ class HomeViewController: UIViewController {
 
         // 초기 화면
         setUpGoLation()
-        
         
         [
          mkMapView,
@@ -286,11 +291,11 @@ extension HomeViewController : MKMapViewDelegate {
         
         let coordinate = mkMapView.centerCoordinate
         
-        let lat = coordinate.latitude
-        let long = coordinate.longitude
-   
-
-        let region = calculateRegion(lat: lat, long: long)
+        self.lat = coordinate.latitude
+        self.long = coordinate.longitude
+        self.region = calculateRegion(lat: lat, long: long)
+        
+        
         setCenterAnnotation(latitudeValue: lat, longitudeValue: long, delta: 0.01)
 
         postOnqueue(region: region, lat: lat, long: long)
@@ -367,9 +372,7 @@ private extension HomeViewController {
                 guard let queue = queue else {
                     self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
                     return
-                }
-                print(queue)
-                
+                }                
             
             case .expiredToken :
                 let currentUser = FirebaseAuth.Auth.auth().currentUser
@@ -401,9 +404,14 @@ private extension HomeViewController {
         let calLong = String(long + 180).replacingOccurrences(of: ".", with: "").substring(to:5)
         
         return Int(calLat + calLong)!
+
     }
     
-    
+    @objc func touchSearchButton() {
+        
+        let vc = HobbyViewController(region: self.region, lat: self.lat, long: self.long)
+        self.navigationController?.pushViewController(vc, animated: true )
+    }
     
     
 }
