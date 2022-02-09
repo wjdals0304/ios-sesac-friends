@@ -106,11 +106,11 @@ class HobbyViewController : UIViewController  {
         [
             sesacSearchButton
         ].forEach { viewButton.addSubview($0) }
-        
-         hobbyArray = Hobby(objectsArray: [
+
+        hobbyArray = Hobby(objectsArray: [
             TableViewCellModel(category: "지금 주변에는", texts: [   CollectionViewCellModel(name: "코딩" , subcategory: 0) ,    CollectionViewCellModel(name: "야구" , subcategory: 0)  ]) ,
             TableViewCellModel(category: "내가 하고 싶은",texts: [  CollectionViewCellModel(name: "배구" , subcategory: 1) ,
-                                                              CollectionViewCellModel(name: "축구" , subcategory: 1)])
+                                                              CollectionViewCellModel(name: "축구" , subcategory: 1)])  
          ]
         )
      
@@ -269,6 +269,7 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate   {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print(#function)
         let cell = tableView.dequeueReusableCell(withIdentifier: HobbyTableViewCell.identifier, for: indexPath) as! HobbyTableViewCell
         let rowArray = hobbyArray.objectsArray[indexPath.section].texts
         
@@ -296,9 +297,22 @@ extension HobbyViewController: UITableViewDataSource,UITableViewDelegate   {
 extension HobbyViewController : CollectionViewCellDelegate {
     
     func collectionView(collectionviewcell: HobbyCollectionViewCell?, index: Int, didTappedInTableViewCell: HobbyTableViewCell) {
-        print(index)
-        
     }
+    
+    
+    func changeHobby(addCollectionViewModel: CollectionViewCellModel, addCategory: Int, delCollectionViewModel: CollectionViewCellModel, delCategory: Int) {
+        
+        
+        self.hobbyArray.objectsArray[addCategory].texts.append(addCollectionViewModel)
+        
+        
+        let delIndex = self.hobbyArray.objectsArray[delCategory].texts.firstIndex(of: delCollectionViewModel)
+        
+        self.hobbyArray.objectsArray[delCategory].texts.remove(at: delIndex!)
+        
+        self.tableView.reloadData()
+    }
+    
     
     
 }

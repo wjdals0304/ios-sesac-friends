@@ -11,7 +11,10 @@ import SnapKit
 
 
 protocol CollectionViewCellDelegate: AnyObject {
+    
     func collectionView(collectionviewcell: HobbyCollectionViewCell?, index: Int, didTappedInTableViewCell: HobbyTableViewCell)
+    func changeHobby(addCollectionViewModel: CollectionViewCellModel , addCategory : Int , delCollectionViewModel: CollectionViewCellModel, delCategory: Int )
+    
 }
 
 class HobbyTableViewCell: UITableViewCell {
@@ -42,26 +45,6 @@ class HobbyTableViewCell: UITableViewCell {
     var hobbyType = ""
     
     static let identifier = "HobbyTableViewCell"
-    
-    func configure(from fromRecommend:[String] , arroundArray:[String], hobbyArray:[String] , hobbyType : String  ) {
-        self.fromRecommendArray = fromRecommend
-        self.arroundArray = arroundArray
-        self.hobbyArray = hobbyArray
-        self.hobbyType = hobbyType
-    
-        self.collectionView.reloadData()
-        self.collectionView.layoutIfNeeded()
-    }
-    
-    func myHobbyConfigure( myHobbyArray :[String] , hobbyType: String ) {
-        
-        self.hobbyArray = myHobbyArray
-        self.hobbyType = hobbyType
-        
-        self.collectionView.reloadData()
-        self.collectionView.layoutIfNeeded()
-
-    }
   
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -120,16 +103,6 @@ extension HobbyTableViewCell : UICollectionViewDataSource,UICollectionViewDelega
         } else {
             cell.setup(with:self.rowWithHobbys![indexPath.row].name ,from : fromRecommendArray)
         }
-
-//
-//        if self.hobbyArray == self.myHobbyArray {
-//
-//            cell.setupMyHobby(with: self.hobbyArray[indexPath.row])
-//
-//        } else {
-//
-//            cell.setup(with:self.hobbyArray[indexPath.row],from : fromRecommendArray)
-//        }
         
         return cell
     }
@@ -167,13 +140,19 @@ extension HobbyTableViewCell : UICollectionViewDataSource,UICollectionViewDelega
             let name = self.rowWithHobbys![indexPath.row].name
             self.rowWithHobbys?.remove(at: indexPath.row)
             
-//            self.rowWithHobbys?.append(CollectionViewCellModel(name: name, subcategory: 1))
             self.collectionView.reloadData()
             self.collectionView.layoutIfNeeded()
+            
+            self.cellDelegate?.changeHobby(addCollectionViewModel: CollectionViewCellModel(name: name, subcategory: 1),
+                                           addCategory: 1,
+                                           delCollectionViewModel: CollectionViewCellModel(name: name, subcategory: 0),
+                                           delCategory : 0
+                                           )
+
         }
         
-
         self.cellDelegate?.collectionView(collectionviewcell: cell, index: indexPath.item, didTappedInTableViewCell: self)
+        
     }
 
     

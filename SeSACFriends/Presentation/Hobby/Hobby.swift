@@ -21,7 +21,7 @@ struct TableViewCellModel {
     var texts : [CollectionViewCellModel]
 }
 
-struct CollectionViewCellModel {
+struct CollectionViewCellModel : Equatable {
     var name: String
     var subcategory : Int
 
