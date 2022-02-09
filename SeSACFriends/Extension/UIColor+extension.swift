@@ -35,6 +35,8 @@ enum Color {
     // top 라인 색
     case grayLineColor
     
+    // red 색
+    case redColor
     
 }
 
@@ -66,6 +68,9 @@ extension UIColor {
             
         case .grayLineColor :
             return UIColor(red: 0.937, green: 0.937, blue: 0.937, alpha: 1)
+            
+        case .redColor :
+            return UIColor(red: 0.913, green: 0.401, blue: 0.419, alpha: 1)
             
         }
         
