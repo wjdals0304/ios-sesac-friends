@@ -7,7 +7,7 @@
 
 import Foundation
 import Alamofire
-
+import SwiftyJSON
 
 struct QueueAPI {
     static let scheme = "http"
@@ -25,6 +25,18 @@ struct QueueAPI {
         
         return components
     }
+    
+    func postQueue() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = QueueAPI.scheme
+        components.host = QueueAPI.host
+        components.port = QueueAPI.port
+        components.path = QueueAPI.path
+        
+        return components
+    }
+    
 }
 
 
@@ -76,8 +88,6 @@ class QueueNetwork {
                     return
                 }
                 
-                print(statusCode)
-                print(value)
                 switch statusCode {
                     
                 case 200 :
@@ -118,6 +128,75 @@ class QueueNetwork {
         
     }
     
+    
+    func postQueue(region : Int, long: Double , lat:Double ,hf:[String], completion: @escaping(APIStatus?) -> Void )  {
+       
+        
+        let param: Parameters = [
+            "type" : 2 ,
+            "region": region,
+            "lat": lat,
+            "long" : long,
+            "hf" : JSON(hf)
+        ]
+        let url = queueApi.postQueue().url!
+
+        self.header["Content-Type"] = "application/x-www-form-urlencoded"
+
+        let dateRequest = AF.request(url
+                                     ,method: .post
+                                     ,parameters: param
+                                     ,encoding: URLEncoding.httpBody
+                                     ,headers: self.header)
+        
+        dateRequest.responseData { response in
+            
+            switch response.result {
+                
+               case .success :
+                
+                guard let statusCode = response.response?.statusCode else {
+                    completion(.failed)
+                    return
+                }
+
+                switch statusCode {
+                    
+                 case 200 :
+                    completion(.success)
+                 case 201 :
+                    completion(.reportThreeUser)
+                 case 203:
+                    completion(.penaltyone)
+                 case 204:
+                    completion(.penaltytwo)
+                case 205:
+                    completion(.penaltyThree)
+                case 206:
+                    completion(.noGender)
+                case 401:
+                    completion(.expiredToken)
+                case 406:
+                    completion(.unregisterdUser)
+                case 500:
+                    completion(.serverError)
+                case 501:
+                    completion(.clientError)
+                    
+                default :
+                    completion(.failed)
+                    
+                }
+                
+               
+              case .failure(let error) :
+                print(error)
+                completion(.failed)
+                
+            }
+        }
+        
+    }
     
     
     
