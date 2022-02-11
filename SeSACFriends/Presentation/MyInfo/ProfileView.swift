@@ -244,6 +244,9 @@ class ProfileView : UIView {
         
     }
     
+    func getProfileMainView() -> UIView {
+        return profileMainView
+    }
 }
 
 extension ProfileView : UICollectionViewDataSource {
