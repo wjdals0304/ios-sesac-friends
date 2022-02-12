@@ -48,6 +48,29 @@ struct QueueAPI {
         return components
     }
     
+    func postHobbyAccept() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = QueueAPI.scheme
+        components.host = QueueAPI.host
+        components.port = QueueAPI.port
+        components.path = QueueAPI.path + "/hobbyaccept"
+        
+        return components
+    }
+    
+    func deleteQueue() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = QueueAPI.scheme
+        components.host = QueueAPI.host
+        components.port = QueueAPI.port
+        components.path = QueueAPI.path
+        
+        return components
+        
+    }
+    
 }
 
 
@@ -263,12 +286,113 @@ class QueueNetwork {
             }
             
             
-            
-            
         }
         
     }
     
+    func postHobbyAccept(otheruid: String ,completion:@escaping(APIStatus?) -> Void) {
+        
+        let param : Parameters = [
+            "otheruid" : otheruid
+        ]
+    
+        let url = queueApi.postHobbyAccept().url!
+        
+        self.header["Content-Type"] = "application/x-www-form-urlencoded"
+
+        let dateRequest = AF.request(url,method: .post,parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
+        
+        dateRequest.responseData { response in
+            
+            switch response.result {
+                
+            case .success :
+                guard let statusCode = response.response?.statusCode else {
+                    completion(.failed)
+                    return
+                }
+                
+                switch statusCode {
+                    
+                case 200 :
+                    completion(.success)
+                case 201:
+                    completion(.alreadyRequest)
+                case 202:
+                    completion(.suspendRequest)
+                case 203:
+                    completion(.matchedState)
+                case 401:
+                    completion(.expiredToken)
+                case 406:
+                    completion(.unregisterdUser)
+                case 500:
+                    completion(.serverError)
+                case 501:
+                    completion(.clientError)
+                
+                default:
+                    completion(.failed)
+                    
+                }
+                
+                
+            case .failure(let error) :
+                print(error)
+                completion(.failed)
+                
+            }
+        }
+        
+        
+    }
+    
+    
+    func deleteQueue(completion:@escaping(APIStatus?) -> Void) {
+        
+        let url = queueApi.deleteQueue().url!
+        
+        let dateRequest = AF.request(url,method: .delete,encoding: URLEncoding.httpBody,headers: self.header)
+        
+        
+        dateRequest.responseData { response in
+            
+            switch response.result {
+                
+            case .success:
+                guard let statusCode = response.response?.statusCode else {
+                    completion(.failed)
+                    return
+                }
+                
+                switch statusCode {
+                    
+                case 200:
+                    completion(.success)
+                case 201 :
+                    completion(.matchedState)
+                case 406 :
+                    completion(.expiredToken)
+                case 500:
+                    completion(.serverError)
+                    
+                default:
+                    completion(.failed)
+                    
+                }
+            case .failure(let error) :
+                print(error)
+                completion(.failed)
+            
+            }
+            
+            
+            
+        }
+        
+        
+        
+    }
     
     
 }

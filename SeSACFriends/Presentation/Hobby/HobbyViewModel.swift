@@ -67,9 +67,109 @@ class HobbyViewModel {
                 completion(.failed)
             }
             
-            
         }
         
     }
+    
+    func postHobbyRequest(otheruid : String, completion:@escaping(APIStatus?) -> Void) {
+        
+        
+        let idtoken = UserManager.idtoken!
+        let queueNetwork = QueueNetwork(idtoken: idtoken)
+        
+        queueNetwork.postHobbyRequest(otheruid: otheruid) { APIStatus in
+
+            switch APIStatus {
+            case .success :
+                completion(.success)
+            case .alreadyRequest :
+                completion(.alreadyRequest)
+            case .suspendRequest :
+                completion(.suspendRequest)
+            case .expiredToken :
+                completion(.expiredToken)
+            case .unregisterdUser :
+                completion(.unregisterdUser)
+                
+            case .clientError :
+                print("clientError")
+                completion(.failed)
+            case .serverError :
+                print("serverError")
+                completion(.failed)
+            
+            default :
+                completion(.failed )
+                
+            
+            }
+        
+        }
+    }
+        
+    func postHobbyAccept(otheruid : String, completion:@escaping(APIStatus?) -> Void) {
+            
+            let idtoken = UserManager.idtoken!
+            let queueNetwork = QueueNetwork(idtoken: idtoken)
+            
+            queueNetwork.postHobbyAccept(otheruid: otheruid) { APIStatus in
+
+                switch APIStatus {
+                case .success :
+                    completion(.success)
+                case .alreadyRequest :
+                    completion(.alreadyRequest)
+                case .suspendRequest :
+                    completion(.suspendRequest)
+                case .matchedState:
+                    completion(.matchedState)
+                case .expiredToken :
+                    completion(.expiredToken)
+                case .unregisterdUser :
+                    completion(.unregisterdUser)
+                case .clientError :
+                    print("clientError")
+                    completion(.failed)
+                case .serverError :
+                    print("serverError")
+                    completion(.failed)
+                
+                default :
+                    completion(.failed )
+                    
+                }
+                
+            }
+        }
+    
+    func deleteQueue(completion:@escaping(APIStatus?) -> Void ){
+        
+        
+        let idtoken = UserManager.idtoken!
+        let queueNetwork = QueueNetwork(idtoken: idtoken)
+        
+        
+        queueNetwork.deleteQueue { APIStatus in
+            
+            switch APIStatus {
+        
+            case .success:
+                completion(.success)
+            case .matchedState :
+                completion(.matchedState)
+            case .expiredToken:
+                completion(.expiredToken)
+            case .serverError:
+                completion(.serverError)
+            default:
+                completion(.failed)
+            }
+            
+        }
+        
+        
+    }
+        
+    
     
 }
