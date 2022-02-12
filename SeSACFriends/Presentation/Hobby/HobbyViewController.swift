@@ -18,6 +18,7 @@ class HobbyViewController : UIViewController  {
     private let long : Double
     
     let homeViewModel = HomeViewModel()
+    let hobbyViewModel = HobbyViewModel()
     
     lazy var searchBar : UISearchBar = {
         let searchBar = UISearchBar()
@@ -49,6 +50,7 @@ class HobbyViewController : UIViewController  {
         button.titleLabel?.tintColor = UIColor.getColor(.whiteTextColor)
         button.backgroundColor = UIColor.getColor(.activeColor)
         button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(sesacSearchButtonClicked), for: .touchUpInside)
         return button
     }()
     
@@ -67,7 +69,6 @@ class HobbyViewController : UIViewController  {
         self.lat = lat
         self.long = long
         super.init(nibName: nil, bundle: nil)
-
     }
     
     required init?(coder: NSCoder) {
@@ -179,7 +180,8 @@ class HobbyViewController : UIViewController  {
                  UserManager.idtoken = idtoken
                 })
                 self.apiPostOnqueue()
-                
+                dispatchGroup.leave()
+
                 
             default :
                 self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
@@ -273,6 +275,54 @@ private extension HobbyViewController  {
             }
         }
     }
+    
+    
+    @objc func sesacSearchButtonClicked() {
+        
+        hobbyViewModel.postQueue(region: self.region, lat: self.lat, long: self.long) { APIStatus in
+            
+            switch APIStatus {
+                
+            case .success :
+                print("성공")
+                let vc = SesacSearchViewController(region: self.region, lat: self.lat, long: self.long)
+                self.navigationController?.pushViewController(vc, animated: true)
+                
+            case .reportThreeUser :
+                self.view.makeToast("신고가 누적되어 이용하실 수 없습니다.")
+            case .penaltyone :
+                self.view.makeToast("약속 취소 패널티로, 1분동안 이용하실 수 없습니다.")
+            case .penaltytwo :
+                self.view.makeToast("약속 취소 패널티로, 2분동안 이용하실 수 없습니다.")
+            case .penaltyThree :
+                self.view.makeToast("약속 취소 패널티로, 3분동안 이용하실 수 없습니다.")
+            case .noGender :
+                self.view.makeToast("새싹 찾기 기능을 이용하기 위해서는 성별이 필요해요!")
+            
+            case .expiredToken:
+                let currentUser = FirebaseAuth.Auth.auth().currentUser
+                currentUser?.getIDToken(completion: { idtoken, error in
+                guard let idtoken = idtoken else {
+                        print(error!)
+                        self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                        return
+                 }
+                 UserManager.idtoken = idtoken
+                })
+                self.sesacSearchButtonClicked()
+                
+            case .clientError , .serverError , .failed:
+                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+
+            default :
+                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+
+            }
+        }
+    }
+    
+    
+    
     
 }
 
