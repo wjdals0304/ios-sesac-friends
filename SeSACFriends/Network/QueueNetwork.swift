@@ -37,6 +37,17 @@ struct QueueAPI {
         return components
     }
     
+    func postHobbyRequest() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = QueueAPI.scheme
+        components.host = QueueAPI.host
+        components.port = QueueAPI.port
+        components.path = QueueAPI.path + "/hobbyrequest"
+        
+        return components
+    }
+    
 }
 
 
@@ -198,6 +209,65 @@ class QueueNetwork {
         
     }
     
+    func postHobbyRequest(otheruid:String,completion:@escaping(APIStatus?) -> Void) {
+        
+        let param : Parameters = [
+            "otheruid" : otheruid
+        ]
+        
+        
+        let url = queueApi.postHobbyRequest().url!
+        
+        self.header["Content-Type"] = "application/x-www-form-urlencoded"
+
+        let dateRequest = AF.request(url,method: .post,parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
+        
+        dateRequest.responseData { response in
+            
+            switch response.result {
+                
+            case .success :
+                guard let statusCode = response.response?.statusCode else {
+                    completion(.failed)
+                    return
+                }
+                
+                switch statusCode {
+                    
+                case 200 :
+                    completion(.success)
+                case 201:
+                    completion(.alreadyRequest)
+                case 202:
+                    completion(.suspendRequest)
+                case 401:
+                    completion(.expiredToken)
+                case 406:
+                    completion(.unregisterdUser)
+                case 500:
+                    completion(.serverError)
+                case 501:
+                    completion(.clientError)
+                
+                default:
+                    completion(.failed)
+                    
+                }
+                
+                
+            case .failure(let error) :
+                print(error)
+                completion(.failed)
+                
+                
+            }
+            
+            
+            
+            
+        }
+        
+    }
     
     
     
