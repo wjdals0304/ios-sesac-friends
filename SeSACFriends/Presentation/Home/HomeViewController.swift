@@ -17,7 +17,7 @@ class HomeViewController: UIViewController {
     
     let mkMapView = MKMapView()
     let locationManager = CLLocationManager()
-    let homeViewModel = HomeViewModel()
+    let hobbyViewModel = HobbyViewModel()
     
     var arrayButtons : [UIButton] = [UIButton]()
     
@@ -215,13 +215,12 @@ extension HomeViewController : CLLocationManagerDelegate {
     
     
     // MARK: 원하는 위치 핀 설치하기
-    func setAnnotation(latitudeValue: CLLocationDegrees, longitudeValue: CLLocationDegrees , delta span : Double, title strTitle: String , strSubtitle: String) {
+    func setAnnotation(latitudeValue: CLLocationDegrees, longitudeValue: CLLocationDegrees , delta span : Double, title strTitle: String , strSubtitle: String, imageName: String,gender: Int ) {
         
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = goLocation(latitudeValue: latitudeValue, longitudeValue: longitudeValue, delta: span)
+        let annotation = CustomPointAnnotation(coordinate: goLocation(latitudeValue: latitudeValue, longitudeValue: longitudeValue, delta: span), imageName: imageName)
         annotation.title = strTitle
         annotation.subtitle = strSubtitle
-        
+        annotation.gender = gender
         mkMapView.addAnnotation(annotation)
         
     }
@@ -237,16 +236,17 @@ extension HomeViewController : CLLocationManagerDelegate {
             deleteAnnotation(centerAnnotation!)
             mkMapView.removeOverlay(centerOverlay!)
         }
+
+        let customAnnotation = CustomPointAnnotation(coordinate: goLocation(latitudeValue: latitudeValue, longitudeValue: longitudeValue, delta: span)
+         ,imageName: "map_marker")
         
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = goLocation(latitudeValue: latitudeValue, longitudeValue: longitudeValue, delta: span)
-        annotation.title = "중앙 고정 핀"
-        annotation.subtitle = "새싹 찾기 기준 위치"
+        customAnnotation.title =  "중앙 고정 핀"
+        customAnnotation.subtitle = "새싹 찾기 기준 위치"
         
-        let circle =  MKCircle(center: annotation.coordinate, radius: 700)
+        let circle =  MKCircle(center: customAnnotation.coordinate, radius: 700)
         
         mkMapView.addOverlay(circle)
-        mkMapView.addAnnotation(annotation)
+        mkMapView.addAnnotation(customAnnotation)
     
     }
 
@@ -256,22 +256,29 @@ extension HomeViewController : MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
+
         guard !annotation.isKind(of: MKUserLocation.self) else {
             return nil
         }
-        
-        var annotationView = self.mkMapView.dequeueReusableAnnotationView(withIdentifier: "custom")
+                
+        var annotationView = self.mkMapView.dequeueReusableAnnotationView(withIdentifier: CustomPointAnnotation.identifier)
         
         if annotationView == nil {
-            
-            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "custom")
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: CustomPointAnnotation.identifier)
             annotationView?.canShowCallout = true
-            
         } else {
             annotationView?.annotation = annotation
         }
         
-        annotationView?.image = UIImage(named: "map_marker")
+        let pin = annotation as? CustomPointAnnotation
+        annotationView?.image = UIImage(named: pin!.imageName)
+        
+        if pin?.imageName == "map_marker" {
+            annotationView?.frame = CGRect(x: 0, y: 0, width: 45, height: 45)
+        } else {
+            annotationView?.frame = CGRect(x: 0, y: 0, width: 83.33, height: 83.33)
+        }
+
         
         return annotationView
     }
@@ -294,7 +301,6 @@ extension HomeViewController : MKMapViewDelegate {
         self.lat = coordinate.latitude
         self.long = coordinate.longitude
         self.region = calculateRegion(lat: lat, long: long)
-        
         
         setCenterAnnotation(latitudeValue: lat, longitudeValue: long, delta: 0.01)
 
@@ -345,6 +351,44 @@ private extension HomeViewController {
         if sender.isSelected {
             arrayButtons[buttonIndex!].setBackgroundColor(UIColor.getColor(.activeColor), for: .selected)
             arrayButtons[buttonIndex!].setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
+            
+            let buttonLabel = arrayButtons[buttonIndex!].titleLabel?.text!
+            
+            if buttonLabel == "남자" {
+
+                for annotation in self.mkMapView.annotations {
+                    if let customPointAnnotation = annotation as? CustomPointAnnotation {
+                        if customPointAnnotation.gender == Gender.woman.rawValue {
+                            self.mkMapView.view(for: customPointAnnotation)?.isHidden = true
+                        } else {
+                            self.mkMapView.view(for: customPointAnnotation)?.isHidden = false
+                        }
+                    }
+                }
+                
+            } else if buttonLabel == "여자" {
+                        
+                for annotation in self.mkMapView.annotations {
+                    if let customPointAnnotation = annotation as? CustomPointAnnotation {
+                        if customPointAnnotation.gender == Gender.man.rawValue {
+                            self.mkMapView.view(for: customPointAnnotation)?.isHidden = true
+                        } else {
+                            self.mkMapView.view(for: customPointAnnotation)?.isHidden = false
+                        }
+                    }
+                }
+                
+            } else {
+                
+                for annotation in self.mkMapView.annotations {
+                    if let customPointAnnotation = annotation as? CustomPointAnnotation {
+                            self.mkMapView.view(for: customPointAnnotation)?.isHidden = false
+                        }
+                    }
+                
+            }
+            
+            
         }
     
     }
@@ -363,7 +407,7 @@ private extension HomeViewController {
     
     func postOnqueue(region: Int , lat: Double, long : Double) {
         
-        homeViewModel.postOnqueue(region: region, lat: lat, long: long) { queue, APIStatus in
+        hobbyViewModel.postOnqueue(region: region, lat: lat, long: long) { queue, APIStatus in
             
             switch APIStatus {
                 
@@ -372,8 +416,13 @@ private extension HomeViewController {
                 guard let queue = queue else {
                     self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
                     return
-                }                
-            
+                }
+                            
+                for queue in queue.fromQueueDB {
+                    let sesacImage = self.changeSesacImage(sesac: queue.sesac)
+                    self.setAnnotation(latitudeValue: queue.lat, longitudeValue: queue.long, delta: 0.1, title: queue.nick, strSubtitle: queue.nick , imageName : sesacImage ,gender:queue.gender)
+                }
+                
             case .expiredToken :
                 let currentUser = FirebaseAuth.Auth.auth().currentUser
                 currentUser?.getIDToken(completion: { idtoken, error in
@@ -411,6 +460,33 @@ private extension HomeViewController {
         
         let vc = HobbyViewController(region: self.region, lat: self.lat, long: self.long)
         self.navigationController?.pushViewController(vc, animated: true )
+    }
+    
+    
+    func changeSesacImage(sesac: Int ) -> String {
+        
+        if sesac == 0 {
+            return "sesac_face_1"
+        } else {
+            return "sesac_face_1"
+        }
+    }
+    
+    
+}
+
+class CustomPointAnnotation: NSObject, MKAnnotation {
+    static let identifier = "CustomPointAnnotation"
+    
+    var coordinate: CLLocationCoordinate2D
+    var imageName : String
+    var title: String?
+    var subtitle: String?
+    var gender : Int?
+    
+    init(coordinate:CLLocationCoordinate2D,imageName : String ){
+        self.coordinate = coordinate
+        self.imageName = imageName
     }
     
     
