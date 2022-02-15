@@ -20,8 +20,13 @@ class UserManager {
         get { return UserDefaults.standard.string(forKey: "idtoken")}
         set { UserDefaults.standard.set(newValue, forKey: "idtoken")}
     }
+
+    static var uid : String? {
+        get { return UserDefaults.standard.string(forKey: "uid")}
+        set { UserDefaults.standard.set(newValue, forKey: "uid")}
+    }
     
-    
+
     static var nickName : String? {
         get { return UserDefaults.standard.string(forKey: "nickName") }
         set { UserDefaults.standard.set(newValue, forKey: "nickName")}
@@ -67,6 +72,18 @@ class UserManager {
         } else {
             return false
         }
+        
+    }
+    
+    static var myHobbyArray : [String] {
+        get { return UserDefaults.standard.stringArray(forKey: "myHobby") ?? [] }
+        set { UserDefaults.standard.set(newValue,forKey: "myHobby") }
+    }
+    
+    static var lastChatDate : String? {
+        get { return UserDefaults.standard.string(forKey: "lastChatDate") }
+        set { UserDefaults.standard.set(newValue,forKey: "lastChatDate")}
+        
         
     }
     
