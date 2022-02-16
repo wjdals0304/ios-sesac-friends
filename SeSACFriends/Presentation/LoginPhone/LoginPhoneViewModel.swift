@@ -7,17 +7,45 @@
 
 import Foundation
 
-//struct APIResult {
-//    let data : Any?
-//    let status : APIStatus
-//
-//    init(data: Any , status: APIStatus) {
-//        self.data = data
-//        self.status = status
-//    }
-//}
-
 class LoginPhoneViewModel {
+    
+
+    func postVerificationCode(phoneNumber: String , completion:@escaping(String?,APIErrorMessage?) -> Void) {
+        
+        var phoneNumber = phoneNumber.replacingOccurrences(of: "-", with: "")
+        
+        let phoneNumberArr = Array(phoneNumber)
+        
+        if !self.isPhone(candidate: phoneNumber) && !(phoneNumberArr.count >= 10) {
+            completion(nil,.wrongFormatPhoneNumber)
+        }
+        
+        phoneNumber = "+82" + phoneNumber.substring(from: 1)
+        
+        AuthNetwork.sendVerificationCode(phoneNumber: phoneNumber) { varification, APIErrorMessage in
+            
+            switch APIErrorMessage {
+                
+            case .success :
+                completion(varification, .success)
+                
+            case .tooManyRequests :
+                completion(nil,.tooManyRequests)
+            
+            case .failed :
+                completion(nil,.failed)
+                
+            default :
+                completion(nil,.failed)
+                
+            }
+            
+            
+        }
+        
+        
+    }
+    
     
     
     ///  내 유저 정보가져오기
@@ -76,12 +104,32 @@ class LoginPhoneViewModel {
 
                 
             }
-            
-            
+                    
         }
         
         
         
     }
+    
+    
+    //MARK: 핸드폰 번호 유효성 검사
+    func isPhone(candidate: String) -> Bool {
+        
+        // TODO: 유효성 검사
+        let regex = "([0-9]{3})([0-9]{3,4})([0-9]{4})"
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: candidate)
+
+    }
+    
+    
+    
+    /// 코드체크
+    func isCheckCode(str: String) -> Bool {
+        let regex = "([0-9]{6})"
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: str)
+    }
+    
+    
+    
     
 }
