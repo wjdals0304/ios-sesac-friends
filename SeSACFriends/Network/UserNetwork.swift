@@ -17,6 +17,9 @@ struct UserAPI {
     static let port = 35484
     static let path = "/user"
     
+    
+    
+    
     func getUser() -> URLComponents {
         
         var components = URLComponents()
@@ -286,7 +289,7 @@ class UserNetwork {
             "hobby" : hobby
         ]
         
-        let url = userApi.withdrawUser().url!
+        let url = userApi.updateMypage().url!
         self.header["Content-Type"] = "application/x-www-form-urlencoded"
 
         let dataRequest = AF.request(url,method: .post,parameters: param,encoding: URLEncoding.httpBody , headers: self.header)
