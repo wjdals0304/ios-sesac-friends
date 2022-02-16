@@ -23,8 +23,9 @@ class AuthNetwork {
                 completion(varification!,.success)
                 
             } else {
-                
+
                 if error != nil {
+                
                     if let errorCode = AuthErrorCode(rawValue: error!._code){
                         
                         switch errorCode {
@@ -45,6 +46,20 @@ class AuthNetwork {
     }
     
     
+    static func getIdToken(completion: @escaping(APIErrorMessage?) -> Void ) {
+        
+        let currentUser = FirebaseAuth.Auth.auth().currentUser
+        currentUser?.getIDToken(completion: { idtoken, error in
+        guard let idtoken = idtoken else {
+            completion(APIErrorMessage.failed)
+            return
+         }
+        
+         completion(APIErrorMessage.success)
+         UserManager.idtoken = idtoken
+        
+        
+        })
     
-    
+     }
 }
