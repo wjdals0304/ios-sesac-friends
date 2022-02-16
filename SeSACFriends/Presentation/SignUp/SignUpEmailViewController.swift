@@ -8,44 +8,16 @@
 import Foundation
 import UIKit
 import SnapKit
+import Toast_Swift
 
-class SignUpEmailViewController : UIViewController {
+final class SignUpEmailViewController : BaseViewController {
     
-    let emailDescLabel:UILabel = {
-        let label = UILabel()
-        label.font = UIFont.getRegularFont(.regular_20)
-        label.text = "이메일을 입력해 주세요"
-        label.textColor = UIColor.getColor(.defaultTextColor)
-        label.textAlignment = .center
-        return label
-    }()
+    let signUpEmailView = SignUpEmailView()
+    let signUpViewModel = SignUpViewModel()
     
-    let emailSubDescLabel: UILabel = {
-       let label = UILabel()
-        label.font = UIFont.getRegularFont(.regular_16)
-        label.text = "휴대폰 번호 변경 시 인증을 위해 사용해요"
-        label.textColor = UIColor.getColor(.grayTextColor)
-        return label
-    }()
-    
-    let emailTextField : UITextField = {
-       let textField = UITextField()
-       textField.placeholder = "SeSAC@email.com"
-       textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-       return textField
-    }()
-    
-    let nextButton : UIButton = {
-       let button = UIButton()
-        button.setTitle("다음", for: .normal)
-        button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
-        button.backgroundColor = UIColor.getColor(.inactiveColor)
-        button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
-        button.layer.cornerRadius = 8
-        button.addTarget(self, action: #selector(handelDoneBtn), for: .touchUpInside)
-        return button
-    }()
-    
+    override func loadView() {
+        self.view = signUpEmailView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,71 +26,43 @@ class SignUpEmailViewController : UIViewController {
         
     }
     
-    
     override func viewDidLayoutSubviews() {
-        self.emailTextField.setUnderLine()
+        signUpEmailView.emailTextField.setUnderLine()
     }
     
-    func setup() {
-        
-        view.backgroundColor = .systemBackground
+    override func addTarget() {
+        signUpEmailView.emailTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        signUpEmailView.nextButton.addTarget(self, action: #selector(handelDoneBtn), for: .touchUpInside)
+    }
+    override func setupNavigationBar() {
+        let backBarButton = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
+        navigationItem.leftBarButtonItem = backBarButton
+        navigationItem.leftBarButtonItem?.tintColor = .black
 
-        
-        [
-          emailDescLabel,
-          emailSubDescLabel,
-          emailTextField,
-          nextButton
-        ].forEach { self.view.addSubview($0) }
-        
     }
-    
-    func setupConstraint() {
-        
-        emailDescLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(168)
-            $0.leading.equalToSuperview().offset(94)
-        
-        }
-        
-        emailSubDescLabel.snp.makeConstraints {
-            $0.top.equalTo(emailDescLabel.snp.bottom).offset(6)
-            $0.leading.equalToSuperview().offset(52)
-        }
-        
-        emailTextField.snp.makeConstraints {
-            $0.top.equalTo(emailSubDescLabel.snp.bottom).offset(63)
-            $0.leading.equalToSuperview().offset(16)
-            $0.width.equalTo(view.frame.width - 40)
-            
-        }
-        nextButton.snp.makeConstraints {
-            $0.top.equalTo(emailTextField.snp.bottom).offset(72)
-            $0.leading.equalToSuperview().offset(16)
-            $0.width.equalTo(view.frame.width - 40 )
-            $0.height.equalTo(48)
-        }
-        
-        
-    }
+
     
 }
 
 
 private extension SignUpEmailViewController {
     
+    @objc func closeButtonClicked(){
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     @objc func textFieldDidChange() {
         
-        guard let emailText = emailTextField.text else {
+        guard let emailText = signUpEmailView.emailTextField.text else {
             return
         }
         
-        if self.isValidEmail(testStr: emailText ) {
+        if signUpViewModel.isValidEmail(testStr: emailText ) {
         
-            nextButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
+            signUpEmailView.nextButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
             
         } else {
-            nextButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
+            signUpEmailView.nextButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
             
         }
         
@@ -128,13 +72,13 @@ private extension SignUpEmailViewController {
     @objc func handelDoneBtn() {
         
         
-        guard let emailText = emailTextField.text else {
+        guard let emailText = signUpEmailView.emailTextField.text else {
             
             self.view.makeToast("이메일 형식이 올바르지 않습니다.")
             return
         }
         
-        if self.isValidEmail(testStr: emailText) {
+        if signUpViewModel.isValidEmail(testStr: emailText) {
             
             UserManager.email = emailText
             
@@ -146,16 +90,5 @@ private extension SignUpEmailViewController {
         }
         
     }
-    
-    
-    /// 이메일 검증
-    func isValidEmail(testStr:String) -> Bool {
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        
-        return emailTest.evaluate(with: testStr)
-    }
-
-    
     
 }

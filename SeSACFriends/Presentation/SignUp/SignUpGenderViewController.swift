@@ -8,148 +8,53 @@
 import Foundation
 import UIKit
 import FirebaseAuth
+import Toast_Swift
 
-class SignUpGenderViewController : UIViewController {
+final class SignUpGenderViewController : BaseViewController {
     
     let signUpViewModel = SignUpViewModel()
     
+    let signUpGenderView = SignUpGenderView()
+    
     var buttonIndex: Int?
     
-    let genderDescLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.getRegularFont(.regular_20)
-        label.text = "성별을 선택해 주세요"
-        label.textColor = UIColor.getColor(.defaultTextColor)
-        label.textAlignment = .center
-        
-       return label
-    }()
-
-    let genderSubDescLabel : UILabel = {
-        let label = UILabel()
-        label.font = UIFont.getRegularFont(.regular_16)
-        label.text = "새싹 찾기 기능을 이용하기 위해서 필요해요!"
-        label.textColor = UIColor.getColor(.grayTextColor)
-        
-        return label
-    }()
-    
-    let manUIButton : UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "man"), for: .normal)
-        button.setTitle("남자", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.layer.cornerRadius = 8
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.getColor(.bottomlineColor).cgColor
-        button.addTarget(self, action: #selector(touchButton(_:)), for: .touchUpInside)
-        button.alignTextBelow(spacing: 10)
-
-        return button
-    }()
-    
-
-    let womanUIButton : UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "woman"), for: .normal)
-        button.setTitle("여자", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.layer.cornerRadius = 8
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.getColor(.bottomlineColor).cgColor
-        button.addTarget(self, action: #selector(touchButton(_:)), for: .touchUpInside)
-        button.alignTextBelow(spacing: 10)
-        return button
-    }()
-    
-    var arrayButtons : [UIButton] = [UIButton]()
-   
-
-    
-    var genderStackView = UIStackView ()
-        
-    let nextButton : UIButton = {
-       let button = UIButton()
-        button.setTitle("다음", for: .normal)
-        button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
-        button.backgroundColor = UIColor.getColor(.inactiveColor)
-        button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
-        button.layer.cornerRadius = 8
-        button.addTarget(self, action: #selector(handleDoneBtn), for: .touchUpInside)
-        return button
-    }()
-    
+    override func loadView() {
+        self.view = signUpGenderView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
-        setupConstraint()
-        
-        
     }
     
-    func setup(){
-        view.backgroundColor = .systemBackground
+    override func addTarget() {
+        signUpGenderView.manUIButton.addTarget(self, action: #selector(touchButton(_:)), for: .touchUpInside)
+        signUpGenderView.womanUIButton.addTarget(self, action: #selector(touchButton(_:)), for: .touchUpInside)
 
-        self.genderStackView = UIStackView(arrangedSubviews: [manUIButton,womanUIButton])
-        self.genderStackView.spacing = 10
-        self.genderStackView.axis = .horizontal
-        self.genderStackView.distribution = .fillEqually
-        
-        
-        self.arrayButtons = [self.manUIButton , self.womanUIButton]
-        
-        [
-          genderDescLabel,
-          genderSubDescLabel,
-          genderStackView,
-          nextButton
-        ].forEach { self.view.addSubview($0)}
-        
+        signUpGenderView.nextButton.addTarget(self, action: #selector(handleDoneBtn), for: .touchUpInside)
         
     }
     
-    func setupConstraint() {
-        
-        genderDescLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(168)
-            $0.leading.equalToSuperview().offset(103)
-        }
-        
-        genderSubDescLabel.snp.makeConstraints {
-            $0.top.equalTo(genderDescLabel.snp.bottom).offset(8)
-            $0.leading.equalToSuperview().offset(44)
-            
-        }
-                
-        genderStackView.snp.makeConstraints {
-            $0.top.equalTo(genderSubDescLabel.snp.bottom).offset(32)
-            $0.leading.equalToSuperview().offset(16)
-            $0.width.equalTo(self.view.frame.width - 40)
-            $0.height.equalTo(120)
-        }
-        
-        nextButton.snp.makeConstraints {
-            $0.top.equalTo(genderStackView.snp.bottom).offset(32)
-            $0.leading.equalTo(genderStackView.snp.leading)
-            $0.trailing.equalTo(genderStackView.snp.trailing)
-            $0.height.equalTo(48)
-        }
+    override func setupNavigationBar() {
+        let backBarButton = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
+        navigationItem.leftBarButtonItem = backBarButton
+        navigationItem.leftBarButtonItem?.tintColor = .black
+
     }
-    
-    
     
 }
 
 private extension SignUpGenderViewController {
     
+    @objc func closeButtonClicked(){
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     @objc func handleDoneBtn() {
         
-        if manUIButton.isSelected == true {
-            print(Gender.man)
+        if signUpGenderView.manUIButton.isSelected == true {
             UserManager.gender = Gender.man
             
-        } else if womanUIButton.isSelected == true {
+        } else if signUpGenderView.womanUIButton.isSelected == true {
             UserManager.gender = Gender.woman
             
         } else {
@@ -162,34 +67,31 @@ private extension SignUpGenderViewController {
                 
             case .success :
                 print("회원가입 성공!!")
-                let tabBarVC = TabBarController()
-                tabBarVC.modalPresentationStyle = .fullScreen
-                self.present(tabBarVC, animated: true, completion: nil)
-                
+                self.moveView(isNavigation: false, controller: TabBarController())
+
             case .registerdUser:
-                print("이미 유저")
+                self.moveView(isNavigation: false, controller: TabBarController())
                 
             case .banNick :
-                print("닉네임 화면으로 ")
+                self.view.makeToast("다른 닉네임으로 변경해주세요", duration: 5.0 ,position: .top)
+                self.moveView(isNavigation: true, controller: SignUpNickNameViewController())
+            
             case .expiredToken:
                 
-                print("토큰 만료")
-                let currentUser = FirebaseAuth.Auth.auth().currentUser
-                currentUser?.getIDToken(completion: { idtoken, error in
-                guard let idtoken = idtoken else {
-                        print(error!)
-                        self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
-                        return
-                 }
+                AuthNetwork.getIdToken { error in
+                        switch error {
+                        case .success :
+                            self.handleDoneBtn()
+                        case .failed :
+                            self.view.makeToast(APIErrorMessage.failed.rawValue)
+                        default :
+                            self.view.makeToast(APIErrorMessage.failed.rawValue)
+                        }
+                    }
                 
-                 UserManager.idtoken = idtoken
-                 self.handleDoneBtn()
-                    
-                })
-
             default :
-                print("실패")
-                
+                self.view.makeToast("다른 닉네임으로 변경해주세요")
+
                 
             }
             
@@ -209,11 +111,11 @@ private extension SignUpGenderViewController {
         if buttonIndex != nil {
             
             if !sender.isSelected {
-                for index in arrayButtons.indices {
-                    arrayButtons[index].isSelected = false
+                for index in signUpGenderView.arrayButtons.indices {
+                    signUpGenderView.arrayButtons[index].isSelected = false
                 }
                 sender.isSelected = true
-                buttonIndex = arrayButtons.firstIndex(of: sender)
+                buttonIndex = signUpGenderView.arrayButtons.firstIndex(of: sender)
                 
             } else {
                 
@@ -225,18 +127,18 @@ private extension SignUpGenderViewController {
         } else {
             
             sender.isSelected = true
-            buttonIndex = arrayButtons.firstIndex(of: sender)
+            buttonIndex = signUpGenderView.arrayButtons.firstIndex(of: sender)
         }
     
 
         if sender.isSelected {
-            arrayButtons[buttonIndex!].setBackgroundColor(UIColor.getColor(.selectedButtonColor) ,for: .selected)
+            signUpGenderView.arrayButtons[buttonIndex!].setBackgroundColor(UIColor.getColor(.selectedButtonColor) ,for: .selected)
             
-            nextButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
+            signUpGenderView.nextButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
     
         } else {
             
-            nextButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
+            signUpGenderView.nextButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
             
         }
         
