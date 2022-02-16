@@ -10,7 +10,7 @@ import UIKit
 import FirebaseAuth
 import GoogleSignIn
 
-class LoginPhoneVerifyViewController : UIViewController {
+final class LoginPhoneVerifyViewController : BaseViewController {
     
     /// 멤버 변수
     private var phoneNumber : String?
@@ -23,86 +23,19 @@ class LoginPhoneVerifyViewController : UIViewController {
     var timerNum: Int = 0
     
     let loginPhoneViewModel = LoginPhoneViewModel()
+    let loginPhoneVerifyView = LoginPhoneVerifyView()
     
-    let descLabel:UILabel = {
-        let label = UILabel()
-        label.font = UIFont.getRegularFont(.regular_20)
-        label.text = "인증번호가 문자로 전송되었어요"
-        label.textColor = UIColor.getColor(.defaultTextColor)
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        return label
-    }()
+    override func loadView() {
+        self.view = loginPhoneVerifyView
+    }
 
-    let timeDescLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.getRegularFont(.regular_16)
-        label.text = "(최대 소모 60초)"
-        label.textColor = UIColor.getColor(.grayTextColor)
-        return label
-    }()
-    
-    let textfieldView : UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemBackground
-        view.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        return view
-    }()
-   
-    let verificationCodeTextField : UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "인증번호 입력"
-        textField.textContentType = .oneTimeCode
-        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        return textField
-    }()
-    
-    let timerLabel : UILabel = {
-       let label = UILabel()
-        label.text = "01:00"
-        label.textColor = UIColor.getColor(.activeColor)
-       return label
-    }()
-    
-    let reSendButton : UIButton = {
-        
-        let button = UIButton()
-        button.setTitle("재전송", for: .normal)
-        button.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
-        button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
-        button.layer.cornerRadius = 8
-        button.addTarget(self, action: #selector(sendPhoneNumber), for: .touchUpInside)
-        
-        return button
-    }()
-    
-    let verifyStartButton : UIButton = {
-       let button = UIButton()
-        button.setTitle("인증하고 시작하기", for: .normal)
-        button.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
-        button.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
-        button.layer.cornerRadius = 8
-        button.addTarget(self, action: #selector(handleDoneBtn), for: .touchUpInside)
-        return button
-    }()
-    
-    lazy var backBarButton : UIBarButtonItem = {
-        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
-        return barButtonItem
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-       
-        setup()
-        setupConstraint()
         startTimer()
     }
     
     override func viewDidLayoutSubviews() {
-        self.verificationCodeTextField.setUnderLine()
+        loginPhoneVerifyView.verificationCodeTextField.setUnderLine()
     }
     
     init() {
@@ -119,78 +52,25 @@ class LoginPhoneVerifyViewController : UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setup(){
-        
-    
+
+    override func setup(){
         self.view.backgroundColor = .systemBackground
         self.view.makeToast("인증번호를 보냈습니다")
+    }
+    
+    override func addTarget() {
         
-
-        [
-            descLabel,
-            timeDescLabel,
-            textfieldView,
-            reSendButton,
-            verifyStartButton
-        ].forEach{ self.view.addSubview($0)}
+        loginPhoneVerifyView.verificationCodeTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        loginPhoneVerifyView.reSendButton.addTarget(self, action: #selector(sendPhoneNumber), for: .touchUpInside)
+        loginPhoneVerifyView.verifyStartButton.addTarget(self, action: #selector(handleDoneBtn), for: .touchUpInside)
+    }
+    
+    override func setupNavigationBar() {
         
-        [
-            verificationCodeTextField,
-            timerLabel
-        ].forEach { self.textfieldView.addSubview($0) }
-        
+        let backBarButton = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
         navigationItem.leftBarButtonItem = backBarButton
 
     }
-    
-    func setupConstraint(){
-        
-        descLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(168)
-            $0.leading.equalToSuperview().offset(57.5)
-            $0.width.equalTo(view.snp.width).multipliedBy(0.7)
-            $0.height.equalTo(32)
-        }
-        
-        timeDescLabel.snp.makeConstraints {
-            $0.top.equalTo(descLabel.snp.bottom).offset(8)
-            $0.leading.equalToSuperview().offset(132.5)
-            $0.height.equalTo(26)
-        }
-        
-        textfieldView.snp.makeConstraints {
-            $0.top.equalTo(timeDescLabel.snp.bottom).offset(63)
-            $0.leading.equalToSuperview().offset(16)
-            $0.height.equalTo(48)
-        }
-
-        verificationCodeTextField.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        reSendButton.snp.makeConstraints {
-            
-            $0.leading.equalTo(textfieldView.snp.trailing).offset(8)
-            $0.trailing.equalToSuperview().inset(16)
-            $0.centerY.equalTo(timerLabel.snp.centerY)
-            $0.width.equalTo(72)
-            $0.height.equalTo(40)
-
-        }
-        
-        timerLabel.snp.makeConstraints {
-            $0.trailing.equalTo(textfieldView.snp.trailing).inset(10)
-            $0.bottom.equalTo(textfieldView.snp.bottom).inset(12)
-        }
-        
-        verifyStartButton.snp.makeConstraints {
-            $0.top.equalTo(verificationCodeTextField.snp.bottom).offset(72)
-            $0.leading.equalToSuperview().offset(16)
-            $0.trailing.equalToSuperview().inset(16)
-            $0.height.equalTo(48)
-        }
-    }
-    
     
 }
 
@@ -223,7 +103,7 @@ private extension LoginPhoneVerifyViewController {
         let minutesString = String(minutes).count == 1 ? "0" + String(minutes) : String(minutes)
         let secondsString = String(seconds).count == 1 ? "0" + String(seconds) : String(seconds)
         
-        self.timerLabel.text = minutesString + ":" + secondsString
+        loginPhoneVerifyView.timerLabel.text = minutesString + ":" + secondsString
         
         
         //timerNum이 0이면(60초 경과) 타이머 종료
@@ -239,25 +119,18 @@ private extension LoginPhoneVerifyViewController {
     
     @objc func textFieldDidChange() {
         
-        let code = verificationCodeTextField.text!.replacingOccurrences(of: "-", with: "")
+        let code = loginPhoneVerifyView.verificationCodeTextField.text!.replacingOccurrences(of: "-", with: "")
         let codeArr = Array(code)
         
-        if self.isCheckCode(str: code) && codeArr.count >= 6 {
+        if loginPhoneViewModel.isCheckCode(str: code) && codeArr.count >= 6 {
             
-            verifyStartButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
+            loginPhoneVerifyView.verifyStartButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
             
         } else {
-            verifyStartButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
+            loginPhoneVerifyView.verifyStartButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
         }
         
 
-    }
-    
-    /// 코드체크
-    func isCheckCode(str: String) -> Bool {
-        
-        let regex = "([0-9]{6})"
-        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: str)
     }
     
     
@@ -272,8 +145,8 @@ private extension LoginPhoneVerifyViewController {
             if error == nil {
                 self.verifyID = varification
                 
-                self.timerLabel.text = "01:00"
-                self.verificationCodeTextField.text = ""
+                self.loginPhoneVerifyView.timerLabel.text = "01:00"
+                self.loginPhoneVerifyView.verificationCodeTextField.text = ""
                 self.startTimer()
                 
             } else {
@@ -288,7 +161,7 @@ private extension LoginPhoneVerifyViewController {
     /// 코드번호 검증
     @objc func handleDoneBtn() {
 
-        let credential = PhoneAuthProvider.provider().credential(withVerificationID: verifyID!, verificationCode: verificationCodeTextField.text!)
+        let credential = PhoneAuthProvider.provider().credential(withVerificationID: verifyID!, verificationCode: self.loginPhoneVerifyView.verificationCodeTextField.text!)
         
         Auth.auth().languageCode = "kr"
   
@@ -308,6 +181,7 @@ private extension LoginPhoneVerifyViewController {
                   
                   UserManager.idtoken = idtoken
                   UserManager.phoneNumber = self.phoneNumber!
+                  
                   /// 유저 정보 가져오기
                    self.loginPhoneViewModel.getUser(idtoken: idtoken) { User, APIStatus in
 
@@ -316,7 +190,13 @@ private extension LoginPhoneVerifyViewController {
                            
                         case .success:
                            print("200 로직 ")
-                    
+                           
+                           UserManager.uid = User?.uid
+                           
+                           let vc = TabBarController(userData: User!)
+                           vc.modalPresentationStyle = .fullScreen
+                           self.present(vc, animated: true, completion: nil)
+                           
                            
                         case .unregisterdUser:
                            print("닉네임 뷰로 이동")
@@ -340,12 +220,8 @@ private extension LoginPhoneVerifyViewController {
                         
                    }
                     
-                    
-                 
             })
-                
-            
-                
+
             } else {
                 print( error.debugDescription)
                 self.view.makeToast("전화번호 인증 실패")
