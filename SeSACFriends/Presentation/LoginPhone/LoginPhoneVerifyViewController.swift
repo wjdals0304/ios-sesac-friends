@@ -69,6 +69,7 @@ final class LoginPhoneVerifyViewController : BaseViewController {
         
         let backBarButton = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
         navigationItem.leftBarButtonItem = backBarButton
+        navigationItem.leftBarButtonItem?.tintColor = .black
 
     }
     
@@ -193,7 +194,7 @@ private extension LoginPhoneVerifyViewController {
                            
                            UserManager.uid = User?.uid
                            
-                           let vc = TabBarController(userData: User!)
+                           let vc = TabBarController()
                            vc.modalPresentationStyle = .fullScreen
                            self.present(vc, animated: true, completion: nil)
                            
