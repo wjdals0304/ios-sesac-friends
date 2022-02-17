@@ -13,7 +13,10 @@ import SnapKit
 protocol CollectionViewCellDelegate: AnyObject {
     
     func collectionView(collectionviewcell: HobbyCollectionViewCell?, index: Int, didTappedInTableViewCell: HobbyTableViewCell)
-    func changeHobby(addCollectionViewModel: CollectionViewCellModel , addCategory : Int , delCollectionViewModel: CollectionViewCellModel, delCategory: Int )
+    func changeHobby(addCollectionViewModel: CollectionViewCellModel , addCategory : Int )
+    func showContainToast()
+    func showCountToast()
+    
     
 }
 
@@ -28,10 +31,9 @@ class HobbyTableViewCell: UITableViewCell {
         let layout = HobbyCollectionViewFlowLayout()
         
         let collectionView = HobbyDynamicHeightCollectionView(frame: self.frame ,collectionViewLayout: layout)
-        
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.isScrollEnabled = false
+        collectionView.isScrollEnabled = true
         collectionView.register(HobbyCollectionViewCell.self, forCellWithReuseIdentifier: HobbyCollectionViewCell.identifier)
 
         return collectionView
@@ -58,7 +60,7 @@ class HobbyTableViewCell: UITableViewCell {
         }
         
         self.contentView.isUserInteractionEnabled = false
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadCollectionView), name: NSNotification.Name(rawValue: "load"), object: nil)
+
     }
     
     required init?(coder: NSCoder) {
@@ -69,18 +71,13 @@ class HobbyTableViewCell: UITableViewCell {
         super.awakeFromNib()
     }
     
-    @objc func reloadCollectionView(notification: NSNotification) {
-        
-        
-        
-    }
-    
 }
 
 extension HobbyTableViewCell : UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UICollectionViewDelegate {
     
-    func updateCellWith(row: [CollectionViewCellModel]) {
+    func updateCellWith(row: [CollectionViewCellModel] , fromRecommendArray : [String]) {
         self.rowWithHobbys = row
+        self.fromRecommendArray = fromRecommendArray 
         self.collectionView.reloadData()
         self.collectionView.layoutIfNeeded()
     }
@@ -96,7 +93,6 @@ extension HobbyTableViewCell : UICollectionViewDataSource,UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HobbyCollectionViewCell.identifier, for: indexPath) as! HobbyCollectionViewCell
-//        cell.textLabel.text = self.rowWithHobbys?[indexPath.item].name
 
         if  self.rowWithHobbys![indexPath.row].subcategory == 1 {
             cell.setupMyHobby(with: self.rowWithHobbys![indexPath.row].name )
@@ -124,31 +120,40 @@ extension HobbyTableViewCell : UICollectionViewDataSource,UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("==========")
-        print(#function)
 
         let cell = collectionView.cellForItem(at: indexPath) as? HobbyCollectionViewCell
         
-        if self.rowWithHobbys![indexPath.row].subcategory == 1 {
-            self.rowWithHobbys?.remove(at: indexPath.row)
         
-            self.collectionView.reloadData()
-            self.collectionView.layoutIfNeeded()
-        } else {
-            print("ggggg")
-
-            let name = self.rowWithHobbys![indexPath.row].name
+        // 내가 하고 싶은 셀 삭제
+        if self.rowWithHobbys![indexPath.row].subcategory == 1 {
+            
             self.rowWithHobbys?.remove(at: indexPath.row)
+            UserManager.myHobbyArray.remove(at: indexPath.row)
+             
+            self.collectionView.reloadData()
+            self.collectionView.layoutIfNeeded()
+
+        } else {
+        // 지금 주변에는 -> 내가 하고 싶은 추가
             
+            let name = self.rowWithHobbys![indexPath.row].name
+
+            if UserManager.myHobbyArray.contains( name ) {
+                self.cellDelegate?.showContainToast()
+                return
+            }
+            
+            if UserManager.myHobbyArray.count > 8 {
+                self.cellDelegate?.showCountToast()
+                return
+            }
+                        
+            self.cellDelegate?.changeHobby(addCollectionViewModel: CollectionViewCellModel(name: name, subcategory: HobbyCategory.myHobby.rawValue), addCategory: HobbyCategory.myHobby.rawValue)
+
+                                        
             self.collectionView.reloadData()
             self.collectionView.layoutIfNeeded()
             
-            self.cellDelegate?.changeHobby(addCollectionViewModel: CollectionViewCellModel(name: name, subcategory: 1),
-                                           addCategory: 1,
-                                           delCollectionViewModel: CollectionViewCellModel(name: name, subcategory: 0),
-                                           delCategory : 0
-                                           )
-
         }
         
         self.cellDelegate?.collectionView(collectionviewcell: cell, index: indexPath.item, didTappedInTableViewCell: self)
