@@ -11,100 +11,50 @@ import MapKit
 import SnapKit
 import FirebaseAuth
 
-class HomeViewController: UIViewController {
+class HomeViewController: BaseViewController {
     
     var buttonIndex: Int?
     
-    let mkMapView = MKMapView()
     let locationManager = CLLocationManager()
     let hobbyViewModel = HobbyViewModel()
-    
-    var arrayButtons : [UIButton] = [UIButton]()
-    
+
     var runTimeInterval: TimeInterval? // 마지막 작업을 설정할 시간
     let mTimer : Selector = #selector(Tick_TimeConsole) // 위치 확인 타이머
     
-    var region = 0
-    var lat = 0.0
-    var long = 0.0
-    
-    let buttonStackView : UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.distribution = .fillEqually
-        stackView.layer.cornerRadius = 8
-        stackView.clipsToBounds = true
-        return stackView
-    }()
-    
-    let entireButton : UIButton = {
-        let button = UIButton()
-        button.setTitle("전체", for: .normal)
-        button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
-        button.setTitleColor(UIColor.getColor(.defaultTextColor), for: .normal)
-        button.backgroundColor = .white
-        button.addTarget(self, action: #selector(touchStackButtons(_:)), for: .touchUpInside)
-        return button
-    }()
-    
-    let manButton : UIButton = {
-        let button = UIButton()
-        button.setTitle("남자", for: .normal)
-        button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
-        button.setTitleColor(UIColor.getColor(.defaultTextColor), for: .normal)
-        button.backgroundColor = .white
-        button.addTarget(self, action: #selector(touchStackButtons(_:)), for: .touchUpInside)
-        return button
-    }()
-    
-    let womanButton : UIButton = {
-        let button = UIButton()
-        button.setTitle("여자", for: .normal)
-        button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
-        button.setTitleColor(UIColor.getColor(.defaultTextColor), for: .normal)
-        button.addTarget(self, action: #selector(touchStackButtons(_:)), for: .touchUpInside)
-        button.backgroundColor = .white
-        return button
-    }()
 
-    let placeButton: UIButton = {
-       let button = UIButton()
-        button.setImage(UIImage(named: "place"), for: .normal)
-        button.layer.cornerRadius = 8
-        button.backgroundColor = .white
-        button.addTarget(self, action: #selector(touchPlaceButton), for: .touchUpInside)
-        return button
-    }()
+    let homeView = HomeView()
     
-    let searchButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "search"), for: .normal)
-        button.backgroundColor = .black
-        button.addTarget(self, action: #selector(touchSearchButton), for: .touchUpInside)
-        return button
-    }()
-    
+    override func loadView() {
+        self.view = homeView
+    }
   
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        searchButton.layer.cornerRadius = searchButton.frame.size.width / 2
-        searchButton.clipsToBounds = true
+        
+        homeView.searchButton.layer.cornerRadius = homeView.searchButton.frame.size.width / 2
+        homeView.searchButton.clipsToBounds = true
     }
 
     override func viewDidLoad() {
         view.backgroundColor = .white
         setup()
         setupConstraint()
+        addTarget()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = false
+
     }
     
 
-    func setup(){
+    override func setup(){
         
         Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: mTimer, userInfo: nil, repeats: true)
         
-        self.arrayButtons = [self.entireButton,self.manButton,self.womanButton]
-        
-        mkMapView.delegate = self
+
+        homeView.mkMapView.delegate = self
         locationManager.delegate = self
         
         // 정확도 최고로 설정
@@ -115,64 +65,27 @@ class HomeViewController: UIViewController {
         // 위치 업데이트
         locationManager.startUpdatingLocation()
         // 위치보기값
-        mkMapView.showsUserLocation = true
+        homeView.mkMapView.showsUserLocation = true
 
         // 초기 화면
         setUpGoLation()
-        
-        [
-         mkMapView,
-         buttonStackView,
-         placeButton,
-         searchButton
-        ].forEach { view.addSubview($0) }
-        
-        buttonStackView.addArrangedSubview(entireButton)
-        buttonStackView.addArrangedSubview(manButton)
-        buttonStackView.addArrangedSubview(womanButton)
     }
     
-    func setupConstraint(){
-        
-     
-        entireButton.isSelected = true
-        entireButton.backgroundColor = UIColor.getColor(.activeColor)
-        entireButton.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
-        
-        
-        mkMapView.snp.makeConstraints { make in
-            make.bottom.leading.trailing.equalTo(self.view.safeAreaLayoutGuide)
-            make.top.equalToSuperview()
-        }
-        
-        buttonStackView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide)
-            make.leading.equalToSuperview().offset(16)
-            make.width.equalTo(self.view.snp.width).multipliedBy(0.15)
-            make.height.equalTo(144)
-        }
-        
-        placeButton.snp.makeConstraints { make in
-            make.top.equalTo(buttonStackView.snp.bottom).offset(16)
-            make.leading.equalTo(buttonStackView.snp.leading)
-            make.width.equalTo(buttonStackView.snp.width)
-            make.height.equalTo(buttonStackView.snp.width)
-        }
-        
-        searchButton.snp.makeConstraints { make in
-            make.width.equalTo(self.view.snp.width).multipliedBy(0.17)
-            make.trailing.equalToSuperview().inset(16)
-            make.bottom.equalTo(self.view.safeAreaLayoutGuide).inset(16)
-            make.height.equalTo(self.view.snp.width).multipliedBy(0.17)
-        }
+    override func addTarget() {
+        homeView.entireButton.addTarget(self, action: #selector(touchStackButtons(_:)), for: .touchUpInside)
+        homeView.manButton.addTarget(self, action: #selector(touchStackButtons(_:)), for: .touchUpInside)
+        homeView.womanButton.addTarget(self, action: #selector(touchStackButtons(_:)), for: .touchUpInside)
+        homeView.placeButton.addTarget(self, action: #selector(touchPlaceButton), for: .touchUpInside)
+        homeView.searchButton.addTarget(self, action: #selector(touchSearchButton), for: .touchUpInside)
     }
     
+ 
 }
 
 extension HomeViewController : CLLocationManagerDelegate {
     
     func deleteAnnotation(_ annotation: MKAnnotation) {
-            mkMapView.removeAnnotation(annotation)
+        homeView.mkMapView.removeAnnotation(annotation)
     }
     
     func setUpGoLation( ) {
@@ -193,7 +106,7 @@ extension HomeViewController : CLLocationManagerDelegate {
 
         let pRegion = MKCoordinateRegion(center: pLocation, span: spanValue)
 
-       mkMapView.setRegion(pRegion, animated: true)
+        homeView.mkMapView.setRegion(pRegion, animated: true)
 
     }
     
@@ -221,20 +134,20 @@ extension HomeViewController : CLLocationManagerDelegate {
         annotation.title = strTitle
         annotation.subtitle = strSubtitle
         annotation.gender = gender
-        mkMapView.addAnnotation(annotation)
+        homeView.mkMapView.addAnnotation(annotation)
         
     }
     
     // MARK: 중앙 고정 핀 설치
     func setCenterAnnotation( latitudeValue: CLLocationDegrees, longitudeValue: CLLocationDegrees , delta span : Double ) {
         
-        let centerAnnotation = mkMapView.annotations.filter{ $0.title == "중앙 고정 핀" }.first
+        let centerAnnotation = homeView.mkMapView.annotations.filter{ $0.title == "중앙 고정 핀" }.first
         
-        let centerOverlay = mkMapView.overlays.first
+        let centerOverlay = homeView.mkMapView.overlays.first
 
         if centerAnnotation != nil {
             deleteAnnotation(centerAnnotation!)
-            mkMapView.removeOverlay(centerOverlay!)
+            homeView.mkMapView.removeOverlay(centerOverlay!)
         }
 
         let customAnnotation = CustomPointAnnotation(coordinate: goLocation(latitudeValue: latitudeValue, longitudeValue: longitudeValue, delta: span)
@@ -245,8 +158,8 @@ extension HomeViewController : CLLocationManagerDelegate {
         
         let circle =  MKCircle(center: customAnnotation.coordinate, radius: 700)
         
-        mkMapView.addOverlay(circle)
-        mkMapView.addAnnotation(customAnnotation)
+        homeView.mkMapView.addOverlay(circle)
+        homeView.mkMapView.addAnnotation(customAnnotation)
     
     }
 
@@ -261,7 +174,7 @@ extension HomeViewController : MKMapViewDelegate {
             return nil
         }
                 
-        var annotationView = self.mkMapView.dequeueReusableAnnotationView(withIdentifier: CustomPointAnnotation.identifier)
+        var annotationView = homeView.mkMapView.dequeueReusableAnnotationView(withIdentifier: CustomPointAnnotation.identifier)
         
         if annotationView == nil {
             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: CustomPointAnnotation.identifier)
@@ -296,21 +209,24 @@ extension HomeViewController : MKMapViewDelegate {
         
         if interval < 0.25 { return }
         
-        let coordinate = mkMapView.centerCoordinate
+        let coordinate = homeView.mkMapView.centerCoordinate
         
-        self.lat = coordinate.latitude
-        self.long = coordinate.longitude
-        self.region = calculateRegion(lat: lat, long: long)
+        hobbyViewModel.location = Location(
+                  region: hobbyViewModel.calculateRegion(lat: coordinate.latitude, long: coordinate.longitude)
+                  ,lat: coordinate.latitude, long: coordinate.longitude)
         
-        setCenterAnnotation(latitudeValue: lat, longitudeValue: long, delta: 0.01)
+        setCenterAnnotation(latitudeValue: hobbyViewModel.location.lat
+                            ,longitudeValue: hobbyViewModel.location.long, delta: 0.01)
 
-        postOnqueue(region: region, lat: lat, long: long)
+        postOnqueue(region: hobbyViewModel.location.region
+                    ,lat: hobbyViewModel.location.lat, long: hobbyViewModel.location.long)
 
         runTimeInterval = nil
         
     }
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        
         let circleRenderer = MKCircleRenderer(overlay: overlay)
         circleRenderer.strokeColor = .white
         circleRenderer.fillColor = UIColor.gray.withAlphaComponent(0.3)
@@ -326,69 +242,68 @@ private extension HomeViewController {
     
     @objc func touchStackButtons(_ sender: UIButton) {
         
+       let arrayButtons = homeView.arrayButtons
+        
         if buttonIndex != nil {
-            
-            if !sender.isSelected {
-                for index in arrayButtons.indices {
+ 
+                for index in homeView.arrayButtons.indices {
+                    print(index)
                     arrayButtons[index].isSelected = false
                     arrayButtons[index].setTitleColor(UIColor.getColor(.defaultTextColor), for: .normal)
                     arrayButtons[index].setBackgroundColor(UIColor.getColor(.whiteTextColor), for: .normal)
-                }
-                
                 sender.isSelected = true
-                buttonIndex = arrayButtons.firstIndex(of: sender)
+                buttonIndex = homeView.arrayButtons.firstIndex(of: sender)
             }
+            
         } else {
-            _ = arrayButtons.map {
+            
+            _ = homeView.arrayButtons.map {
                 $0.setTitleColor(UIColor.getColor(.defaultTextColor), for: .normal)
                 $0.setBackgroundColor(UIColor.getColor(.whiteTextColor), for: .normal)
             }
             
             sender.isSelected = true
-            buttonIndex = arrayButtons.firstIndex(of: sender)
+            buttonIndex = homeView.arrayButtons.firstIndex(of: sender)
         }
         
         if sender.isSelected {
-            arrayButtons[buttonIndex!].setBackgroundColor(UIColor.getColor(.activeColor), for: .selected)
-            arrayButtons[buttonIndex!].setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
+            homeView.arrayButtons[buttonIndex!].setBackgroundColor(UIColor.getColor(.activeColor), for: .selected)
+            homeView.arrayButtons[buttonIndex!].setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
             
-            let buttonLabel = arrayButtons[buttonIndex!].titleLabel?.text!
+            let buttonLabel = homeView.arrayButtons[buttonIndex!].titleLabel?.text!
             
             if buttonLabel == "남자" {
 
-                for annotation in self.mkMapView.annotations {
+                for annotation in homeView.mkMapView.annotations {
                     if let customPointAnnotation = annotation as? CustomPointAnnotation {
                         if customPointAnnotation.gender == Gender.woman.rawValue {
-                            self.mkMapView.view(for: customPointAnnotation)?.isHidden = true
+                            homeView.mkMapView.view(for: customPointAnnotation)?.isHidden = true
                         } else {
-                            self.mkMapView.view(for: customPointAnnotation)?.isHidden = false
+                            homeView.mkMapView.view(for: customPointAnnotation)?.isHidden = false
                         }
                     }
                 }
                 
             } else if buttonLabel == "여자" {
                         
-                for annotation in self.mkMapView.annotations {
+                for annotation in homeView.mkMapView.annotations {
                     if let customPointAnnotation = annotation as? CustomPointAnnotation {
                         if customPointAnnotation.gender == Gender.man.rawValue {
-                            self.mkMapView.view(for: customPointAnnotation)?.isHidden = true
+                            homeView.mkMapView.view(for: customPointAnnotation)?.isHidden = true
                         } else {
-                            self.mkMapView.view(for: customPointAnnotation)?.isHidden = false
+                            homeView.mkMapView.view(for: customPointAnnotation)?.isHidden = false
                         }
                     }
                 }
                 
             } else {
                 
-                for annotation in self.mkMapView.annotations {
+                for annotation in homeView.mkMapView.annotations {
                     if let customPointAnnotation = annotation as? CustomPointAnnotation {
-                            self.mkMapView.view(for: customPointAnnotation)?.isHidden = false
+                        homeView.mkMapView.view(for: customPointAnnotation)?.isHidden = false
                         }
                     }
-                
             }
-            
-            
         }
     
     }
@@ -400,8 +315,8 @@ private extension HomeViewController {
             return
         }
         
-        mkMapView.showsUserLocation = true
-        mkMapView.setUserTrackingMode(.follow, animated: true)
+        homeView.mkMapView.setUserTrackingMode(.follow, animated: true)
+        homeView.mkMapView.showsUserLocation = true
         
     }
     
@@ -414,66 +329,43 @@ private extension HomeViewController {
             case .success :
                 
                 guard let queue = queue else {
-                    self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                    self.view.makeToast(APIErrorMessage.failed.rawValue)
                     return
                 }
                             
                 for queue in queue.fromQueueDB {
-                    let sesacImage = self.changeSesacImage(sesac: queue.sesac)
+                    let sesacImage = self.hobbyViewModel.changeSesacImage(sesac: queue.sesac)
                     self.setAnnotation(latitudeValue: queue.lat, longitudeValue: queue.long, delta: 0.1, title: queue.nick, strSubtitle: queue.nick , imageName : sesacImage ,gender:queue.gender)
                 }
                 
             case .expiredToken :
-                let currentUser = FirebaseAuth.Auth.auth().currentUser
-                currentUser?.getIDToken(completion: { idtoken, error in
-                guard let idtoken = idtoken else {
-                        print(error!)
-                        self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
-                        return
-                 }
                 
-                 UserManager.idtoken = idtoken
-                })
-                self.postOnqueue(region: region, lat: lat, long: long)
-                
+                AuthNetwork.getIdToken { error in
+                        switch error {
+                        case .success :
+                            self.postOnqueue(region: region, lat: lat, long: long)
+                        case .failed :
+                            self.view.makeToast(APIErrorMessage.failed.rawValue)
+                        default :
+                            self.view.makeToast(APIErrorMessage.failed.rawValue)
+                        }
+                    }
                 
             default :
-                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
-
-                
+                self.view.makeToast(APIErrorMessage.failed.rawValue)
             }
             
         }
     }
-    
-    
-    func calculateRegion(lat: Double, long: Double) -> Int {
-        
-        let calLat = String(lat + 90).replacingOccurrences(of: ".", with: "").substring(to:5)
-        let calLong = String(long + 180).replacingOccurrences(of: ".", with: "").substring(to:5)
-        
-        return Int(calLat + calLong)!
-
-    }
-    
+     
     @objc func touchSearchButton() {
-        
-        let vc = HobbyViewController(region: self.region, lat: self.lat, long: self.long)
+
+        let vc = HobbyViewController(location: hobbyViewModel.location)
         self.navigationController?.pushViewController(vc, animated: true )
     }
-    
-    
-    func changeSesacImage(sesac: Int ) -> String {
-        
-        if sesac == 0 {
-            return "sesac_face_1"
-        } else {
-            return "sesac_face_1"
-        }
-    }
-    
-    
 }
+
+
 
 class CustomPointAnnotation: NSObject, MKAnnotation {
     static let identifier = "CustomPointAnnotation"
@@ -488,6 +380,4 @@ class CustomPointAnnotation: NSObject, MKAnnotation {
         self.coordinate = coordinate
         self.imageName = imageName
     }
-    
-    
 }
