@@ -10,6 +10,7 @@ import UIKit
 import MapKit
 import SnapKit
 import FirebaseAuth
+import Toast_Swift
 
 class HomeViewController: BaseViewController {
     
@@ -20,7 +21,7 @@ class HomeViewController: BaseViewController {
 
     var runTimeInterval: TimeInterval? // 마지막 작업을 설정할 시간
     let mTimer : Selector = #selector(Tick_TimeConsole) // 위치 확인 타이머
-    
+//    let checkQueueTimer: Selector = #selector(checkQueueState)
 
     let homeView = HomeView()
     
@@ -45,6 +46,8 @@ class HomeViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = false
+        print(#function)
+        checkQueueState()
 
     }
     
@@ -52,6 +55,7 @@ class HomeViewController: BaseViewController {
     override func setup(){
         
         Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: mTimer, userInfo: nil, repeats: true)
+
         
 
         homeView.mkMapView.delegate = self
@@ -69,6 +73,10 @@ class HomeViewController: BaseViewController {
 
         // 초기 화면
         setUpGoLation()
+        
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(chagneFloatingButtonImage), name: NSNotification.Name("chagneFloatingButtonImage"), object: nil)
+        
     }
     
     override func addTarget() {
@@ -240,6 +248,68 @@ extension HomeViewController : MKMapViewDelegate {
 
 private extension HomeViewController {
     
+    @objc func chagneFloatingButtonImage(_ notification: Notification) {
+        let imageValue = notification.object as! String
+        
+        self.homeView.searchButton.setImage(UIImage(named: imageValue ), for: .normal)
+    }
+    
+
+    func checkQueueState() {
+        
+        hobbyViewModel.getMyQueueState { APIStatus, myqueueState in
+            
+            switch APIStatus {
+                
+            case .success :
+                
+                switch myqueueState {
+                     
+                 case .message :
+                    self.homeView.searchButton.setImage(UIImage(named: MyqueueState.message.rawValue ), for: .normal)
+
+                 case .antenna:
+                    self.homeView.searchButton.setImage(UIImage(named: MyqueueState.antenna.rawValue ), for: .normal)
+
+                 case .search:
+                    self.homeView.searchButton.setImage(UIImage(named: MyqueueState.search.rawValue ), for: .normal)
+                default :
+                    self.homeView.searchButton.setImage(UIImage(named: MyqueueState.search.rawValue ), for: .normal)
+                    
+                }
+                
+            case .stopSearch :
+                self.homeView.searchButton.setImage(UIImage(named: MyqueueState.search.rawValue ), for: .normal)
+                
+            
+            case .expiredToken :
+                AuthNetwork.getIdToken { error in
+                        switch error {
+                        case .success :
+                            self.checkQueueState()
+                        case .failed :
+                            self.view.makeToast(APIErrorMessage.failed.rawValue)
+                        default :
+                            self.view.makeToast(APIErrorMessage.failed.rawValue)
+                        }
+                    }
+                
+            default :
+                
+                self.homeView.searchButton.setImage(UIImage(named: MyqueueState.search.rawValue ), for: .normal)
+                
+        
+            }
+        }
+        
+
+        
+    }
+
+    
+    
+    
+    
     @objc func touchStackButtons(_ sender: UIButton) {
         
        let arrayButtons = homeView.arrayButtons
@@ -359,9 +429,36 @@ private extension HomeViewController {
     }
      
     @objc func touchSearchButton() {
+        
+        if self.hobbyViewModel.queueState.matchedNick != nil  {
+        
+            if self.hobbyViewModel.queueState.matched == matchedState.matched.rawValue {
+                
+                if self.hobbyViewModel.queueState.dodged == dodgedState.matched.rawValue {
+                       print("채팅방으로~")
+                    // TODO: 채팅방으로 이동하게 변경 필요
+                    
+                    let vc = ChatViewController(queueData: FromQueueDB(uid: self.hobbyViewModel.queueState.matchedUid!, nick: self.hobbyViewModel.queueState.matchedNick!, lat: 0, long: 0, reputation: [], hf: [], reviews: [], gender: 0, type: 0, sesac: 0, background: 0))
+                    
+                    self.navigationController?.pushViewController(vc, animated: true )
+                }
+                
+            } else {
+                
+                let vc = SesacSearchViewController(location: hobbyViewModel.location)
+                self.navigationController?.pushViewController(vc, animated: true )
+                
+            }
+            
+        } else {
+            
+            let vc = HobbyViewController(location: hobbyViewModel.location)
+            self.navigationController?.pushViewController(vc, animated: true )
+                        
+        }
+        
 
-        let vc = HobbyViewController(location: hobbyViewModel.location)
-        self.navigationController?.pushViewController(vc, animated: true )
+        
     }
 }
 
