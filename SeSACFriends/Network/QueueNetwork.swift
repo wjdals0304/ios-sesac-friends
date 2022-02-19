@@ -71,6 +71,28 @@ struct QueueAPI {
         
     }
     
+    func getMyQueueState() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = QueueAPI.scheme
+        components.host = QueueAPI.host
+        components.port = QueueAPI.port
+        components.path = QueueAPI.path + "/myQueueState"
+        
+        return components
+    }
+    
+    func postDodge() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = QueueAPI.scheme
+        components.host = QueueAPI.host
+        components.port = QueueAPI.port
+        components.path = QueueAPI.path + "/dodge"
+        
+        return components
+    }
+    
 }
 
 
@@ -390,6 +412,130 @@ class QueueNetwork {
             
         }
         
+        
+        
+    }
+    
+    func getMyQueueState(completion:@escaping(QueueState?,APIStatus?) -> Void) {
+        
+        
+        let url = queueApi.getMyQueueState().url!
+        
+        let dateRequest = AF.request(url, method: .get,headers: self.header)
+        
+        dateRequest.responseData { response in
+            
+            switch response.result {
+            
+                
+            case .success :
+                
+                guard let statusCode = response.response?.statusCode else {
+                    completion(nil,.failed)
+                    return
+                }
+                
+                guard let value = response.value else {
+                    completion(nil,.noData)
+                    return
+                }
+
+                
+                switch statusCode {
+                
+                case 200:
+                    
+                    let decoder = JSONDecoder()
+                    
+                    
+                    guard let queueState = try? decoder.decode(QueueState.self, from: value)
+                    else {
+                        completion(nil,.invalidData)
+                        return
+                    }
+                    completion(queueState,.success)
+                
+                case 201:
+                    completion(nil,.stopSearch)
+                case 401 :
+                    completion(nil,.expiredToken)
+                case 406 :
+                    completion(nil,.unregisterdUser)
+                case 500:
+                    completion(nil,.serverError)
+                
+                default :
+                    completion(nil,.failed)
+                    
+                }
+            case .failure(let error):
+                print(error)
+                completion(nil,.failed)
+        
+         }
+            
+            
+        }
+        
+        
+    }
+    
+    
+    
+    func postDodge(otheruid: String, completion: @escaping(APIStatus?) -> Void ) {
+        
+        let url = queueApi.postDodge().url!
+        
+        self.header["Content-Type"] = "application/x-www-form-urlencoded"
+        
+        let param: Parameters = [
+            "otheruid" : otheruid
+        ]
+        
+        let dataRequest = AF.request(url, method: .post , parameters: param ,encoding: URLEncoding.httpBody,headers: self.header)
+        
+        dataRequest.responseData { response in
+            
+            switch response.result {
+                
+            case .success :
+                
+                guard let statusCode = response.response?.statusCode else {
+                    completion(.failed)
+                    return
+                }
+                
+                switch statusCode {
+                    
+                case 200 :
+                    completion(.success)
+                    
+                case 201:
+                    completion(.wrongUid)
+                    
+                case 401:
+                    completion(.expiredToken)
+                
+                case 406:
+                    completion(.unregisterdUser)
+                    
+                case 500:
+                    completion(.serverError)
+                case 501:
+                    completion(.clientError)
+                    
+                default :
+                    completion(.failed)
+                }
+                
+                
+                
+            case .failure(let error):
+                print(error)
+                completion(.failed)
+            }
+            
+        }
         
         
     }
