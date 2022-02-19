@@ -40,6 +40,17 @@ struct ChatAPI {
         
         return components
     }
+    
+    func postDodge() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = ChatAPI.scheme
+        components.host = ChatAPI.host
+        components.port = ChatAPI.port
+        components.path = ChatAPI.path + "dodge"
+        
+        return components
+    }
 
 }
 
@@ -62,7 +73,11 @@ class ChatNetwork {
         let url = chatApi.postChat(to: to).url!
         self.header["Content-Type"] = "application/x-www-form-urlencoded"
         
-        let dataRequest = AF.request(url, method: .post ,encoding: URLEncoding.httpBody,headers: self.header)
+        let param: Parameters = [
+            "chat" : chat
+        ]
+        
+        let dataRequest = AF.request(url, method: .post , parameters: param ,encoding: URLEncoding.httpBody,headers: self.header)
         
         dataRequest.responseData { response in
             
@@ -180,6 +195,67 @@ class ChatNetwork {
             
         }
         
+        
+        
+    }
+    
+    func postDodge(otheruid: String, completion: @escaping(APIStatus?) -> Void ) {
+        
+        let url = chatApi.postDodge().url!
+        self.header["Content-Type"] = "application/x-www-form-urlencoded"
+        
+        let param: Parameters = [
+            "otheruid" : otheruid
+        ]
+        
+        let dataRequest = AF.request(url, method: .post , parameters: param ,encoding: URLEncoding.httpBody,headers: self.header)
+        
+        dataRequest.responseData { response in
+            
+            switch response.result {
+                
+            case .success :
+                
+                guard let statusCode = response.response?.statusCode else {
+                    completion(.failed)
+                    return
+                }
+                
+                switch statusCode {
+                    
+                case 200 :
+                    completion(.success)
+                    
+                case 201:
+                    completion(.wrongUid)
+                    
+                case 401:
+                    completion(.expiredToken)
+                
+                case 406:
+                    completion(.unregisterdUser)
+                    
+                case 500:
+                    completion(.serverError)
+                case 501:
+                    completion(.clientError)
+                    
+                default :
+                    completion(.failed)
+                }
+                
+                
+                
+            case .failure(let error):
+                print(error)
+                completion(.failed)
+                
+                
+                
+                
+            }
+            
+        }
         
         
     }
