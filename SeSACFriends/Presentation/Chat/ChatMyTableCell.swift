@@ -13,14 +13,15 @@ class ChatMyTableCell: UITableViewCell {
     
     static let identifier = "ChatMyTableCell"
     
-    let chatLabel: UILabel = {
-       let label = UILabel()
-        label.numberOfLines = 0
-        label.font = UIFont.getRegularFont(.regular_14)
-        label.layer.cornerRadius = 8
-        label.layer.backgroundColor = UIColor.getColor(.mychatColor).cgColor
-        label.textColor = UIColor.getColor(.defaultTextColor)
-        return label
+    let chatTextView: UITextView = {
+       let chatView = UITextView()
+        chatView.font = UIFont.getRegularFont(.regular_14)
+        chatView.layer.cornerRadius = 8
+        chatView.backgroundColor = UIColor.getColor(.mychatColor)
+        chatView.textColor = UIColor.getColor(.defaultTextColor)
+        chatView.isEditable = false
+        chatView.layer.masksToBounds = false
+        return chatView
     }()
     
     let timeLabel: UILabel = {
@@ -45,20 +46,41 @@ class ChatMyTableCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
     
-    func configure() {
+    func configure(text: String , date : String ) {
+        
         [
-            chatLabel,
+            chatTextView,
             timeLabel
         ].forEach{ addSubview($0) }
-        
-        chatLabel.snp.makeConstraints { make in
-            make.width.equalTo(UIScreen.main.bounds.width - 111)
+    
+        chatTextView.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(16)
+            make.top.equalTo(self.snp.top)
+            make.bottom.equalTo(self.snp.bottom).inset(10)
         }
         
         timeLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(chatLabel.snp.leading).inset(8)
-            make.bottom.equalTo(chatLabel.snp.bottom)
+            make.trailing.equalTo(chatTextView.snp.leading)
+            make.bottom.equalTo(chatTextView.snp.bottom)
+        }
+        
+        
+        let date = date.toDate()!
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: date)
+        let minute = calendar.component(.minute, from: date)
+        
+        timeLabel.text = "\(hour):\(minute)"
+        
+        let font = chatTextView.font!
+        let estimatedFrame = text.getEstimatedFrame(with: font)
+        print("====")
+        print(text)
+        print(estimatedFrame)
+
+        
+        chatTextView.snp.makeConstraints { make in
+            make.width.equalTo(estimatedFrame.width + 20)
         }
         
     }
