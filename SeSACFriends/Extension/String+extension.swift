@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension String {
     func index(from: Int) -> Index {
@@ -28,5 +29,25 @@ extension String {
         return String(self[startIndex..<endIndex])
     }
   
-    
+    func getEstimatedFrame(with font: UIFont) -> CGRect {
+        let size = CGSize(width: UIScreen.main.bounds.width * 2/3, height: 1000)
+        let optionss = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        let estimatedFrame = NSString(string: self).boundingRect(with: size, options: optionss, attributes: [.font: font], context: nil)
+        return estimatedFrame
+    }
+    func toDate() -> Date? {
+                
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        dateFormatter.timeZone = TimeZone(identifier: "UTC")
+        dateFormatter.locale = Locale(identifier: Locale.current.identifier)
+        if let date = dateFormatter.date(from: self) {
+            return date
+        } else {
+            
+            return nil
+        }
+        
+    }
+
 }
