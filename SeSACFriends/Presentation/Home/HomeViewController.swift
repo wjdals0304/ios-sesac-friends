@@ -41,6 +41,7 @@ class HomeViewController: BaseViewController {
         setup()
         setupConstraint()
         addTarget()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -258,6 +259,7 @@ private extension HomeViewController {
     func checkQueueState() {
         
         hobbyViewModel.getMyQueueState { APIStatus, myqueueState in
+
             
             switch APIStatus {
                 
@@ -312,7 +314,7 @@ private extension HomeViewController {
     
     @objc func touchStackButtons(_ sender: UIButton) {
         
-       let arrayButtons = homeView.arrayButtons
+        let arrayButtons = homeView.arrayButtons
         
         if buttonIndex != nil {
  
@@ -430,36 +432,31 @@ private extension HomeViewController {
      
     @objc func touchSearchButton() {
         
-        if self.hobbyViewModel.queueState.matchedNick != nil  {
+        self.checkQueueState()
         
-            if self.hobbyViewModel.queueState.matched == matchedState.matched.rawValue {
-                
-                if self.hobbyViewModel.queueState.dodged == dodgedState.matched.rawValue {
-                       print("채팅방으로~")
-                    // TODO: 채팅방으로 이동하게 변경 필요
-                    
-                    let vc = ChatViewController(queueData: FromQueueDB(uid: self.hobbyViewModel.queueState.matchedUid!, nick: self.hobbyViewModel.queueState.matchedNick!, lat: 0, long: 0, reputation: [], hf: [], reviews: [], gender: 0, type: 0, sesac: 0, background: 0))
-                    
-                    self.navigationController?.pushViewController(vc, animated: true )
-                }
-                
-            } else {
-                
-                let vc = SesacSearchViewController(location: hobbyViewModel.location)
-                self.navigationController?.pushViewController(vc, animated: true )
-                
-            }
+        
+        
+        if self.hobbyViewModel.queueState.matched == matchedState.matched.rawValue {
+            
+            let vc = ChatViewController(queueData: FromQueueDB(uid: self.hobbyViewModel.queueState.matchedUid!, nick: self.hobbyViewModel.queueState.matchedNick!, lat: 0, long: 0, reputation: [], hf: [], reviews: [], gender: 0, type: 0, sesac: 0, background: 0))
+            
+            self.navigationController?.pushViewController(vc, animated: true )
+            
+            
+        } else if self.hobbyViewModel.queueState.matched == matchedState.close.rawValue && UserManager.isMatch == true {
+            
+            let vc = SesacSearchViewController(location: hobbyViewModel.location)
+            self.navigationController?.pushViewController(vc, animated: true )
             
         } else {
-            
             let vc = HobbyViewController(location: hobbyViewModel.location)
             self.navigationController?.pushViewController(vc, animated: true )
-                        
+            
+            
         }
-        
-
-        
+    
     }
+    
 }
 
 
