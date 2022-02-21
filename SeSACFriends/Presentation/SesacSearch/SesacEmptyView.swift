@@ -9,7 +9,10 @@ import Foundation
 import UIKit
 import SnapKit
 
+
 class SesacEmptyView : UIView {
+    
+    let hobbyViewModel = HobbyViewModel()
     
     let sesacImage: UIImageView = {
         let image = UIImageView()
@@ -50,9 +53,9 @@ class SesacEmptyView : UIView {
         return button
     }()
     
-    init(text: String){
+    init(text: String, location: Location){
         descLabel.text = text
-        
+        self.hobbyViewModel.location = location
         super.init(frame: .zero)
         self.backgroundColor = .systemBackground
         
@@ -115,10 +118,97 @@ class SesacEmptyView : UIView {
 
     
     @objc func chagneHobbyButtonClicked() {
+          
+        
+        hobbyViewModel.deleteQueue { APIStatus in
+            
+            switch APIStatus {
+            
+            case .success :
+                UserManager.isMatch = false
+                
+                let vc = HobbyViewController(location: self.hobbyViewModel.location)
+                self.window?.rootViewController?.moveView(isNavigation: true , controller: vc)
+                
+                UserManager.isMatch = false
+                
+            case .matchedState:
+                self.window?.rootViewController?.view.makeToast("누군가와 취미를 함께하기로 약속하셨어요!")
+
+                print("채팅 화면으로 이동")
+                
+            case .expiredToken:
+                
+                AuthNetwork.getIdToken { error in
+                        switch error {
+                        case .success :
+                            self.chagneHobbyButtonClicked()
+                        case .failed :
+                            self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
+                        default :
+                            self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
+                        }
+                    }
+                
+            case .serverError,.clientError :
+                self.window?.rootViewController?.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                
+            default :
+                self.window?.rootViewController?.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+
+
+            }
+            
+            
+        }
+        
+        
         
     }
     
     @objc func refreshButtonClicked() {
+    
+        
+        hobbyViewModel.postOnqueue(region: self.hobbyViewModel.location.region, lat: self.hobbyViewModel.location.lat
+                                   , long: self.hobbyViewModel.location.long) { queue, APIStatus in
+            
+            
+            switch APIStatus {
+                
+            case .success :
+                
+                guard let queue = queue else {
+                    self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
+                    return
+                }
+                
+            case .expiredToken :
+                AuthNetwork.getIdToken { error in
+                        switch error {
+                        case .success :
+                            self.refreshButtonClicked()
+                        case .failed :
+                            self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
+                        default :
+                            self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
+                        }
+                    }
+                
+                
+            default :
+                self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
+
+                
+            }
+            
+            
+            
+            
+        }
+        
+        
+        
+        
          
     }
     
