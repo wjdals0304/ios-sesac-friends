@@ -12,17 +12,26 @@ import SnapKit
 class ChatMyTableCell: UITableViewCell {
     
     static let identifier = "ChatMyTableCell"
+
     
-    let chatTextView: UITextView = {
-       let chatView = UITextView()
-        chatView.font = UIFont.getRegularFont(.regular_14)
-        chatView.layer.cornerRadius = 8
-        chatView.backgroundColor = UIColor.getColor(.mychatColor)
-        chatView.textColor = UIColor.getColor(.defaultTextColor)
-        chatView.isEditable = false
-        chatView.layer.masksToBounds = false
-        return chatView
+    let chatImageView : UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.cornerRadius = 8
+        imageView.backgroundColor = UIColor.getColor(.mychatColor)
+        return imageView
     }()
+    
+    let chatTextLabel : UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.getColor(.defaultTextColor)
+        label.font = UIFont.getRegularFont(.regular_14)
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        return label
+    }()
+    
+
+    
     
     let timeLabel: UILabel = {
         let label = UILabel()
@@ -49,21 +58,10 @@ class ChatMyTableCell: UITableViewCell {
     func configure(text: String , date : String ) {
         
         [
-            chatTextView,
-            timeLabel
+            chatImageView,
+            chatTextLabel,
+            timeLabel,
         ].forEach{ addSubview($0) }
-    
-        chatTextView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(16)
-            make.top.equalTo(self.snp.top)
-            make.bottom.equalTo(self.snp.bottom).inset(10)
-        }
-        
-        timeLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(chatTextView.snp.leading)
-            make.bottom.equalTo(chatTextView.snp.bottom)
-        }
-        
         
         let date = date.toDate()!
         let calendar = Calendar.current
@@ -72,16 +70,24 @@ class ChatMyTableCell: UITableViewCell {
         
         timeLabel.text = "\(hour):\(minute)"
         
-        let font = chatTextView.font!
-        let estimatedFrame = text.getEstimatedFrame(with: font)
-        print("====")
-        print(text)
-        print(estimatedFrame)
+        chatTextLabel.text = "\(text)"
+
+        chatImageView.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.trailing.equalToSuperview().inset(8)
+            make.leading.greaterThanOrEqualToSuperview().inset(50)
+        }
+        
+        chatTextLabel.snp.makeConstraints { make in
+            make.edges.equalTo(chatImageView)
+        }
 
         
-        chatTextView.snp.makeConstraints { make in
-            make.width.equalTo(estimatedFrame.width + 20)
+        timeLabel.snp.makeConstraints { make in
+            make.trailing.equalTo(chatImageView.snp.leading)
+            make.bottom.equalTo(chatImageView.snp.bottom)
         }
+            
         
     }
     
