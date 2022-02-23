@@ -28,8 +28,8 @@ enum dodgedState: Int {
 
 enum matchedState: Int {
     
-    case matched = 0
-    case close = 1
+    case matched = 1
+    case close = 0
     
 }
 
