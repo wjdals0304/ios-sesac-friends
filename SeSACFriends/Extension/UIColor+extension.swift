@@ -38,6 +38,16 @@ enum Color {
     // red 색
     case redColor
     
+    // 하늘색
+    case blueColor
+    
+    // mychat cell
+    case mychatColor
+
+    // yourChat cell
+    case yourChatColor
+    
+    
 }
 
 extension UIColor {
@@ -71,6 +81,14 @@ extension UIColor {
             
         case .redColor :
             return UIColor(red: 0.913, green: 0.401, blue: 0.419, alpha: 1)
+            
+        case .blueColor :
+            return UIColor(red: 0.384, green: 0.559, blue: 0.9, alpha: 1)
+        case .mychatColor :
+            return UIColor(red: 0.804, green: 0.958, blue: 0.881, alpha: 1)
+        case .yourChatColor:
+            return UIColor(red: 0.821, green: 0.821, blue: 0.821, alpha: 1)
+
             
         }
         
