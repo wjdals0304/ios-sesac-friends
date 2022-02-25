@@ -66,7 +66,28 @@ struct UserAPI {
         
     }
     
+    func getShopMyInfo() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = UserAPI.scheme
+        components.host = UserAPI.host
+        components.port = UserAPI.port
+        components.path = UserAPI.path + "/shop/myinfo"
+        
+        return components
+    }
     
+    func updateShop() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = UserAPI.scheme
+        components.host = UserAPI.host
+        components.port = UserAPI.port
+        components.path = UserAPI.path + "/update/shop"
+
+        return components
+
+    }
 }
 
 
@@ -328,6 +349,125 @@ class UserNetwork {
                 
             }
            
+            
+        }
+        
+        
+    }
+    
+    
+    func getShopMyinfo(completion:@escaping(User?, APIStatus?) -> Void) {
+        
+        let url = userApi.getShopMyInfo().url!
+        
+        let dataRequest = AF.request(url,method: .get ,headers : self.header)
+
+        dataRequest.responseData { response in
+            
+            switch response.result {
+               
+            case .success:
+
+                guard let statusCode = response.response?.statusCode else {
+                    completion(nil,.failed)
+                    return
+                }
+                
+                guard let value = response.value else {
+                    completion(nil,.noData)
+                    return
+                }
+
+                switch statusCode  {
+                    
+                case 200 :
+                    
+                    let decoder = JSONDecoder()
+                                        
+                    guard let userData = try? decoder.decode(User.self, from: value)
+                    else {
+                        print("error")
+                        completion(nil,.invalidData)
+                        return
+                    }
+                    
+                    completion(userData,.success)
+                                    
+                case 406 :
+                    completion(nil,.unregisterdUser)
+                case 401 :
+                    completion(nil,.expiredToken)
+                case 500 :
+                    completion(nil,.serverError)
+                case 501 :
+                    completion(nil,.clientError)
+                default:
+                    completion(nil,.failed)
+                }
+                
+            
+            case .failure(let error):
+                  print(error)
+                  completion(nil,.failed)
+            
+           }
+            
+            
+        }
+        
+        
+    }
+    
+    func updateShop(sesac:Int, background:Int, completion:@escaping(APIStatus?) -> Void) {
+        
+        let url = userApi.updateShop().url!
+        
+        let param : Parameters = [
+            "sesac" : sesac ,
+            "background" : background
+        ]
+        
+        let dataRequest = AF.request(url,method: .post,parameters: param, encoding: URLEncoding.httpBody, headers:  self.header)
+        
+        dataRequest.responseData { response in
+            
+            switch response.result {
+                
+            case .success:
+                
+                guard let statusCode = response.response?.statusCode else {
+                    completion(.failed)
+                    return
+                }
+                
+                switch statusCode {
+                    
+                case 200:
+                    completion(.success)
+                case 201:
+                    completion(.unownItem)
+                case 401:
+                    completion(.expiredToken)
+                case 406:
+                    completion(.unregisterdUser)
+                case 500:
+                    completion(.serverError)
+                case 501:
+                    completion(.clientError)
+                default :
+                    completion(.failed)
+                
+                          
+                }
+                
+            case .failure(let error) :
+                print(error)
+                completion(.failed)
+                
+                
+            }
+            
+            
             
         }
         

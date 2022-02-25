@@ -23,17 +23,28 @@ struct CustomProduct {
     
 }
 
-final class SesacImageViewModel {
+final class SesacShopViewModel {
     
-    var productIdentifiers : Set<String> = [
+    var sesacProductIdentifiers : Set<String> = [
         "com.memolease.sesac1.sprout1",
         "com.memolease.sesac1.sprout2",
         "com.memolease.sesac1.sprout3",
         "com.memolease.sesac1.sprout4"
     ]
     
-    var productsArray = Array<Any>()
-    
+    var sesacBackgroundProductIdentifiers : Set<String> = [
+        "com.memolease.sesac1.background1",
+        "com.memolease.sesac1.background2",
+        "com.memolease.sesac1.background3",
+        "com.memolease.sesac1.background4",
+        "com.memolease.sesac1.background5",
+        "com.memolease.sesac1.background6",
+        "com.memolease.sesac1.background7",
+    ]
+
+    var sesacProductsArray = Array<Any>()
+    var sesacBackgroundProductsArray = Array<Any>()
+
     var sesacCollection = Array<Int>()
     var backgroundCollection = Array<Int>()
     var sesac = 0
@@ -80,11 +91,7 @@ final class SesacImageViewModel {
         
     }
     
-    
-    
-    
-    
-    
+
     func getShopMyinfo(completion: @escaping(APIStatus?) -> Void ) {
         
         let idtoken = UserManager.idtoken
@@ -152,6 +159,39 @@ final class SesacImageViewModel {
             }
         }
  
+        
+    }
+    
+    func updateShop(sesac: Int, background: Int, completion:@escaping(APIStatus?) -> Void) {
+        
+        let idtoken = UserManager.idtoken
+        guard let idtoken = idtoken else {
+            return
+        }
+
+        let userNetwork = UserNetwork(idtoken: idtoken)
+        
+        userNetwork.updateShop(sesac: sesac, background: background) { APIStatus in
+            
+            switch APIStatus {
+                
+            case .success:
+                completion(.success)
+            case .unownItem :
+                completion(.unownItem)
+            case .expiredToken:
+                completion(.expiredToken)
+            case .unregisterdUser :
+                completion(.failed)
+            case .serverError:
+                completion(.failed)
+            case .clientError:
+                completion(.failed)
+            default :
+                completion(.failed)
+            
+            }
+        }
         
     }
     
