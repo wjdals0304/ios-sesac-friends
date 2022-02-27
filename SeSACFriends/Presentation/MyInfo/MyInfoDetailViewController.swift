@@ -63,6 +63,8 @@ class MyInfoDetailViewController : UIViewController {
         button.layer.cornerRadius = 8
         button.layer.borderColor = UIColor.getColor(.bottomlineColor).cgColor
         button.layer.borderWidth = 1
+        button.backgroundColor = UIColor.getColor(.whiteTextColor)
+        button.setTitleColor(UIColor.getColor(.defaultTextColor), for: .normal)
         return button
     }()
     
@@ -73,7 +75,9 @@ class MyInfoDetailViewController : UIViewController {
         button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 8
         button.layer.borderColor = UIColor.getColor(.bottomlineColor).cgColor
-        button.layer.borderWidth = 1 
+        button.layer.borderWidth = 1
+        button.backgroundColor = UIColor.getColor(.whiteTextColor)
+        button.setTitleColor(UIColor.getColor(.defaultTextColor), for: .normal)
         return button
     }()
  
@@ -171,7 +175,6 @@ class MyInfoDetailViewController : UIViewController {
     
     let popUpWindowView = PopUpWindow(title: "정말 탈퇴하시겠습니까?", text: "탈퇴하시면 새싹 프렌즈를 이용할 수 없어요ㅠ")
     
-    
     lazy var rightButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(rightButtonPressed))
         return button
@@ -209,9 +212,10 @@ class MyInfoDetailViewController : UIViewController {
         if userData.gender == 0 {
             womanUIButton.backgroundColor = UIColor.getColor(.activeColor)
             womanUIButton.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
+            
         } else if userData.gender == 1 {
             manUIButton.backgroundColor = UIColor.getColor(.activeColor)
-            womanUIButton.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
+            manUIButton.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
         }
         
         
@@ -279,6 +283,8 @@ class MyInfoDetailViewController : UIViewController {
         
         navigationItem.leftBarButtonItem = backBarButton
         self.navigationController?.navigationBar.tintColor = .black
+        
+        self.popUpWindowView.popUpWindowView.okButton.addTarget(self, action: #selector(okButtonClicked), for: .touchUpInside)
     }
     
     func setupConstraint() {
@@ -375,7 +381,7 @@ class MyInfoDetailViewController : UIViewController {
             $0.leading.equalToSuperview()
         }
         
-
+        
     }
 }
 
@@ -401,13 +407,56 @@ private extension MyInfoDetailViewController {
         
         
         myInfoViewModel.updateMypage(searchable: searchable , ageMin: Int(ageMin), ageMax: Int(ageMax), gender: gender, hobby: hobby ) { response in
+
+            switch response {
+                            
+             case .success :
+                
+                self.navigationController?.popViewController(animated: true)
+            
+             case .expiredToken :
+                
+                AuthNetwork.getIdToken { error  in
+                    
+                    switch error {
+                    case .success :
+                        self.rightButtonPressed()
+                    case .failed :
+                        self.view.makeToast(APIErrorMessage.failed.rawValue)
+                    default :
+                        self.view.makeToast(APIErrorMessage.failed.rawValue)
+                    }
+                }
+            
+             default :
+                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                
+            }
+            
+        }
+    }
+  
+    @objc func closeButtonClicked(){
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func okButtonClicked() {
+        
+        myInfoViewModel.withDrawUser { response in
             
             switch response {
                 
-             case .success :
-                self.navigationController?.popViewController(animated: true)
-            
-            case .expiredToken :
+               case .success :
+                 print("온보딩화면으로")
+                 let onboardingVC = OnboardingViewController()
+                onboardingVC.modalPresentationStyle = .fullScreen
+                self.present(onboardingVC, animated: true, completion: nil)
+
+                
+               case .unregisterdUser:
+                 self.view.makeToast("이미 탈퇴가 된 상태입니다.")
+                
+               case .expiredToken :
                 
                 let currentUser = FirebaseAuth.Auth.auth().currentUser
                 currentUser?.getIDToken(completion: { idtoken, error in
@@ -418,19 +467,19 @@ private extension MyInfoDetailViewController {
                  }
                 
                  UserManager.idtoken = idtoken
+                    self.okButtonClicked()
                 })
                 
-                self.rightButtonPressed()
+                
+               case .serverError :
+                  self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
 
-            default :
+                
+              default :
                 self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
                 
             }
-            
         }
-    }
-  
-    @objc func closeButtonClicked(){
-        self.navigationController?.popViewController(animated: true)
+        
     }
 }
