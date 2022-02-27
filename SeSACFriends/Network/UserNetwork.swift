@@ -12,13 +12,12 @@ import Alamofire
 
 
 struct UserAPI {
+    
     static let scheme = "http"
     static let host = "test.monocoding.com"
     static let port = 35484
     static let path = "/user"
-    
-    
-    
+
     
     func getUser() -> URLComponents {
         
@@ -87,6 +86,18 @@ struct UserAPI {
 
         return components
 
+    }
+    
+    func postShopIos() -> URLComponents {
+        
+        var components = URLComponents()
+        components.scheme = UserAPI.scheme
+        components.host = UserAPI.host
+        components.port = UserAPI.port
+        components.path = UserAPI.path + "/shop/ios"
+        
+        return components
+        
     }
 }
 
@@ -466,15 +477,60 @@ class UserNetwork {
                 
                 
             }
+        }
+    }
+    
+    func postShopIos(receipt:String, product: String, completion:@escaping(APIStatus?) -> Void ){
+        
+        let url = userApi.postShopIos().url!
+        
+        let param : Parameters =  [
+            "receipt" : receipt,
+            "product" : product
+        ]
+        
+        let dataRequest = AF.request(url, method: .post , parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
+        
+        dataRequest.responseData { response in
             
+            switch response.result {
+                
+            case .success :
+                
+                guard let statusCode = response.response?.statusCode else {
+                    completion(.failed)
+                    return
+                }
+                
+                switch statusCode {
+                 
+                case 200 :
+                    completion(.success)
+                case 201 :
+                    completion(.failedReceipt)
+                case 401 :
+                    completion(.expiredToken)
+                case 406 :
+                    completion(.unregisterdUser)
+                case 500 :
+                    completion(.serverError)
+                case 501:
+                    completion(.clientError)
+                default :
+                    completion(.failed)
+                    
+                }
             
-            
+            case .failure(let error) :
+                print(error)
+                completion(.failed)
+                
+                
+            }
         }
         
         
     }
-    
-    
     
     
 }
