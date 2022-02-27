@@ -195,6 +195,45 @@ final class SesacShopViewModel {
         
     }
     
+    func postShopIos(receipt:String,product: String , completion:@escaping(APIStatus?) -> Void) {
+        
+        let idtoken = UserManager.idtoken!
+        
+        let userNetwork = UserNetwork(idtoken: idtoken)
+        
+        userNetwork.postShopIos(receipt: receipt, product: product) { APIStatus in
+            
+            switch APIStatus {
+                
+            case .success :
+                completion(.success)
+            
+            case .failedReceipt :
+                completion(.failedReceipt)
+            
+            case .expiredToken :
+                completion(.expiredToken)
+                
+            case .unregisterdUser :
+                completion(.failed)
+                
+            case .serverError :
+                completion(.failed)
+            
+            case .clientError:
+                completion(.failed)
+            default :
+                completion(.failed)
+                
+            }
+            
+            
+        }
+        
+        
+        
+    }
+    
     
     
 }
