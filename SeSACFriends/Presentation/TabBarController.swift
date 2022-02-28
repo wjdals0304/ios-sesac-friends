@@ -11,16 +11,14 @@ import UIKit
 
 class TabBarController: UITabBarController {
     
-    private var userData : User?
-    
-    
-    init(userData: User){
-        self.userData = userData
-        super.init(nibName: nil, bundle: nil)
-    }
     
     init(){
         super.init(nibName: nil, bundle: nil)
+        
+        // TabBarController를 rootViewController 로 지정
+        let keyWindow = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
+        keyWindow?.rootViewController = self
+        
     }
     
     required init?(coder: NSCoder) {
@@ -30,24 +28,19 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         let homeViewController = UINavigationController(rootViewController: HomeViewController())
-        
-        
         homeViewController.tabBarItem = UITabBarItem(title:"홈", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house"))
         
         
-        //test 용
-        self.userData = User(id: "11111", v: 0, uid: "", phoneNumber: "", email: "", fcMtoken: "", nick: "테스트입니다.", birth: "", gender: 0, hobby: "자전거타기", comment: [], reputation: [1,0,0,0,0,1], sesac: 0, sesacCollection: [], background: 0, backgroundCollection: [], purchaseToken: [], transactionID: [], reviewedBefore: [], reportedNum: 0, reportedUser: [], dodgepenalty: 0, dodgeNum: 0, ageMin: 23, ageMax: 30, searchable: 1, createdAt: "")
-        
-        
-        let myInfoViewController = UINavigationController(rootViewController: MyInfoViewController(user: userData!))
-        
-        
+        let myInfoViewController = UINavigationController(rootViewController: MyInfoViewController())
         myInfoViewController.tabBarItem = UITabBarItem(title:"내정보", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person"))
         
+        let sesacShopViewController = UINavigationController(rootViewController: SesacShopViewController())
+        sesacShopViewController.tabBarItem = UITabBarItem(title: "새싹샵", image: UIImage(named: "gift_ic"), selectedImage: UIImage(named: "gift_ic"))
         
-        viewControllers = [  homeViewController, myInfoViewController ]
+        
+        viewControllers = [ homeViewController ,sesacShopViewController, myInfoViewController ]
+        
     }
     
     
