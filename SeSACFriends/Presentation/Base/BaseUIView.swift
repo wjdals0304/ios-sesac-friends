@@ -13,7 +13,7 @@ import SnapKit
 class BaseUIView : UIView {
     
     
-    override init(frame: CGRect){
+    override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemBackground
         setup()

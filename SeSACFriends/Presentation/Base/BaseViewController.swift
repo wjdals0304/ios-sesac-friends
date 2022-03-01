@@ -21,11 +21,11 @@ class BaseViewController: UIViewController {
         view.backgroundColor = .systemBackground
     }
     
-    func setup(){
+    func setup() {
         
     }
     
-    func setupConstraint(){
+    func setupConstraint() {
         
     }
     
@@ -34,7 +34,6 @@ class BaseViewController: UIViewController {
     }
     
     func setupNavigationBar() {
-        
         
     }
     
