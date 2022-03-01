@@ -8,16 +8,12 @@
 import Foundation
 import Alamofire
 
-
-
-
 struct UserAPI {
     
     static let scheme = "http"
     static let host = "test.monocoding.com"
     static let port = 35484
     static let path = "/user"
-
     
     func getUser() -> URLComponents {
         
@@ -40,7 +36,6 @@ struct UserAPI {
         
         return components
     }
-    
     
     func withdrawUser() -> URLComponents {
         
@@ -104,23 +99,21 @@ struct UserAPI {
 
 class UserNetwork {
     
-    private let idtoken : String
+    private let idtoken: String
     
     let userApi = UserAPI()
     var header: HTTPHeaders
     
-    
     init(idtoken: String) {
         self.idtoken = idtoken
-        self.header =  [ "idtoken" : self.idtoken ]
+        self.header =  ["idtoken": self.idtoken]
     }
     
     /// 내 유저 정보가져오기
     /// - Parameter completion: user, apistatus 리턴
-    func getUser(completion: @escaping(User?, APIStatus?) -> Void ){
+    func getUser(completion: @escaping(User?, APIStatus?) -> Void ) {
         
         let url = userApi.getUser().url!
-        
         
         let dataRequest = AF.request(url,
                                     method: .get,
@@ -134,16 +127,16 @@ class UserNetwork {
             case .success:
 
                 guard let statusCode = response.response?.statusCode else {
-                    completion(nil,.failed)
+                    completion(nil, .failed)
                     return
                 }
                 
                 guard let value = response.value else {
-                    completion(nil,.noData)
+                    completion(nil, .noData)
                     return
                 }
 
-                switch statusCode  {
+                switch statusCode {
                     
                 case 200 :
                     
@@ -154,34 +147,31 @@ class UserNetwork {
                     guard let userData = try? decoder.decode(User.self, from: value)
                     else {
                         print("error")
-                        completion(nil,.invalidData)
+                        completion(nil, .invalidData)
                         return
                     }
                     
-                    completion(userData,.success)
+                    completion(userData, .success)
                                     
                 case 406 :
-                    completion(nil,.unregisterdUser)
+                    completion(nil, .unregisterdUser)
                 case 401 :
-                    completion(nil,.expiredToken)
+                    completion(nil, .expiredToken)
                 case 500 :
-                    completion(nil,.serverError)
+                    completion(nil, .serverError)
                 case 501 :
-                    completion(nil,.clientError)
+                    completion(nil, .clientError)
                 default:
-                    completion(nil,.failed)
+                    completion(nil, .failed)
                 }
                 
-            
             case .failure(let error):
                   print(error)
-                  completion(nil,.failed)
+                  completion(nil, .failed)
             
            }
         }
     }
-    
-
     
     /// 회원가입
     /// - Parameter completion: api 상태코드
@@ -197,31 +187,27 @@ class UserNetwork {
             return
         }
 
-
-        let param : Parameters =  [
-            "phoneNumber" : phoneNumber,
-            "FCMtoken" : FCMtoken,
-            "nick" : nick,
-            "birth" : birth,
-            "email" : email,
-            "gender" : gender
+        let param: Parameters = [
+            "phoneNumber": phoneNumber,
+            "FCMtoken": FCMtoken,
+            "nick": nick,
+            "birth": birth,
+            "email": email,
+            "gender": gender
         ]
         
         let url = userApi.postUser().url!
         self.header["Content-Type"] = "application/x-www-form-urlencoded"
 
-
-        let dataRequest = AF.request(url
-                                     ,method: .post
-                                     ,parameters : param
-                                     ,encoding: URLEncoding.httpBody
-                                     ,headers: self.header
+        let dataRequest = AF.request(url, method: .post
+                                     , parameters: param
+                                     , encoding: URLEncoding.httpBody
+                                     , headers: self.header
                                     )
-
 
         dataRequest.responseData { response in
 
-            switch response.result  {
+            switch response.result {
 
             case .success :
 
@@ -229,7 +215,6 @@ class UserNetwork {
                     completion(.failed)
                     return
                 }
-
 
                 switch statusCode {
 
@@ -258,14 +243,13 @@ class UserNetwork {
         }
     }
     
-    
     /// 회원가입탈퇴
     /// - Parameter completion: api 상태코드
     func withdrawUser(completion: @escaping(APIStatus?) -> Void) {
         
         let url = userApi.withdrawUser().url!
         
-        let dataRequest = AF.request(url,method: .post, headers: self.header)
+        let dataRequest = AF.request(url, method: .post, headers: self.header)
         
         dataRequest.responseData { response in
             
@@ -301,8 +285,6 @@ class UserNetwork {
         }
     }
     
-    
-    
     /// 회원 업데이트
     /// - Parameters:
     ///   - searchable: 검색허용 여부
@@ -311,20 +293,20 @@ class UserNetwork {
     ///   - gender: 성별
     ///   - hobby: 취미
     ///   - completion: API 상태
-    func updateMypage(searchable: Int, ageMin: Int ,ageMax : Int, gender: Int,hobby: String ,completion:@escaping(APIStatus?) -> Void ) {
+    func updateMypage(searchable: Int, ageMin: Int, ageMax : Int, gender: Int ,hobby: String , completion: @escaping(APIStatus?) -> Void) {
         
-        let param : Parameters = [
-            "searchable" : searchable,
-            "ageMin" : ageMin ,
-            "ageMax" : ageMax,
-            "gender" : gender,
-            "hobby" : hobby
+        let param: Parameters = [
+            "searchable": searchable,
+            "ageMin": ageMin ,
+            "ageMax": ageMax,
+            "gender": gender,
+            "hobby": hobby
         ]
         
         let url = userApi.updateMypage().url!
         self.header["Content-Type"] = "application/x-www-form-urlencoded"
 
-        let dataRequest = AF.request(url,method: .post,parameters: param,encoding: URLEncoding.httpBody , headers: self.header)
+        let dataRequest = AF.request(url, method: .post, parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
 
         dataRequest.responseData { response in
              
@@ -332,7 +314,7 @@ class UserNetwork {
                 
             case .success :
                 
-                guard let statusCode = response.response?.statusCode else  {
+                guard let statusCode = response.response?.statusCode else {
                     completion(.failed)
                     return
                 }
@@ -353,25 +335,21 @@ class UserNetwork {
                     completion(.failed)
                 }
                 
-            
             case .failure(let error) :
                 print(error)
                 completion(.failed)
                 
             }
            
-            
         }
-        
         
     }
     
-    
-    func getShopMyinfo(completion:@escaping(User?, APIStatus?) -> Void) {
+        func getShopMyinfo(completion:@escaping(User?, APIStatus?) -> Void) {
         
         let url = userApi.getShopMyInfo().url!
         
-        let dataRequest = AF.request(url,method: .get ,headers : self.header)
+        let dataRequest = AF.request(url, method: .get, headers: self.header)
 
         dataRequest.responseData { response in
             
@@ -380,16 +358,16 @@ class UserNetwork {
             case .success:
 
                 guard let statusCode = response.response?.statusCode else {
-                    completion(nil,.failed)
+                    completion(nil, .failed)
                     return
                 }
                 
                 guard let value = response.value else {
-                    completion(nil,.noData)
+                    completion(nil, .noData)
                     return
                 }
 
-                switch statusCode  {
+                switch statusCode {
                     
                 case 200 :
                     
@@ -398,47 +376,42 @@ class UserNetwork {
                     guard let userData = try? decoder.decode(User.self, from: value)
                     else {
                         print("error")
-                        completion(nil,.invalidData)
+                        completion(nil, .invalidData)
                         return
                     }
                     
-                    completion(userData,.success)
+                    completion(userData, .success)
                                     
                 case 406 :
-                    completion(nil,.unregisterdUser)
+                    completion(nil, .unregisterdUser)
                 case 401 :
-                    completion(nil,.expiredToken)
+                    completion(nil, .expiredToken)
                 case 500 :
-                    completion(nil,.serverError)
+                    completion(nil, .serverError)
                 case 501 :
-                    completion(nil,.clientError)
+                    completion(nil, .clientError)
                 default:
-                    completion(nil,.failed)
+                    completion(nil, .failed)
                 }
                 
-            
             case .failure(let error):
                   print(error)
-                  completion(nil,.failed)
+                  completion(nil, .failed)
             
            }
-            
-            
         }
-        
-        
     }
     
-    func updateShop(sesac:Int, background:Int, completion:@escaping(APIStatus?) -> Void) {
+    func updateShop(sesac: Int, background: Int, completion:@escaping(APIStatus?) -> Void) {
         
         let url = userApi.updateShop().url!
         
-        let param : Parameters = [
-            "sesac" : sesac ,
-            "background" : background
+        let param: Parameters = [
+            "sesac": sesac ,
+            "background": background
         ]
         
-        let dataRequest = AF.request(url,method: .post,parameters: param, encoding: URLEncoding.httpBody, headers:  self.header)
+        let dataRequest = AF.request(url, method: .post, parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
         
         dataRequest.responseData { response in
             
@@ -467,26 +440,23 @@ class UserNetwork {
                     completion(.clientError)
                 default :
                     completion(.failed)
-                
-                          
                 }
                 
             case .failure(let error) :
                 print(error)
                 completion(.failed)
                 
-                
             }
         }
     }
     
-    func postShopIos(receipt:String, product: String, completion:@escaping(APIStatus?) -> Void ){
+    func postShopIos(receipt: String, product: String, completion:@escaping(APIStatus?) -> Void ) {
         
         let url = userApi.postShopIos().url!
         
-        let param : Parameters =  [
-            "receipt" : receipt,
-            "product" : product
+        let param: Parameters =  [
+            "receipt": receipt,
+            "product": product
         ]
         
         let dataRequest = AF.request(url, method: .post , parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
@@ -525,12 +495,7 @@ class UserNetwork {
                 print(error)
                 completion(.failed)
                 
-                
             }
         }
-        
-        
     }
-    
-    
 }

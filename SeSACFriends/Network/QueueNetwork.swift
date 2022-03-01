@@ -95,37 +95,35 @@ struct QueueAPI {
     
 }
 
-
 class QueueNetwork {
     
-    private let idtoken : String
+    private let idtoken: String
     
     let queueApi = QueueAPI()
     var header: HTTPHeaders
     
     init(idtoken: String) {
         self.idtoken = idtoken
-        self.header = ["idtoken" : self.idtoken]
+        self.header = ["idtoken": self.idtoken]
     }
     
     
     func postOnqueue(region: Int, lat: Double, long:Double, completion: @escaping(Queue?,APIStatus?) -> Void ) {
         
-        let param : Parameters = [
-            "region" : region,
-            "lat" : lat,
-            "long" : long
+        let param: Parameters = [
+            "region": region,
+            "lat": lat,
+            "long": long
         ]
-        
         
         let url = queueApi.postOnqueue().url!
         self.header["Content-Type"] = "application/x-www-form-urlencoded"
         
         let dataRequest = AF.request(url
-                                     ,method: .post
-                                     ,parameters: param
-                                     ,encoding: URLEncoding.httpBody
-                                     ,headers: self.header
+                                     , method: .post
+                                     , parameters: param
+                                     , encoding: URLEncoding.httpBody
+                                     , headers: self.header
                                     )
         
         dataRequest.responseData { response in
@@ -135,12 +133,12 @@ class QueueNetwork {
             case .success :
                 
                 guard let statusCode = response.response?.statusCode else {
-                    completion(nil,.failed)
+                    completion(nil, .failed)
                     return
                 }
                 
                 guard let value = response.value else {
-                    completion(nil,.noData)
+                    completion(nil, .noData)
                     return
                 }
                 
@@ -152,64 +150,60 @@ class QueueNetwork {
                     
                     guard let queueData = try? decoder.decode(Queue.self, from: value)
                     else {
-                        completion(nil,.invalidData)
+                        completion(nil, .invalidData)
                         return
                     }
-                    completion(queueData,.success)
+                    completion(queueData, .success)
                 
                 case 401 :
-                    completion(nil,.expiredToken)
+                    completion(nil, .expiredToken)
                 case 406 :
-                    completion(nil,.unregisterdUser)
+                    completion(nil, .unregisterdUser)
                 case 500 :
-                    completion(nil,.serverError)
+                    completion(nil, .serverError)
                 case 501:
-                    completion(nil,.clientError)
+                    completion(nil, .clientError)
                     
                 default :
-                    completion(nil,.failed)
+                    completion(nil, .failed)
                 
                 }
                 
-                
             case .failure(let error) :
                 print(error)
-                completion(nil,.failed)
+                completion(nil, .failed)
                 
             }
             
-            
-            
+
         }
         
     }
     
-    
-    func postQueue(region : Int, long: Double , lat:Double ,hf:[String], completion: @escaping(APIStatus?) -> Void )  {
+    func postQueue(region: Int, long: Double, lat: Double, hf: [String], completion: @escaping(APIStatus?) -> Void ) {
        
-        
         let param: Parameters = [
-            "type" : 2 ,
+            "type": 2 ,
             "region": region,
             "lat": lat,
-            "long" : long,
-            "hf" : JSON(hf)
+            "long": long,
+            "hf": JSON(hf)
         ]
         let url = queueApi.postQueue().url!
 
         self.header["Content-Type"] = "application/x-www-form-urlencoded"
 
         let dateRequest = AF.request(url
-                                     ,method: .post
-                                     ,parameters: param
-                                     ,encoding: URLEncoding.httpBody
-                                     ,headers: self.header)
+                                     , method: .post
+                                     , parameters: param
+                                     , encoding: URLEncoding.httpBody
+                                     , headers: self.header)
         
         dateRequest.responseData { response in
             
             switch response.result {
                 
-               case .success :
+            case .success :
                 
                 guard let statusCode = response.response?.statusCode else {
                     completion(.failed)
@@ -218,13 +212,13 @@ class QueueNetwork {
 
                 switch statusCode {
                     
-                 case 200 :
+                case 200 :
                     completion(.success)
-                 case 201 :
+                case 201 :
                     completion(.reportThreeUser)
-                 case 203:
+                case 203:
                     completion(.penaltyone)
-                 case 204:
+                case 204:
                     completion(.penaltytwo)
                 case 205:
                     completion(.penaltyThree)
@@ -244,8 +238,7 @@ class QueueNetwork {
                     
                 }
                 
-               
-              case .failure(let error) :
+            case .failure(let error) :
                 print(error)
                 completion(.failed)
                 
@@ -254,18 +247,17 @@ class QueueNetwork {
         
     }
     
-    func postHobbyRequest(otheruid:String,completion:@escaping(APIStatus?) -> Void) {
+    func postHobbyRequest(otheruid: String, completion:@escaping(APIStatus?) -> Void) {
         
-        let param : Parameters = [
-            "otheruid" : otheruid
+        let param: Parameters = [
+            "otheruid": otheruid
         ]
-        
         
         let url = queueApi.postHobbyRequest().url!
         
         self.header["Content-Type"] = "application/x-www-form-urlencoded"
 
-        let dateRequest = AF.request(url,method: .post,parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
+        let dateRequest = AF.request(url, method: .post, parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
         
         dateRequest.responseData { response in
             
@@ -298,31 +290,24 @@ class QueueNetwork {
                     completion(.failed)
                     
                 }
-                
-                
             case .failure(let error) :
                 print(error)
                 completion(.failed)
-                
-                
             }
-            
-            
         }
-        
     }
     
-    func postHobbyAccept(otheruid: String ,completion:@escaping(APIStatus?) -> Void) {
+    func postHobbyAccept(otheruid: String, completion:@escaping(APIStatus?) -> Void) {
         
-        let param : Parameters = [
-            "otheruid" : otheruid
+        let param: Parameters = [
+            "otheruid": otheruid
         ]
     
         let url = queueApi.postHobbyAccept().url!
         
         self.header["Content-Type"] = "application/x-www-form-urlencoded"
 
-        let dateRequest = AF.request(url,method: .post,parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
+        let dateRequest = AF.request(url, method: .post,parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
         
         dateRequest.responseData { response in
             
@@ -357,25 +342,19 @@ class QueueNetwork {
                     completion(.failed)
                     
                 }
-                
-                
             case .failure(let error) :
                 print(error)
                 completion(.failed)
                 
             }
         }
-        
-        
     }
-    
-    
+
     func deleteQueue(completion:@escaping(APIStatus?) -> Void) {
         
         let url = queueApi.deleteQueue().url!
         
-        let dateRequest = AF.request(url,method: .delete,encoding: URLEncoding.httpBody,headers: self.header)
-        
+        let dateRequest = AF.request(url, method: .delete, encoding: URLEncoding.httpBody, headers: self.header)
         
         dateRequest.responseData { response in
             
@@ -407,80 +386,65 @@ class QueueNetwork {
                 completion(.failed)
             
             }
-            
-            
-            
         }
-        
-        
         
     }
     
-    func getMyQueueState(completion:@escaping(QueueState?,APIStatus?) -> Void) {
-        
+    func getMyQueueState(completion: @escaping(QueueState?, APIStatus?) -> Void) {
         
         let url = queueApi.getMyQueueState().url!
         
-        let dateRequest = AF.request(url, method: .get,headers: self.header)
+        let dateRequest = AF.request(url, method: .get, headers: self.header)
         
         dateRequest.responseData { response in
             
             switch response.result {
             
-                
             case .success :
-                
                 guard let statusCode = response.response?.statusCode else {
-                    completion(nil,.failed)
+                    completion(nil, .failed)
                     return
                 }
-                
                 guard let value = response.value else {
-                    completion(nil,.noData)
+                    completion(nil, .noData)
                     return
                 }
 
-                
                 switch statusCode {
                 
                 case 200:
                     
                     let decoder = JSONDecoder()
                     
-                    
                     guard let queueState = try? decoder.decode(QueueState.self, from: value)
                     else {
-                        completion(nil,.invalidData)
+                        completion(nil, .invalidData)
                         return
                     }
-                    completion(queueState,.success)
+                    completion(queueState, .success)
                 
                 case 201:
-                    completion(nil,.stopSearch)
+                    completion(nil, .stopSearch)
                 case 401 :
-                    completion(nil,.expiredToken)
+                    completion(nil, .expiredToken)
                 case 406 :
-                    completion(nil,.unregisterdUser)
+                    completion(nil, .unregisterdUser)
                 case 500:
-                    completion(nil,.serverError)
+                    completion(nil, .serverError)
                 
                 default :
-                    completion(nil,.failed)
+                    completion(nil, .failed)
                     
                 }
             case .failure(let error):
                 print(error)
-                completion(nil,.failed)
+                completion(nil, .failed)
         
          }
             
-            
         }
         
-        
     }
-    
-    
     
     func postDodge(otheruid: String, completion: @escaping(APIStatus?) -> Void ) {
         
@@ -489,10 +453,10 @@ class QueueNetwork {
         self.header["Content-Type"] = "application/x-www-form-urlencoded"
         
         let param: Parameters = [
-            "otheruid" : otheruid
+            "otheruid": otheruid
         ]
         
-        let dataRequest = AF.request(url, method: .post , parameters: param ,encoding: URLEncoding.httpBody,headers: self.header)
+        let dataRequest = AF.request(url, method: .post, parameters: param, encoding: URLEncoding.httpBody, headers: self.header)
         
         dataRequest.responseData { response in
             
@@ -528,8 +492,6 @@ class QueueNetwork {
                     completion(.failed)
                 }
                 
-                
-                
             case .failure(let error):
                 print(error)
                 completion(.failed)
@@ -537,10 +499,6 @@ class QueueNetwork {
             
         }
         
-        
     }
     
-    
 }
-
-

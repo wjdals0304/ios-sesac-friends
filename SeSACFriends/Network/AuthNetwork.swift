@@ -11,22 +11,18 @@ import FirebaseAuth
 
 class AuthNetwork {
     
-    
-    static func sendVerificationCode(phoneNumber: String, completion:@escaping(String?,APIErrorMessage?) -> Void){
+    static func sendVerificationCode(phoneNumber: String, completion: @escaping(String?, APIErrorMessage?) -> Void) {
         
-        
-        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil )
-        {
-            (varification , error ) in
+        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil ) { (varification , error ) in
             if error == nil {
                 
-                completion(varification!,.success)
+                completion(varification!, .success)
                 
             } else {
 
                 if error != nil {
                 
-                    if let errorCode = AuthErrorCode(rawValue: error!._code){
+                    if let errorCode = AuthErrorCode(rawValue: error!._code) {
                         
                         switch errorCode {
                         
@@ -49,7 +45,7 @@ class AuthNetwork {
     static func getIdToken(completion: @escaping(APIErrorMessage?) -> Void ) {
         
         let currentUser = FirebaseAuth.Auth.auth().currentUser
-        currentUser?.getIDToken(completion: { idtoken, error in
+        currentUser?.getIDToken(completion: { idtoken, _ in
         guard let idtoken = idtoken else {
             completion(APIErrorMessage.failed)
             return
@@ -58,8 +54,6 @@ class AuthNetwork {
          completion(APIErrorMessage.success)
          UserManager.idtoken = idtoken
         
-        
         })
-    
-     }
+    }
 }
