@@ -19,7 +19,7 @@ final class SesacImageView : BaseUIView {
         layout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 24, right: 12)
         layout.scrollDirection = .vertical
         
-        let collectionView = UICollectionView(frame: .zero , collectionViewLayout: layout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .systemBackground
         collectionView.register(SesacImageCollectionViewCell.self, forCellWithReuseIdentifier: SesacImageCollectionViewCell.identifier)
         
@@ -64,10 +64,9 @@ private extension SesacImageView {
             print("")
         }
         
-        
     }
     
-    //영수증 검증
+    // 영수증 검증
     func receiptValidation(transaction: SKPaymentTransaction, productIdentifier: String) {
         
         let receiptFileURL = Bundle.main.appStoreReceiptURL
@@ -79,19 +78,18 @@ private extension SesacImageView {
             switch APIStatus {
                 
             case .success :
-                //영수증 검증이 끝난 이후 트랜잭션 종료
+                //  영수증 검증이 끝난 이후 트랜잭션 종료
                 SKPaymentQueue.default().finishTransaction(transaction)
             case .failedReceipt :
-                // TODO: 검증 실패시 로직 처리
                 print("faildRecepit")
             case .expiredToken:
                 AuthNetwork.getIdToken { error in
                     switch error {
-                        case .success :
+                    case .success :
                         self.receiptValidation(transaction: transaction, productIdentifier: productIdentifier)
-                        case .failed :
-                         self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
-                        default :
+                    case .failed :
+                        self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
+                    default :
                          self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
                         }
                     }
@@ -99,14 +97,11 @@ private extension SesacImageView {
             default :
                 self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
                 
-            
             }
             
         }
-     
-        
-    }
     
+    }
     
     func getShopMyinfo() {
         
@@ -119,11 +114,11 @@ private extension SesacImageView {
             case .expiredToken:
                 AuthNetwork.getIdToken { error in
                     switch error {
-                        case .success :
+                    case .success:
                            self.getShopMyinfo()
-                         case .failed :
+                    case .failed:
                         self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
-                        default :
+                    default:
                         self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
                         }
                     }
@@ -133,22 +128,19 @@ private extension SesacImageView {
             default :
                 self.window?.rootViewController?.view.makeToast(APIErrorMessage.failed.rawValue)
             }
-            
-            
+        
         }
-        
-        
+    
     }
     
 }
 
-extension SesacImageView : SKPaymentTransactionObserver {
+extension SesacImageView: SKPaymentTransactionObserver {
     
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         // 구매가 승인되면 상품을 사용자에게 전송하고 거래내역(transaction) 을 큐에서 제거
         for transaction in transactions {
             switch transaction.transactionState {
-                
                 
             case SKPaymentTransactionState.purchased :
                 print("transaction approved product identifier: \(transaction.payment.productIdentifier)")
@@ -162,7 +154,6 @@ extension SesacImageView : SKPaymentTransactionObserver {
                     print("Transaction error : \(localizedDescription)")
                 }
                 
-                
                 SKPaymentQueue.default().finishTransaction(transaction)
             default:
                 break
@@ -175,14 +166,11 @@ extension SesacImageView : SKPaymentTransactionObserver {
     
 }
 
-
-
-extension SesacImageView : UICollectionViewDataSource , UICollectionViewDelegate {
+extension SesacImageView: UICollectionViewDataSource, UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.sesacShopViewModel.sesacProductsArray.count
     }
-
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -194,13 +182,13 @@ extension SesacImageView : UICollectionViewDataSource , UICollectionViewDelegate
             guard let data = self.sesacShopViewModel.sesacProductsArray[indexPath.row] as? CustomProduct else {
                 return UICollectionViewCell()
             }
-            cell.setup(title: data.localizedTitle, price: data.localizedPrice, desc: data.localizedDescription , sesacCollection: self.sesacShopViewModel.sesacCollection ,backgroundCollection : self.sesacShopViewModel.backgroundCollection, indexPath : indexPath.row )
+            cell.setup(title: data.localizedTitle, price: data.localizedPrice, desc: data.localizedDescription, sesacCollection: self.sesacShopViewModel.sesacCollection, backgroundCollection: self.sesacShopViewModel.backgroundCollection, indexPath: indexPath.row )
 
         } else {
             guard let data = self.sesacShopViewModel.sesacProductsArray[indexPath.row] as? SKProduct else {
                 return UICollectionViewCell()
             }
-            cell.setup(title: data.localizedTitle, price: data.localizedPrice, desc: data.localizedDescription , sesacCollection: self.sesacShopViewModel.sesacCollection ,backgroundCollection : self.sesacShopViewModel.backgroundCollection , indexPath : indexPath.row)
+            cell.setup(title: data.localizedTitle, price: data.localizedPrice, desc: data.localizedDescription, sesacCollection: self.sesacShopViewModel.sesacCollection, backgroundCollection: self.sesacShopViewModel.backgroundCollection, indexPath: indexPath.row)
         }
         
         cell.imageView.image = UIImage(named: sesacShopViewModel.setSesacImage(index: indexPath.row))
@@ -226,7 +214,7 @@ extension SesacImageView : UICollectionViewDataSource , UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        NotificationCenter.default.post(name: NSNotification.Name("chagneSesacImage"), object: indexPath.row)
+        NotificationCenter.default.post(name: .changeSesacImage, object: indexPath.row)
         
     }
 
@@ -255,7 +243,5 @@ extension SesacImageView: SKProductsRequestDelegate {
         }
         
     }
-    
-    
     
 }

@@ -31,7 +31,7 @@ final class SesacImageCollectionViewCell : UICollectionViewCell {
     let priceButton : UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 8
-        button.clipsToBounds = true 
+        button.clipsToBounds = true
         return button
     }()
 
@@ -40,7 +40,6 @@ final class SesacImageCollectionViewCell : UICollectionViewCell {
         label.font = UIFont.getRegularFont(.regular_14)
         label.numberOfLines = 0
         label.textColor = UIColor.getColor(.defaultTextColor)
-
         return label
     }()
     
@@ -49,14 +48,14 @@ final class SesacImageCollectionViewCell : UICollectionViewCell {
         super.awakeFromNib()
     }
 
-    func setup(title: String,price:String,desc:String,sesacCollection : Array<Int> , backgroundCollection : Array<Int> , indexPath : Int ) {
+    func setup(title: String, price:String, desc:String, sesacCollection: Array<Int>, backgroundCollection: Array<Int>, indexPath: Int ) {
         
         [
          imageView,
          titleLabel,
          priceButton,
          descLabel
-        ].forEach{ addSubview($0)}
+        ].forEach { addSubview($0) }
         
         imageView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
@@ -78,13 +77,13 @@ final class SesacImageCollectionViewCell : UICollectionViewCell {
         
         descLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(8)
-            make.trailing.leading.bottom.equalToSuperview()
+            make.leading.equalTo(titleLabel.snp.leading)
+            make.trailing.equalToSuperview()
         }
         
         titleLabel.text = title
         descLabel.text = desc
 
-        
         if sesacCollection.contains(indexPath) {
             priceButton.setTitle("보유", for: .normal)
             priceButton.setTitleColor(UIColor.getColor(.grayTextColor), for: .normal)
@@ -98,7 +97,5 @@ final class SesacImageCollectionViewCell : UICollectionViewCell {
         }
         
     }
-    
-    
     
 }

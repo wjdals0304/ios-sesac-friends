@@ -15,21 +15,21 @@ final class SesacBackgroundCollectionViewCell : UICollectionViewCell {
     
     let imageView = UIImageView()
     
-    let titleLabel : UILabel = {
+    let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.getRegularFont(.regular_16)
         label.textColor = UIColor.getColor(.defaultTextColor)
         return label
     }()
     
-    let priceButton : UIButton = {
+    let priceButton: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 8
         button.clipsToBounds = true
         return button
     }()
     
-    let descLabel : UILabel = {
+    let descLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.getRegularFont(.regular_14)
         label.numberOfLines = 0
@@ -69,7 +69,6 @@ final class SesacBackgroundCollectionViewCell : UICollectionViewCell {
         priceButton.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.top)
             make.trailing.equalToSuperview().inset(17)
-//            make.bottom.equalTo(descLabel.snp.top).inset(10)
             make.height.equalTo(20)
             make.width.equalTo(52)
         }
@@ -77,7 +76,7 @@ final class SesacBackgroundCollectionViewCell : UICollectionViewCell {
         titleLabel.text = title
         descLabel.text = desc
         
-        if backgroundCollection.contains(indexPath){
+        if backgroundCollection.contains(indexPath) {
             priceButton.setTitle("보유", for: .normal)
             priceButton.setTitleColor(UIColor.getColor(.grayTextColor), for: .normal)
             priceButton.setBackgroundColor(UIColor.getColor(.grayLineColor), for: .normal)
@@ -88,8 +87,5 @@ final class SesacBackgroundCollectionViewCell : UICollectionViewCell {
             
         }
         
-        
-        
-    
     }
 }

@@ -12,7 +12,7 @@ import UIKit
 class TabBarController: UITabBarController {
     
     
-    init(){
+    init() {
         super.init(nibName: nil, bundle: nil)
         
         // TabBarController를 rootViewController 로 지정
@@ -39,10 +39,7 @@ class TabBarController: UITabBarController {
         sesacShopViewController.tabBarItem = UITabBarItem(title: "새싹샵", image: UIImage(named: "gift_ic"), selectedImage: UIImage(named: "gift_ic"))
         
         
-        viewControllers = [ homeViewController ,sesacShopViewController, myInfoViewController ]
+        viewControllers = [ homeViewController, sesacShopViewController, myInfoViewController ]
         
     }
-    
-    
-    
 }

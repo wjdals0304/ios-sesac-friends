@@ -14,7 +14,7 @@ struct CustomProduct {
     let localizedPrice : String
     let localizedDescription : String
     
-    init(localizedTitle: String,localizedPrice: String, localizedDescription: String  ) {
+    init(localizedTitle: String, localizedPrice: String, localizedDescription: String  ) {
         self.localizedTitle = localizedTitle
         self.localizedPrice = localizedPrice
         self.localizedDescription = localizedDescription
@@ -39,19 +39,19 @@ final class SesacShopViewModel {
         "com.memolease.sesac1.background4",
         "com.memolease.sesac1.background5",
         "com.memolease.sesac1.background6",
-        "com.memolease.sesac1.background7",
+        "com.memolease.sesac1.background7"
     ]
 
-    var sesacProductsArray = Array<Any>()
-    var sesacBackgroundProductsArray = Array<Any>()
+    var sesacProductsArray = [Any]()
+    var sesacBackgroundProductsArray = [Any]()
 
-    var sesacCollection = Array<Int>()
-    var backgroundCollection = Array<Int>()
+    var sesacCollection = [Int]()
+    var backgroundCollection = [Int]()
     var sesac = 0
     var background = 0
     
     
-    func setSesacImage(index: Int ) -> String  {
+    func setSesacImage(index: Int ) -> String {
         
         if index == 0 {
             return "sesac_face_1"
@@ -113,7 +113,6 @@ final class SesacShopViewModel {
                 self.background = user.background
                 self.sesacCollection = user.sesacCollection
                 self.backgroundCollection = user.backgroundCollection
-                
                 
                 completion(.success)
                 
@@ -227,13 +226,10 @@ final class SesacShopViewModel {
                 
             }
             
-            
         }
         
-        
-        
+    
     }
     
-    
-    
+
 }
