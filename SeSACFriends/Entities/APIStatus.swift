@@ -28,5 +28,9 @@ enum APIStatus   {
     case alreadyRequest // 상대가 이미 나에게 취미 함께하기 요청한 상태
     case suspendRequest // 상대가 취미 함께할 친구 찾기 중단한 상태
     case matchedState // 내가 이미 다른 사람과 취미 함께하기 매칭된 상태
-    case noChat // 채팅전송불가 
+    case noChat // 채팅전송불가
+    case stopSearch // 친구 찾기 중단이 된 상태
+    case wrongUid // 잘못된 otheruid
+    case unownItem // 구매가 필요한 아이템이 있어요
+    case failedReceipt // 영수증 검증실패
 }
