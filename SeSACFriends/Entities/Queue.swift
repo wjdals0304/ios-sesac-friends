@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: - Queue
 struct Queue: Codable {
-    let fromQueueDB, fromQueueDBRequested: [FromQueueDB]
+    var fromQueueDB, fromQueueDBRequested: [FromQueueDB]
     let fromRecommend: [String]
 }
 
@@ -22,4 +22,11 @@ struct FromQueueDB: Codable {
     let reputation: [Int]
     let hf, reviews: [String]
     let gender, type, sesac, background: Int
+}
+
+enum QueueType : String {
+    
+    case fromQueueDB
+    case fromQueueDBRequested
+    
 }

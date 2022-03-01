@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Gender : Int {
+enum Gender: Int {
     case woman = 0
     case man = 1
     case none = -1
@@ -42,9 +42,9 @@ class UserManager {
         set { UserDefaults.standard.set(newValue, forKey: "age")}
     }
     
-    static var email : String? {
+    static var email: String? {
         get { return UserDefaults.standard.string(forKey: "email")}
-        set { UserDefaults.standard.set(newValue,forKey: "email")}
+        set { UserDefaults.standard.set(newValue, forKey: "email")}
     }
     
     
@@ -59,7 +59,7 @@ class UserManager {
     }
     
     
-    static var birthday : String? {
+    static var birthday: String? {
         get { return UserDefaults.standard.string(forKey: "birthday")}
         set { UserDefaults.standard.set(newValue, forKey: "birthday")}
     }
@@ -77,14 +77,17 @@ class UserManager {
     
     static var myHobbyArray : [String] {
         get { return UserDefaults.standard.stringArray(forKey: "myHobby") ?? [] }
-        set { UserDefaults.standard.set(newValue,forKey: "myHobby") }
+        set { UserDefaults.standard.set(newValue, forKey: "myHobby") }
     }
     
     static var lastChatDate : String? {
         get { return UserDefaults.standard.string(forKey: "lastChatDate") }
-        set { UserDefaults.standard.set(newValue,forKey: "lastChatDate")}
-        
-        
+        set { UserDefaults.standard.set(newValue, forKey: "lastChatDate")}
+    }
+    
+    static var isMatch: Bool {
+        get { return UserDefaults.standard.bool(forKey: "isMatch") }
+        set { UserDefaults.standard.set(newValue, forKey: "isMatch")}
     }
     
 }

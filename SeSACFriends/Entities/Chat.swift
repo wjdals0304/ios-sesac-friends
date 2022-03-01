@@ -16,11 +16,11 @@ struct ChatList : Codable {
 struct Chat: Codable {
     
     let v: Int
-    let id : String
+    let id: String
     let chat: String
     let createdAt: String
-    let from : String
-    let to : String
+    let from: String
+    let to: String
 
     enum CodingKeys: String, CodingKey {
         
@@ -31,7 +31,3 @@ struct Chat: Codable {
     }
     
 }
-
-
-
-

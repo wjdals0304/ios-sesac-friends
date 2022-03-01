@@ -18,29 +18,28 @@ struct QueueState : Codable {
     
 }
 
-
-enum dodgedState: Int {
+enum DodgedState: Int {
     
     case matched = 0
     case close = 1
     
 }
 
-enum matchedState: Int {
+enum MatchedState: Int {
     
     case matched = 1
     case close = 0
     
 }
 
-enum reviewedState : Int {
+enum ReviewedState : Int {
     
     case notReivew = 0
     case successReview = 1
 }
 
 enum MyqueueState : String {
-   case message = "message"  // 채팅상태가 된 상태
-   case antenna = "antenna" // 매칭 대기중인 상태
-   case search = "search" // 기본 상태
+   case message // 채팅상태가 된 상태
+   case antenna // 매칭 대기중인 상태
+   case search  // 기본 상태
 }
