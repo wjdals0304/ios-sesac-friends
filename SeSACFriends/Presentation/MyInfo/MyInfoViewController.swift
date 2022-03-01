@@ -12,20 +12,13 @@ import UIKit
 
 class MyInfoViewController: UIViewController {
     
-    private var userData : User!
+    let myInfoViewModel = MyInfoViewModel()
     
-    init(user: User) {
-        self.userData = user
-        super.init(nibName: nil, bundle: nil)
-    }
+    private var userData : User?
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private lazy var collectionView : UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.estimatedItemSize = CGSize(width: self.view.frame.width - 20 , height: 74)
+        layout.estimatedItemSize = CGSize(width: self.view.frame.width - 20, height: 74)
         layout.scrollDirection = .vertical
         layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         
@@ -33,26 +26,21 @@ class MyInfoViewController: UIViewController {
         collectionView.backgroundColor = .systemBackground
         collectionView.register(MyInfoCollectionViewCell.self, forCellWithReuseIdentifier: MyInfoCollectionViewCell.identifier)
         collectionView.register(MyInfoCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MyInfoCollectionHeaderView.identifier)
-        
-        collectionView.dataSource = self
-        collectionView.delegate = self
-    
-        
+
         return collectionView
     }()
-    
-    let imageArray = ["notice","faq","qna","setting_alarm","permit"]
-    let textArray = ["공지사항","자주 묻는 질문","1:1 문의","알람 설정","이용 약관" ]
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "내정보"
+        view.backgroundColor = .systemBackground
 
-        
         setup()
         setupConstraint()
-       
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        getUser()
     }
     
     func setup() {
@@ -69,27 +57,63 @@ class MyInfoViewController: UIViewController {
             make.leading.trailing.bottom.equalToSuperview()
             make.top.equalTo(view.safeAreaLayoutGuide)
         }
+    }
+
+    func getUser() {
+        
+        myInfoViewModel.getUser(idtoken: UserManager.idtoken!) { user, APIStatus in
+            
+            switch APIStatus {
+                
+            case .success :
+                
+                    guard let user = user else {
+                        return
+                    }
+                    self.userData = user
+                    self.collectionView.dataSource = self
+                    self.collectionView.delegate = self
+                
+            case .unregisterdUser :
+                   return
+                
+            case .expiredToken :
+                    
+                    AuthNetwork.getIdToken { error  in
+                        
+                        switch error {
+                        case .success :
+                            self.getUser()
+                        case .failed :
+                            self.view.makeToast(APIErrorMessage.failed.rawValue)
+                        default :
+                            self.view.makeToast(APIErrorMessage.failed.rawValue)
+                        }
+                    }
+                
+            default:
+                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+            }
+                
+
+        }
         
     }
-    
-    
+
 }
 
-extension MyInfoViewController : UICollectionViewDataSource {
+extension MyInfoViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return textArray.count
+        return myInfoViewModel.textArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MyInfoCollectionViewCell.identifier, for: indexPath) as? MyInfoCollectionViewCell  else { return UICollectionViewCell() }
         
-      
-        
-        let image = imageArray[indexPath.row]
-        let text = textArray[indexPath.row]
-        
+        let image = myInfoViewModel.imageArray[indexPath.row]
+        let text = myInfoViewModel.textArray[indexPath.row]
         
         cell.setup(image: image, text: text)
         
@@ -99,19 +123,17 @@ extension MyInfoViewController : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         switch kind {
-          case UICollectionView.elementKindSectionHeader :
+        case UICollectionView.elementKindSectionHeader :
             
             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: MyInfoCollectionHeaderView.identifier, for: indexPath) as? MyInfoCollectionHeaderView else {
                 return UICollectionReusableView()
             }
 
-
-            let tapGestureRecognizer = UITapGestureRecognizer(target:self,action:#selector(tapHeader))
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action:#selector(tapHeader))
             
             header.addGestureRecognizer(tapGestureRecognizer)
-            header.update(userData: userData)
-           
-        
+            header.update(userData: userData!)
+ 
             return header
 
         default :
@@ -122,11 +144,10 @@ extension MyInfoViewController : UICollectionViewDataSource {
     
     @objc func tapHeader() {
         
-        let vc = MyInfoDetailViewController(userData: userData)
+        let vc = MyInfoDetailViewController(userData: userData!)
         self.navigationController?.pushViewController(vc, animated: true)
     }
-    
-    
+
 }
 
 extension MyInfoViewController : UICollectionViewDelegateFlowLayout {

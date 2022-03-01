@@ -19,20 +19,20 @@ class MyInfoCollectionHeaderView : UICollectionReusableView {
         return label
     }()
     
-    let profileImageView : UIImageView = {
+    let profileImageView: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "profile_img")
         return image
     }()
   
-    let tapImageView : UIImageView = {
+    let tapImageView: UIImageView = {
        let image = UIImageView()
         image.image = UIImage(named: "Vector 49")
         return image
     }()
     
     
-    func update(userData: User){
+    func update(userData: User) {
         
 
         let border = CALayer()
@@ -63,11 +63,8 @@ class MyInfoCollectionHeaderView : UICollectionReusableView {
             $0.width.equalTo(15)
             $0.height.equalTo(18)
         }
-        
-        
+    
         self.nameLabel.text = userData.nick
         
     }
-    
-
 }

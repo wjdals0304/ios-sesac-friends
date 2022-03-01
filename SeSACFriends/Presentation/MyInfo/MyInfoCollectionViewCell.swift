@@ -22,21 +22,19 @@ final class MyInfoCollectionViewCell : UICollectionViewCell {
     
     let imageView =  UIImageView()
     
-    
-    func setup(image: String , text: String ) {
+    func setup(image: String, text: String ) {
         [
          textLabel,
          imageView
-        ].forEach{ addSubview($0) }
+        ].forEach { addSubview($0) }
         
         
         let border = CALayer()
         border.borderColor = UIColor.getColor(.grayLineColor).cgColor
-        border.frame = CGRect(x: 0, y: 0, width: frame.width - 20 , height: 1)
+        border.frame = CGRect(x: 0, y: 0, width: frame.width - 20, height: 1)
         border.borderWidth = 1
         
         layer.addSublayer(border)
-        
         
         imageView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(19)

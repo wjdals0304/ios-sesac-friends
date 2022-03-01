@@ -9,25 +9,26 @@ import Foundation
 import UIKit
 import FirebaseAuth
 
-class PopUpWindowView : UIView {
+class PopUpWindowView: BaseUIView {
     
     let popupView = UIView()
     
-    let titleLabel : UILabel = {
+    let titleLabel: UILabel = {
        let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.getRegularFont(.medium_16)
        return label
     }()
     
-    let textLabel : UILabel = {
+    let textLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.getRegularFont(.regular_14)
+        label.numberOfLines = 0
         return label
     }()
     
-    let cancelButton : UIButton = {
+    let cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("취소", for: .normal)
         button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
@@ -37,7 +38,7 @@ class PopUpWindowView : UIView {
         return button
     }()
     
-    let okButton : UIButton = {
+    let okButton: UIButton = {
         let button = UIButton()
         button.setTitle("확인", for: .normal)
         button.titleLabel?.font = UIFont.getRegularFont(.regular_14)
@@ -47,7 +48,7 @@ class PopUpWindowView : UIView {
         return button
     }()
     
-    let buttonStackView : UIStackView = {
+    let buttonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 8
@@ -72,7 +73,7 @@ class PopUpWindowView : UIView {
           cancelButton,
           okButton,
           buttonStackView
-        ].forEach{ popupView.addSubview($0) }
+        ].forEach { popupView.addSubview($0) }
         
         buttonStackView.addArrangedSubview(cancelButton)
         buttonStackView.addArrangedSubview(okButton)
@@ -84,12 +85,10 @@ class PopUpWindowView : UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     func setupConstraints() {
         
         popupView.snp.makeConstraints {
             $0.width.equalTo(UIScreen.main.bounds.width - 32)
-            $0.height.equalTo(156)
             $0.centerX.equalTo(self.snp.centerX)
             $0.centerY.equalTo(self.snp.centerY)
         }
@@ -106,7 +105,6 @@ class PopUpWindowView : UIView {
             $0.top.equalTo(titleLabel.snp.bottom).offset(8)
             $0.leading.equalToSuperview().offset(16)
             $0.trailing.equalToSuperview().inset(16)
-            $0.height.equalTo(22)
         }
         
         buttonStackView.snp.makeConstraints {
@@ -115,7 +113,6 @@ class PopUpWindowView : UIView {
             $0.bottom.equalToSuperview().inset(16)
             $0.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(48)
-//            $0.width.equalTo(UIScreen.main.bounds.width - 32)
         }
         
         
@@ -123,15 +120,13 @@ class PopUpWindowView : UIView {
     
 }
 
-
 class PopUpWindow: UIViewController {
     
     let popUpWindowView = PopUpWindowView()
     
     let myInfoViewModel = MyInfoViewModel()
 
-    
-    init(title: String , text: String) {
+    init(title: String, text: String) {
         super.init(nibName: nil, bundle: nil)
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
@@ -145,14 +140,19 @@ class PopUpWindow: UIViewController {
         
     }
     
+    func updateTitle(title: String, text: String) {
+        
+        popUpWindowView.titleLabel.text = title
+        popUpWindowView.textLabel.text = text
+
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     @objc func dismissView() {
         self.dismiss(animated: true, completion: nil)
     }
-    
     
 }

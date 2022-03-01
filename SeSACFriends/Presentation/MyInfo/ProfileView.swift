@@ -9,12 +9,12 @@ import Foundation
 import UIKit
 import SnapKit
 
-class ProfileView : UIView {
+class ProfileView: UIView {
     
     private let profileImage: String
-    private let userData : User
-    private let profileViewHight : CGFloat
-    let profileImgHeight : CGFloat = 194
+    private let userData: User
+    private let profileViewHight: CGFloat
+    let profileImgHeight: CGFloat = 194
    
     private lazy var nickLabel: UILabel = {
        let label = UILabel()
@@ -24,13 +24,13 @@ class ProfileView : UIView {
        return label
     }()
     
-    private lazy var profileImageView : UIImageView = {
+    private lazy var profileImageView: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "\(profileImage)")
         return image
     }()
     
-    private lazy var profileMainView : UIView = {
+    private lazy var profileMainView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
         view.layer.borderWidth = 1
@@ -39,7 +39,7 @@ class ProfileView : UIView {
         return view
     }()
     
-    let showMoreButton : UIImageView = {
+    let showMoreButton: UIImageView = {
         
         let image = UIImageView()
         image.image = UIImage(systemName: "chevron.down")
@@ -47,7 +47,7 @@ class ProfileView : UIView {
         return image
     }()
     
-    let titleLabel : UILabel = {
+    let titleLabel: UILabel = {
        let label = UILabel()
         label.text = "새싹 타이틀"
         label.frame.size = label.intrinsicContentSize
@@ -71,10 +71,9 @@ class ProfileView : UIView {
     
     var superViewCompletion: ( () -> Void)?
 
+    let collectionTitleData = [ "좋은 매너", "정확한 시각 약속", "빠른 응답", "친절한 성격", "능숙한 취미 실력", "유익한 시간"]
     
-    let collectionTitleData = [ "좋은 매너" , "정확한 시각 약속" , "빠른 응답" ,"친절한 성격" ,"능숙한 취미 실력" ,"유익한 시간"]
-    
-    private lazy var collectionView : UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         
         layout.scrollDirection = .vertical
@@ -84,10 +83,8 @@ class ProfileView : UIView {
           // 줄 간의 거리 (단위는 포인트)
         layout.minimumLineSpacing = 5
         
-        
-        
         let halfWidth: CGFloat = UIScreen.main.bounds.width / 2.0
-        layout.estimatedItemSize = CGSize(width: halfWidth - 40 , height: 32)
+        layout.estimatedItemSize = CGSize(width: halfWidth - 40, height: 32)
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         
@@ -99,16 +96,13 @@ class ProfileView : UIView {
         return collectionView
     }()
     
-    
-    
     private var isExpand = false
     
     var butttonImage: String {
         return isExpand ? "chevron.down" : "chevron.up"
     }
     
-    
-    init(profileImage: String, userData: User , profileHeight: CGFloat) {
+    init(profileImage: String, userData: User, profileHeight: CGFloat) {
         self.profileImage = profileImage
         self.userData = userData
         self.profileViewHight = profileHeight
@@ -123,14 +117,14 @@ class ProfileView : UIView {
     
     func setupConstraints() {
     
-        let tapGestureRecognizer = UITapGestureRecognizer(target:self,action:#selector(tapHeader))
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self,action: #selector(tapHeader) )
         
         profileMainView.addGestureRecognizer(tapGestureRecognizer)
         
         [
             profileImageView,
             profileMainView
-        ].forEach{ addSubview($0) }
+        ].forEach { addSubview($0) }
         
         [
           nickLabel,
@@ -140,7 +134,6 @@ class ProfileView : UIView {
           reviewLabel,
           reviewTextLabel
         ].forEach { profileMainView.addSubview($0) }
-        
         
         profileImageView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
@@ -188,27 +181,23 @@ class ProfileView : UIView {
             $0.height.equalTo(0)
         }
         
-        
    }
 
-    
     @objc func tapHeader() {
         
-        let zeroHeightDict : [String: Double] = ["view": profileViewHight ,"profileMainView" : profileViewHight - profileImgHeight , "titleLabel": 0 , "collectionView" : 0 , "reviewLabel" : 0 , "reviewTextLabel": 0]
+        let zeroHeightDict: [String: Double] = ["view": profileViewHight, "profileMainView": profileViewHight - profileImgHeight, "titleLabel": 0, "collectionView": 0, "reviewLabel": 0, "reviewTextLabel": 0]
         
-        let updateHeightDict : [String: Double] = ["view": profileViewHight + 310 - (profileViewHight - profileImgHeight) ,"profileMainView" : 310 , "titleLabel": 18 , "collectionView" : 120 , "reviewLabel" : 18 , "reviewTextLabel": 24]
+        let updateHeightDict: [String: Double] = ["view": profileViewHight + 310 - (profileViewHight - profileImgHeight), "profileMainView": 310, "titleLabel": 18, "collectionView": 120, "reviewLabel": 18, "reviewTextLabel": 24]
        
-
         if isExpand {
-            animateView(isExpand: false,buttonImage: butttonImage, heightConstraint: zeroHeightDict )
+            animateView(isExpand: false, buttonImage: butttonImage, heightConstraint: zeroHeightDict )
         } else {
-            animateView(isExpand: true,buttonImage: butttonImage, heightConstraint: updateHeightDict)
+            animateView(isExpand: true, buttonImage: butttonImage, heightConstraint: updateHeightDict)
         }
-    
-    
+
     }
     
-    func animateView(isExpand: Bool,buttonImage: String, heightConstraint: Dictionary<String, Double>){
+    func animateView(isExpand: Bool, buttonImage: String, heightConstraint: Dictionary<String, Double>) {
           
        self.isExpand = isExpand
         
@@ -237,8 +226,7 @@ class ProfileView : UIView {
         
         self.showMoreButton.image = UIImage(systemName: buttonImage)
 
-        UIView.animate(withDuration: 0.3){
-            
+        UIView.animate(withDuration: 0.3) {
             self.superViewCompletion?()
         }
         
@@ -249,7 +237,7 @@ class ProfileView : UIView {
     }
 }
 
-extension ProfileView : UICollectionViewDataSource {
+extension ProfileView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -278,8 +266,7 @@ extension ProfileView : UICollectionViewDataSource {
 }
 
             
-
-class ProfileCollectionViewCell : UICollectionViewCell {
+class ProfileCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "ProfileCollectionViewCell"
 
@@ -290,12 +277,11 @@ class ProfileCollectionViewCell : UICollectionViewCell {
         return text
     }()
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         [
             textLabel
-        ].forEach{addSubview($0)}
+        ].forEach {addSubview($0) }
        
         textLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()

@@ -11,11 +11,11 @@ import SnapKit
 import RangeSeekSlider
 import FirebaseAuth
 
-class MyInfoDetailViewController : UIViewController {
+class MyInfoDetailViewController: UIViewController {
     
     private let userData : User!
     
-    private lazy var scrollView : UIScrollView = {
+    private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.bounces = false
         scrollView.isScrollEnabled = true
@@ -24,16 +24,15 @@ class MyInfoDetailViewController : UIViewController {
     
     let contentView = UIView()
         
-    let profileViewHeight : CGFloat = 252
+    let profileViewHeight: CGFloat = 252
     private lazy var profileView = ProfileView(profileImage: "default_profile_img", userData: userData, profileHeight: profileViewHeight)
 
-    
-    let textContentView : UIView = {
+    let textContentView: UIView = {
         let view = UIView()
         return view
     }()
     
-    let stackView : UIStackView = {
+    let stackView: UIStackView = {
        let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 5
@@ -41,12 +40,12 @@ class MyInfoDetailViewController : UIViewController {
         return stackView
     }()
     
-    let genderView : UIView = {
+    let genderView: UIView = {
         let view = UIView()
         return view
     }()
     
-    let genderLabel : UILabel = {
+    let genderLabel: UILabel = {
        let label = UILabel()
         label.text = "내 성별"
         label.font = UIFont.getRegularFont(.regular_14)
@@ -69,7 +68,7 @@ class MyInfoDetailViewController : UIViewController {
     }()
     
 
-    let womanUIButton : UIButton = {
+    let womanUIButton: UIButton = {
         let button = UIButton()
         button.setTitle("여자", for: .normal)
         button.setTitleColor(.black, for: .normal)
@@ -86,7 +85,7 @@ class MyInfoDetailViewController : UIViewController {
         return view
     }()
     
-    let hobbyLabel : UILabel = {
+    let hobbyLabel: UILabel = {
         let label = UILabel()
         label.text = "자주 하는 취미"
         label.font = UIFont.getRegularFont(.regular_14)
@@ -95,7 +94,7 @@ class MyInfoDetailViewController : UIViewController {
         return label
     }()
     
-    let hobbyTextField : UITextField = {
+    let hobbyTextField: UITextField = {
        let textField = UITextField()
         textField.placeholder = "취미를 입력해 주세요"
 
@@ -103,7 +102,7 @@ class MyInfoDetailViewController : UIViewController {
         
     }()
     
-    let phoneNumberCheckView : UIView = {
+    let phoneNumberCheckView: UIView = {
         let view = UIView()
         return view
     }()
@@ -118,17 +117,17 @@ class MyInfoDetailViewController : UIViewController {
     }()
     
     let phoneNumberCheckSwitch: UISwitch = {
-        let switchUI = UISwitch ()
+        let switchUI = UISwitch()
         switchUI.isOn = false
         return switchUI
     }()
     
-    let ageView : UIView = {
+    let ageView: UIView = {
         let view = UIView()
         return view
     }()
     
-    let ageLabel : UILabel = {
+    let ageLabel: UILabel = {
         let label = UILabel()
         label.text = "상대방 연령대"
         label.font = UIFont.getRegularFont(.regular_14)
@@ -137,7 +136,7 @@ class MyInfoDetailViewController : UIViewController {
         return label
     }()
     
-    let ageSlider : RangeSeekSlider = {
+    lazy var ageSlider: RangeSeekSlider = {
         let slider = RangeSeekSlider()
       
         slider.minValue = 18
@@ -152,19 +151,19 @@ class MyInfoDetailViewController : UIViewController {
         return slider
     }()
     
-    let ageValueLabel : UILabel = {
+    let ageValueLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.getRegularFont(.medium_14)
         label.textColor = UIColor.getColor(.activeColor)
         return label
     }()
     
-    let withdrawView : UIView = {
+    let withdrawView: UIView = {
         let view = UIView()
         return view
     }()
     
-    let withdrawButton : UIButton = {
+    let withdrawButton: UIButton = {
         let button = UIButton()
         button.setTitle("회원탈퇴", for: .normal)
         button.setTitleColor(UIColor.getColor(.defaultTextColor), for: .normal)
@@ -182,7 +181,7 @@ class MyInfoDetailViewController : UIViewController {
     
     let myInfoViewModel = MyInfoViewModel()
     
-    lazy var backBarButton : UIBarButtonItem = {
+    lazy var backBarButton: UIBarButtonItem = {
         let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
         return barButtonItem
     }()
@@ -218,7 +217,6 @@ class MyInfoDetailViewController : UIViewController {
             manUIButton.setTitleColor(UIColor.getColor(.whiteTextColor), for: .normal)
         }
         
-        
         ageValueLabel.text = "\(userData.ageMin) - \(userData.ageMax)"
         ageSlider.selectedMinValue = CGFloat(userData.ageMin)
         ageSlider.selectedMaxValue = CGFloat(userData.ageMax)
@@ -230,7 +228,6 @@ class MyInfoDetailViewController : UIViewController {
         }
         
         hobbyTextField.text = userData.hobby
-        
         
     }
     
@@ -319,7 +316,6 @@ class MyInfoDetailViewController : UIViewController {
             $0.bottom.equalToSuperview()
         }
         
-    
         genderLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(13)
             $0.leading.equalToSuperview()
@@ -381,7 +377,6 @@ class MyInfoDetailViewController : UIViewController {
             $0.leading.equalToSuperview()
         }
         
-        
     }
 }
 
@@ -405,16 +400,15 @@ private extension MyInfoDetailViewController {
         let gender = userData.gender
         let hobby = hobbyTextField.text ?? ""
         
-        
         myInfoViewModel.updateMypage(searchable: searchable , ageMin: Int(ageMin), ageMax: Int(ageMax), gender: gender, hobby: hobby ) { response in
 
             switch response {
                             
-             case .success :
+            case .success :
                 
                 self.navigationController?.popViewController(animated: true)
             
-             case .expiredToken :
+            case .expiredToken :
                 
                 AuthNetwork.getIdToken { error  in
                     
@@ -428,7 +422,7 @@ private extension MyInfoDetailViewController {
                     }
                 }
             
-             default :
+            default :
                 self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
                 
             }
@@ -436,7 +430,7 @@ private extension MyInfoDetailViewController {
         }
     }
   
-    @objc func closeButtonClicked(){
+    @objc func closeButtonClicked() {
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -446,17 +440,16 @@ private extension MyInfoDetailViewController {
             
             switch response {
                 
-               case .success :
+            case .success :
                  print("온보딩화면으로")
                  let onboardingVC = OnboardingViewController()
                 onboardingVC.modalPresentationStyle = .fullScreen
                 self.present(onboardingVC, animated: true, completion: nil)
 
-                
-               case .unregisterdUser:
+            case .unregisterdUser:
                  self.view.makeToast("이미 탈퇴가 된 상태입니다.")
                 
-               case .expiredToken :
+            case .expiredToken :
                 
                 let currentUser = FirebaseAuth.Auth.auth().currentUser
                 currentUser?.getIDToken(completion: { idtoken, error in
@@ -470,16 +463,12 @@ private extension MyInfoDetailViewController {
                     self.okButtonClicked()
                 })
                 
-                
-               case .serverError :
+            case .serverError :
                   self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
-
-                
-              default :
+            default :
                 self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
                 
             }
         }
-        
     }
 }
