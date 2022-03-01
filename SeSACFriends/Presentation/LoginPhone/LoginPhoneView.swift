@@ -53,10 +53,9 @@ class LoginPhoneView : BaseUIView {
         
     }
     
-    
     override func setupConstraint() {
         
-        descLabel.snp.makeConstraints{
+        descLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(74)
             $0.top.equalToSuperview().offset(169)
         }
@@ -69,13 +68,12 @@ class LoginPhoneView : BaseUIView {
 
         }
         
-        verifySendButton.snp.makeConstraints{
+        verifySendButton.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(16)
             $0.top.equalTo(phoneNumberTextField.snp.bottom).offset(72)
             $0.width.equalTo(343)
             $0.height.equalTo(48)
         }
     }
-    
     
 }

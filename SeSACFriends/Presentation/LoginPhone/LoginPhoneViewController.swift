@@ -41,7 +41,6 @@ final class LoginPhoneViewController: BaseViewController {
 }
 
 
-
 private extension LoginPhoneViewController {
     
     @objc func sendPhoneNumber() {
@@ -76,12 +75,10 @@ private extension LoginPhoneViewController {
             
             }
             
-            
         }
     
     }
     
-
     @objc func textFieldDidChange() {
         
         guard let phoneNumber = loginPhoneView.phoneNumberTextField.text else {
@@ -94,19 +91,18 @@ private extension LoginPhoneViewController {
         var modString = ""
 
 
-        //MARK: 11자이상이고 핸드폰번호인 경우만 실행
+        // MARK: 11자이상이고 핸드폰번호인 경우만 실행
         if loginPhonViewModel.isPhone(candidate: _str) && phoneNumberArr.count >= 10 {
 
-            //MARK: 핸드폰 번호 유효성 검사
-            if let regex = try? NSRegularExpression(pattern: "([0-9]{3})([0-9]{3,4})([0-9]{4})", options: .caseInsensitive)
-             {
+            // MARK: 핸드폰 번호 유효성 검사
+            if let regex = try? NSRegularExpression(pattern: "([0-9]{3})([0-9]{3,4})([0-9]{4})", options: .caseInsensitive) {
                 modString = regex.stringByReplacingMatches(in: _str, options: [], range: NSRange(_str.startIndex..., in: _str), withTemplate: "$1-$2-$3")
             }
 
             loginPhoneView.phoneNumberTextField.text = modString
             loginPhoneView.verifySendButton.layer.backgroundColor = UIColor.getColor(.activeColor).cgColor
 
-        } else  {
+        } else {
 
             loginPhoneView.verifySendButton.layer.backgroundColor = UIColor.getColor(.inactiveColor).cgColor
             return
@@ -114,13 +110,4 @@ private extension LoginPhoneViewController {
         }
 
     }
-    
-
-  
-
-
-
-    
-    
 }
-

@@ -31,7 +31,7 @@ class LoginPhoneVerifyView: BaseUIView {
         return label
     }()
     
-    let textfieldView : UIView = {
+    let textfieldView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
         view.setContentHuggingPriority(.defaultLow, for: .horizontal)
@@ -45,7 +45,7 @@ class LoginPhoneVerifyView: BaseUIView {
         return textField
     }()
     
-    let timerLabel : UILabel = {
+    let timerLabel: UILabel = {
        let label = UILabel()
         label.text = "01:00"
         label.textColor = UIColor.getColor(.activeColor)
@@ -70,7 +70,6 @@ class LoginPhoneVerifyView: BaseUIView {
         return button
     }()
     
-    
     override func setup() {
         [
             descLabel,
@@ -78,7 +77,7 @@ class LoginPhoneVerifyView: BaseUIView {
             textfieldView,
             reSendButton,
             verifyStartButton
-        ].forEach{ addSubview($0) }
+        ].forEach { addSubview($0) }
         
         [
             verificationCodeTextField,
@@ -133,7 +132,4 @@ class LoginPhoneVerifyView: BaseUIView {
             $0.height.equalTo(48)
         }
     }
-    
-    
-    
 }

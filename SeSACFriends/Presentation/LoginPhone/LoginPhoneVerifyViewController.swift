@@ -97,7 +97,7 @@ private extension LoginPhoneVerifyViewController {
     
     /// 타이머 동작 func
     @objc func timerCallback() {
-        //60초 ~ 1초 까지 timeBtn의 타이틀 변경
+        // 60초 ~ 1초 까지 timeBtn의 타이틀 변경
         let minutes: Int = timerNum / 60 % 60
         let seconds: Int = timerNum % 60
         
@@ -106,15 +106,14 @@ private extension LoginPhoneVerifyViewController {
         
         loginPhoneVerifyView.timerLabel.text = minutesString + ":" + secondsString
         
-        
-        //timerNum이 0이면(60초 경과) 타이머 종료
-        if(timerNum == 0) {
+        // timerNum이 0이면(60초 경과) 타이머 종료
+        if timerNum == 0 {
             timer?.invalidate()
             timer = nil
             self.view.makeToast("전화번호 인증 실패")
         }
         
-        //timerNum -1 감소시키기
+        // timerNum -1 감소시키기
         timerNum-=1
     }
     
@@ -140,9 +139,7 @@ private extension LoginPhoneVerifyViewController {
             
         let phoneNumber = self.phoneNumber!
        
-        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil )
-        {
-            (varification , error ) in
+        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil ) { (varification , error) in
             if error == nil {
                 self.verifyID = varification
                 
@@ -166,8 +163,7 @@ private extension LoginPhoneVerifyViewController {
         
         Auth.auth().languageCode = "kr"
   
-        Auth.auth().signIn(with: credential) {
-             ( success , error  ) in
+        Auth.auth().signIn(with: credential) { ( success, error  ) in
             if error == nil {
                 print("User signed in.. ")
                               
@@ -179,36 +175,26 @@ private extension LoginPhoneVerifyViewController {
                         return
                    }
                   
-                  
                   UserManager.idtoken = idtoken
                   UserManager.phoneNumber = self.phoneNumber!
                   
                   /// 유저 정보 가져오기
-                   self.loginPhoneViewModel.getUser(idtoken: idtoken) { User, APIStatus in
+                   self.loginPhoneViewModel.getUser(idtoken: idtoken) { user, APIStatus in
 
                        switch APIStatus {
                            
-                           
-                        case .success:
-                           print("200 로직 ")
-                           
-                           UserManager.uid = User?.uid
-                           
+                       case .success:
+                           UserManager.uid = user?.uid
                            let vc = TabBarController()
                            vc.modalPresentationStyle = .fullScreen
                            self.present(vc, animated: true, completion: nil)
                            
-                           
-                        case .unregisterdUser:
-                           print("닉네임 뷰로 이동")
+                       case .unregisterdUser:
                            let vc = SignUpNickNameViewController()
                            self.navigationController?.pushViewController(vc, animated: true)
                            
-                           
-                        case .expiredToken :
-                           print("토큰 만료")
+                       case .expiredToken :
                            self.handleDoneBtn()
-                           
                            
                        case .noData , .invalidData ,.clientError,.serverError ,.failed,.none:
                            self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
@@ -229,11 +215,6 @@ private extension LoginPhoneVerifyViewController {
 
             }
         }
-
-
+        
     }
-
-    
-    
-    
 }
