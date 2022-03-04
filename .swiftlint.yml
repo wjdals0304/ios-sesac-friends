@@ -1,0 +1,21 @@
+identifier_name:
+  allowed_symbols: ["_"]
+  min_length:
+     error: 0
+
+disabled_rules:
+- line_length
+- trailing_whitespace
+- type_body_length
+- cyclomatic_complexity
+- function_body_length
+
+force_cast:
+   warning
+
+
+excluded:
+- Libraries
+- Pods
+- SeSACFriends/AppDelegate.swift
+- SeSACFriends/SceneDelegate.swift
