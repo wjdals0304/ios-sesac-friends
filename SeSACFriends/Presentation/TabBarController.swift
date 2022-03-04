@@ -8,9 +8,7 @@
 import Foundation
 import UIKit
 
-
 class TabBarController: UITabBarController {
-    
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -19,7 +17,8 @@ class TabBarController: UITabBarController {
         let keyWindow = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
         keyWindow?.rootViewController = self
         
-        UITabBar.clearShadow()
+        tabBar.backgroundColor = .white
+        tabBar.tintColor = UIColor.getColor(.tabbarColor)
         tabBar.layer.applyShadow(color: .gray, alpha: 0.3, x: 0, y: 0, blur: 12)
     }
     
@@ -31,21 +30,18 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
         
         let homeViewController = UINavigationController(rootViewController: HomeViewController())
-        homeViewController.tabBarItem = UITabBarItem(title:"홈", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house"))
+        homeViewController.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house"))
         
         let myInfoViewController = UINavigationController(rootViewController: MyInfoViewController())
-        myInfoViewController.tabBarItem = UITabBarItem(title:"내정보", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person"))
+        myInfoViewController.tabBarItem = UITabBarItem(title: "내정보", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person"))
         
         let sesacShopViewController = UINavigationController(rootViewController: SesacShopViewController())
         sesacShopViewController.tabBarItem = UITabBarItem(title: "새싹샵", image: UIImage(named: "gift_ic"), selectedImage: UIImage(named: "gift_ic"))
-        
-        
+    
         viewControllers = [ homeViewController, sesacShopViewController, myInfoViewController ]
         
     }
 }
-
-
 extension CALayer {
 
     func applyShadow(
@@ -62,12 +58,3 @@ extension CALayer {
     }
 }
 
-extension UITabBar {
-    
-    // 기본 그림자 스타일을 초기화해야 커스텀 스타일을 적용할 수 있다.
-    static func clearShadow() {
-        UITabBar.appearance().shadowImage = UIImage()
-        UITabBar.appearance().backgroundImage = UIImage()
-        UITabBar.appearance().backgroundColor = UIColor.white
-    }
-}
