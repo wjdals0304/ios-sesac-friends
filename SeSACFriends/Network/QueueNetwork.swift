@@ -5,7 +5,7 @@
 //  Created by 김정민 on 2022/02/04.
 //
 
-import Foundation
+import UIKit
 import Alamofire
 import SwiftyJSON
 
@@ -107,8 +107,7 @@ class QueueNetwork {
         self.header = ["idtoken": self.idtoken]
     }
     
-    
-    func postOnqueue(region: Int, lat: Double, long:Double, completion: @escaping(Queue?,APIStatus?) -> Void ) {
+    func postOnqueue(region: Int, lat: Double, long:Double, completion: @escaping(Result<Queue,APIStatus>) -> Void ) {
         
         let param: Parameters = [
             "region": region,
@@ -117,6 +116,7 @@ class QueueNetwork {
         ]
         
         let url = queueApi.postOnqueue().url!
+        
         self.header["Content-Type"] = "application/x-www-form-urlencoded"
         
         let dataRequest = AF.request(url
@@ -127,18 +127,20 @@ class QueueNetwork {
                                     )
         
         dataRequest.responseData { response in
+            print("response")
+            print(response)
             
             switch response.result {
                 
             case .success :
                 
                 guard let statusCode = response.response?.statusCode else {
-                    completion(nil, .failed)
+                    completion(.failure(.failed))
                     return
                 }
                 
                 guard let value = response.value else {
-                    completion(nil, .noData)
+                    completion(.failure(.noData))
                     return
                 }
                 
@@ -150,29 +152,26 @@ class QueueNetwork {
                     
                     guard let queueData = try? decoder.decode(Queue.self, from: value)
                     else {
-                        completion(nil, .invalidData)
+                         completion(.failure(.invalidData))
                         return
                     }
-                    completion(queueData, .success)
+                    completion(.success(queueData))
                 
                 case 401 :
-                    completion(nil, .expiredToken)
+                    completion(.failure(.expiredToken))
                 case 406 :
-                    completion(nil, .unregisterdUser)
+                    completion(.failure(.unregisterdUser))
                 case 500 :
-                    completion(nil, .serverError)
+                    completion(.failure(.serverError))
                 case 501:
-                    completion(nil, .clientError)
-                    
+                    completion(.failure(.clientError))
                 default :
-                    completion(nil, .failed)
-                
+                    completion(.failure(.failed))
                 }
                 
             case .failure(let error) :
                 print(error)
-                completion(nil, .failed)
-                
+                completion(.failure(.failed))
             }
             
 
