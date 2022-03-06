@@ -18,17 +18,17 @@ struct UserDefault<T> {
     
     let key: String
     let defaultValue: T
-    let storage: UserDefaults
+    let userDefaults: UserDefaults
     
     var wrappedValue: T {
-        get { self.storage.object(forKey: self.key) as? T ?? self.defaultValue }
-        set { self.storage.set(newValue, forKey: self.key) }
+        get { self.userDefaults.object(forKey: self.key) as? T ?? self.defaultValue }
+        set { self.userDefaults.set(newValue, forKey: self.key) }
     }
     
-    init(key: String, defaultValue: T, storage: UserDefaults = .standard ) {
+    init(key: String, defaultValue: T, userDefaults: UserDefaults = .standard ) {
         self.key = key
         self.defaultValue = defaultValue
-        self.storage = storage
+        self.userDefaults = userDefaults
     }
 }
 
