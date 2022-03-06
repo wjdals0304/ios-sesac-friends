@@ -13,57 +13,65 @@ enum Gender: Int {
     case none = -1
 }
 
+@propertyWrapper
+struct UserDefault<T> {
+    
+    let key: String
+    let defaultValue: T
+    let storage: UserDefaults
+    
+    var wrappedValue: T {
+        get { self.storage.object(forKey: self.key) as? T ?? self.defaultValue }
+        set { self.storage.set(newValue, forKey: self.key) }
+    }
+    
+    init(key: String, defaultValue: T, storage: UserDefaults = .standard ) {
+        self.key = key
+        self.defaultValue = defaultValue
+        self.storage = storage
+    }
+}
+
 class UserManager {
     
+    @UserDefault(key:"idtoken", defaultValue: nil)
+    static var idtoken: String?
     
-    static var idtoken : String? {
-        get { return UserDefaults.standard.string(forKey: "idtoken")}
-        set { UserDefaults.standard.set(newValue, forKey: "idtoken")}
-    }
+    @UserDefault(key:"uid", defaultValue: nil)
+    static var uid: String?
+    
+    @UserDefault(key:"nickName", defaultValue: nil)
+    static var nickName: String?
+    
+    @UserDefault(key:"phoneNumber", defaultValue: nil)
+    static var phoneNumber: String?
+    
+    @UserDefault(key:"age", defaultValue: 0)
+    static var age: Int
 
-    static var uid : String? {
-        get { return UserDefaults.standard.string(forKey: "uid")}
-        set { UserDefaults.standard.set(newValue, forKey: "uid")}
-    }
+    @UserDefault(key:"email", defaultValue: nil)
+    static var email: String?
     
-
-    static var nickName : String? {
-        get { return UserDefaults.standard.string(forKey: "nickName") }
-        set { UserDefaults.standard.set(newValue, forKey: "nickName")}
-    }
+    @UserDefault(key:"fcmtoken", defaultValue: nil)
+    static var fcmtoken: String?
     
-    static var phoneNumber : String? {
-        get { return UserDefaults.standard.string(forKey: "phoneNumber")}
-        set { UserDefaults.standard.set(newValue, forKey: "phoneNumber")}
-    }
+    @UserDefault(key:"birthday", defaultValue: nil)
+    static var birthday: String?
     
-    static var age : Int {
-        get { return UserDefaults.standard.integer(forKey: "age")}
-        set { UserDefaults.standard.set(newValue, forKey: "age")}
-    }
+    @UserDefault(key:"myHobby", defaultValue: [])
+    static var myHobbyArray: [String]
     
-    static var email: String? {
-        get { return UserDefaults.standard.string(forKey: "email")}
-        set { UserDefaults.standard.set(newValue, forKey: "email")}
-    }
+    @UserDefault(key:"lastChatDate", defaultValue:nil)
+    static var lastChatDate: String?
     
+    @UserDefault(key:"isMatch", defaultValue: false)
+    static var isMatch: Bool
     
-    static var gender : Gender? {
+    static var gender: Gender? {
         get { return Gender(rawValue: UserDefaults.standard.object(forKey: "gender") as! Int) ?? Gender.none }
         set { UserDefaults.standard.set(newValue?.rawValue, forKey: "gender") }
     }
-    
-    static var fcmtoken : String? {
-        get { return UserDefaults.standard.string(forKey: "fcmtoken")}
-        set { UserDefaults.standard.set(newValue, forKey: "fcmtoken")}
-    }
-    
-    
-    static var birthday: String? {
-        get { return UserDefaults.standard.string(forKey: "birthday")}
-        set { UserDefaults.standard.set(newValue, forKey: "birthday")}
-    }
-    
+
     static func isFirst() -> Bool {
         let defaults = UserDefaults.standard
         if defaults.object(forKey: "isFirst") == nil {
@@ -74,20 +82,4 @@ class UserManager {
         }
         
     }
-    
-    static var myHobbyArray : [String] {
-        get { return UserDefaults.standard.stringArray(forKey: "myHobby") ?? [] }
-        set { UserDefaults.standard.set(newValue, forKey: "myHobby") }
-    }
-    
-    static var lastChatDate : String? {
-        get { return UserDefaults.standard.string(forKey: "lastChatDate") }
-        set { UserDefaults.standard.set(newValue, forKey: "lastChatDate")}
-    }
-    
-    static var isMatch: Bool {
-        get { return UserDefaults.standard.bool(forKey: "isMatch") }
-        set { UserDefaults.standard.set(newValue, forKey: "isMatch")}
-    }
-    
 }
