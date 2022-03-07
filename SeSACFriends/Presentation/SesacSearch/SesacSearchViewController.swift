@@ -9,28 +9,23 @@ import Foundation
 import UIKit
 import SnapKit
 import FirebaseAuth
+import Toast_Swift
 
 class SesacSearchViewController : UIViewController {
     
-    private let region: Int
-    private let lat: Double
-    private let long : Double
+    let hobbyViewModel = HobbyViewModel()
     
-    var queueData : Queue!
-    
-    let homeViewModel = HomeViewModel()
-    
-    lazy var backBarButton : UIBarButtonItem = {
+    lazy var backBarButton: UIBarButtonItem = {
         let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), style: .plain, target: self, action: #selector(closeButtonClicked))
         return barButtonItem
     }()
     
-    lazy var rightButton : UIBarButtonItem = {
+    lazy var rightButton: UIBarButtonItem = {
         let barButtonItem = UIBarButtonItem(title: "찾기중단", style: .plain, target: self, action: #selector(rightButtonClicked))
         return barButtonItem
     }()
     
-    let segmentedControl : UISegmentedControl = {
+    lazy var segmentedControl: UISegmentedControl = {
         let items = ["주변 새싹", "받은 요청"]
         let segmentedControl = UISegmentedControl(items: items)
         segmentedControl.selectedSegmentIndex = 0
@@ -38,20 +33,25 @@ class SesacSearchViewController : UIViewController {
         return segmentedControl
     }()
     
-    var sesacArroundView : UIView!
-    let sesacRequestView = SesacRequestView()
+    let checkQueueTimer: Selector = #selector(checkQueueState)
+    var checkTime = Timer()
+
+    var sesacArroundView: UIView!
+    var sesacRequestView: UIView!
     
-    let subContentView = UIView()
+    let contentView = UIView()
     
-    init(region: Int, lat: Double ,long: Double) {
-        self.region = region
-        self.lat = lat
-        self.long = long
+    init(location: Location) {
+        self.hobbyViewModel.location = location
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        print(#function)
     }
     
     override func viewDidLoad() {
@@ -66,22 +66,27 @@ class SesacSearchViewController : UIViewController {
         navigationItem.leftBarButtonItem?.tintColor = .black
         navigationItem.rightBarButtonItem?.tintColor = .black
         
-        // TODO: 큐가 빈경우 로직 추가
-        apiPostOnqueue()
+        self.tabBarController?.tabBar.isHidden = true
 
+        apiPostOnqueue()
+        
+        checkTime = Timer.scheduledTimer(timeInterval: 5, target: self, selector: checkQueueTimer, userInfo: nil, repeats: true)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshView), name: NSNotification.Name("refreshView"), object: nil)
+        
     }
 
     func setup() {
         [
          segmentedControl,
-         subContentView
-        ].forEach{ self.view.addSubview($0) }
-        
+         contentView
+        ].forEach { self.view.addSubview($0) }
         
         [
          sesacArroundView,
          sesacRequestView
-        ].forEach{ subContentView.addSubview($0) }
+        ].forEach { contentView.addSubview($0) }
+        
     }
     
     func setupConstraint() {
@@ -92,44 +97,135 @@ class SesacSearchViewController : UIViewController {
             make.height.equalTo(44)
         }
         
-        subContentView.snp.makeConstraints { make in
+        contentView.snp.makeConstraints { make in
             make.top.equalTo(segmentedControl.snp.bottom)
             make.leading.trailing.bottom.equalToSuperview()
         }
 
         sesacArroundView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-//            make.bottom.equalTo(self.scrollView.frameLayoutGuide)
         }
         
         sesacRequestView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
-//        scrollView.snp.makeConstraints { make in
-//            make.edges.equalTo(self.view)
-//        }
-//
-//        mainContentView.snp.makeConstraints { make in
-//            make.width.equalTo(self.scrollView.snp.width)
-//            make.height.greaterThanOrEqualTo(view.snp.height).priority(.low)
-//            make.edges.equalTo(scrollView.contentLayoutGuide)
-//        }
-        
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
 }
 
 private extension SesacSearchViewController {
     
-    @objc func closeButtonClicked(){
+    @objc func closeButtonClicked() {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func refreshView() {
+        print("refreshView")
+        self.apiPostOnqueueForRefresh()
+    }
+    
+    @objc func checkQueueState() {
+        
+        hobbyViewModel.getMyQueueState { APIStatus, myqueueState in
+
+            switch APIStatus {
+            
+            case .success:
+                
+                switch myqueueState {
+                
+                case .message :
+                    
+                    self.view.makeToast( "\(String(describing: self.hobbyViewModel.queueState.matchedNick!))님과 매칭되셨습니다. 잠시 후 채팅방으로 이동합니다.", duration: 1)
+                    
+                    self.checkTime.invalidate()
+                    
+                    NotificationCenter.default.post(name: .changeFloatingButtonImage, object: MyqueueState.message.rawValue)
+                    
+                case .antenna:
+                    NotificationCenter.default.post(name: .changeFloatingButtonImage, object: MyqueueState.antenna.rawValue)
+                    
+                    self.checkTime.invalidate()
+
+                case .search :
+                    NotificationCenter.default.post(name: .changeFloatingButtonImage, object: MyqueueState.search.rawValue)
+                    
+                    self.checkTime.invalidate()
+
+                default :
+                    self.view.makeToast(APIErrorMessage.failed.rawValue)
+
+                }
+                
+            case .stopSearch:
+                self.view.makeToast("오랜 시간 동안 매칭 되지 않아 새싹 친구 찾기를 그만둡니다", duration: 1)
+                self.checkTime.invalidate()
+                
+            case .expiredToken:
+            
+                AuthNetwork.getIdToken { error in
+                        switch error {
+                        case .success :
+                            self.checkQueueState()
+                        case .failed :
+                            self.view.makeToast(APIErrorMessage.failed.rawValue)
+                        default :
+                            self.view.makeToast(APIErrorMessage.failed.rawValue)
+                        }
+                    }
+                
+            default :
+                self.view.makeToast(APIErrorMessage.failed.rawValue)
+
+            }
+                    
+        }
+        
     }
 
     @objc func rightButtonClicked() {
+        
+        hobbyViewModel.deleteQueue { APIStatus in
+            
+            switch APIStatus {
+            
+            case .success :
+                print("성공")
+                let vc = TabBarController()
+                self.moveView(isNavigation: true, controller: vc)
+                
+                UserManager.isMatch = false
+                
+            case .matchedState:
+                self.view.makeToast("누군가와 취미를 함께하기로 약속하셨어요!")
+                print("채팅 화면으로 이동")
+                
+            case .expiredToken:
+                
+                let currentUser = FirebaseAuth.Auth.auth().currentUser
+                currentUser?.getIDToken(completion: { idtoken, error in
+                guard let idtoken = idtoken else {
+                        print(error!)
+                        self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                        return
+                 }
+                 UserManager.idtoken = idtoken
+                })
+                self.rightButtonClicked()
+                
+            case .serverError, .clientError :
+                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                
+            default :
+                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+            }
+            
+        }
         
     }
     
@@ -137,25 +233,19 @@ private extension SesacSearchViewController {
 
         switch sender.selectedSegmentIndex {
         case 0 :
-
-            self.subContentView.bringSubviewToFront(sesacArroundView)
-            
-            break
+            self.contentView.bringSubviewToFront(sesacArroundView)
         case 1:
-
-            self.subContentView.bringSubviewToFront(sesacRequestView)
-            break
+            self.contentView.bringSubviewToFront(sesacRequestView)
         default :
             break
         }
     }
     
-    
     func apiPostOnqueue() {
         
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
-        homeViewModel.postOnqueue(region: region, lat: lat, long: long) { queue, APIStatus in
+        hobbyViewModel.postOnqueue(region: hobbyViewModel.location.region, lat: hobbyViewModel.location.lat, long: hobbyViewModel.location.long) { queue, APIStatus in
             
             switch APIStatus {
                 
@@ -166,9 +256,8 @@ private extension SesacSearchViewController {
                     return
                 }
                 
-                self.queueData = queue
-                self.queueData.fromQueueDB.append(FromQueueDB(uid: "", nick: "text", lat: 0, long: 0, reputation: [], hf: [], reviews: [], gender: 0, type: 0, sesac: 0, background: 0))
-                
+                self.hobbyViewModel.queueData = queue
+
                 dispatchGroup.leave()
 
             case .expiredToken :
@@ -191,18 +280,80 @@ private extension SesacSearchViewController {
         
         dispatchGroup.notify(queue: DispatchQueue.main) {
             
-            
-            if self.queueData.fromQueueDB.isEmpty {
-                self.sesacArroundView = SesacEmptyView(text: "아쉽게도 주변에 새싹이 없어요ㅠ")
+            if self.hobbyViewModel.queueData.fromQueueDB.isEmpty {
+                self.sesacArroundView = SesacEmptyView(text: "아쉽게도 주변에 새싹이 없어요ㅠ", location: self.hobbyViewModel.location )
             } else {
-                self.sesacArroundView = SesacTableView(queue: self.queueData.fromQueueDB)
+                self.sesacArroundView = SesacTableView(queue: self.hobbyViewModel.queueData.fromQueueDB, type: QueueType.fromQueueDB)
+            }
+            
+            if self.hobbyViewModel.queueData.fromQueueDBRequested.isEmpty {
+                self.sesacRequestView = SesacEmptyView(text: "아직 받은 요청이 없어요ㅠ", location: self.hobbyViewModel.location)
+            } else {
+                self.sesacRequestView = SesacTableView(queue: self.hobbyViewModel.queueData.fromQueueDBRequested, type: QueueType.fromQueueDBRequested)
             }
             
             self.setup()
             self.setupConstraint()
-            self.subContentView.bringSubviewToFront(self.sesacArroundView)
+            self.contentView.bringSubviewToFront(self.sesacArroundView)
         }
         
     }
     
+    func apiPostOnqueueForRefresh() {
+        
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        hobbyViewModel.postOnqueue(region: hobbyViewModel.location.region, lat: hobbyViewModel.location.lat, long: hobbyViewModel.location.long) { queue, APIStatus in
+            
+            switch APIStatus {
+                
+            case .success :
+                
+                guard let queue = queue else {
+                    self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                    return
+                }
+                
+                self.hobbyViewModel.queueData = queue
+
+                dispatchGroup.leave()
+
+            case .expiredToken :
+                let currentUser = FirebaseAuth.Auth.auth().currentUser
+                currentUser?.getIDToken(completion: { idtoken, error in
+                guard let idtoken = idtoken else {
+                        print(error!)
+                        self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                        return
+                 }
+                 UserManager.idtoken = idtoken
+                })
+                self.apiPostOnqueue()
+                dispatchGroup.leave()
+                
+            default :
+                self.view.makeToast("에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+            }
+        }
+        
+        dispatchGroup.notify(queue: DispatchQueue.main) {
+            
+            if self.hobbyViewModel.queueData.fromQueueDB.isEmpty {
+                self.sesacArroundView = SesacEmptyView(text: "아쉽게도 주변에 새싹이 없어요ㅠ", location: self.hobbyViewModel.location)
+            } else {
+                self.sesacArroundView = SesacTableView(queue: self.hobbyViewModel.queueData.fromQueueDB, type: QueueType.fromQueueDB)
+            }
+            
+            if self.hobbyViewModel.queueData.fromQueueDBRequested.isEmpty {
+                self.sesacRequestView = SesacEmptyView(text: "아직 받은 요청이 없어요ㅠ", location: self.hobbyViewModel.location)
+            } else {
+                self.sesacRequestView = SesacTableView(queue: self.hobbyViewModel.queueData.fromQueueDBRequested, type: QueueType.fromQueueDBRequested)
+            }
+            
+            self.setup()
+            self.setupConstraint()
+        }
+        
+    }
+
 }
