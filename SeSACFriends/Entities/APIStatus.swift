@@ -8,7 +8,7 @@
 import Foundation
 
 
-enum APIStatus   {
+enum APIStatus : String, Error {
     
     case success
     case noData
