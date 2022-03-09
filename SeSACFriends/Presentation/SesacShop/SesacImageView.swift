@@ -15,7 +15,7 @@ final class SesacImageView : BaseUIView {
     
     lazy var collectionView : UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.estimatedItemSize = CGSize(width: UIScreen.main.bounds.width  - 32 - 6 , height: 280)
+        layout.estimatedItemSize = CGSize(width: UIScreen.main.bounds.width  - 32 - 10, height: 250)
         layout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 24, right: 12)
         layout.scrollDirection = .vertical
         
@@ -46,7 +46,6 @@ final class SesacImageView : BaseUIView {
     }
 
 }
-
 
 private extension SesacImageView {
     
@@ -80,8 +79,13 @@ private extension SesacImageView {
             case .success :
                 //  영수증 검증이 끝난 이후 트랜잭션 종료
                 SKPaymentQueue.default().finishTransaction(transaction)
+                self.getShopMyinfo()
+                self.collectionView.reloadData()
+                self.collectionView.layoutIfNeeded()
+                
             case .failedReceipt :
                 print("faildRecepit")
+                SKPaymentQueue.default().finishTransaction(transaction)
             case .expiredToken:
                 AuthNetwork.getIdToken { error in
                     switch error {
@@ -110,7 +114,7 @@ private extension SesacImageView {
             switch APIStatus {
                 
             case .success:
-                break
+                self.collectionView.reloadData()
             case .expiredToken:
                 AuthNetwork.getIdToken { error in
                     switch error {
@@ -199,13 +203,13 @@ extension SesacImageView: UICollectionViewDataSource, UICollectionViewDelegate {
         return cell
     }
     
-    @objc func priceButtonClicked(_ sender: UIButton ){
+    @objc func priceButtonClicked(_ sender: UIButton) {
         
         if sender.tag == 0 {
             return
         }
         
-        let product  = self.sesacShopViewModel.sesacProductsArray[sender.tag] as! SKProduct
+        let product = self.sesacShopViewModel.sesacProductsArray[sender.tag] as! SKProduct
         let payment = SKPayment(product: product)
         SKPaymentQueue.default().add(payment)
         SKPaymentQueue.default().add(self)
