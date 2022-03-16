@@ -20,20 +20,18 @@ enum FontSize {
     case regular_20
     
     case regular_24
+    
+    case medium_12
 
     case medium_14
     
     case medium_16
-
-    
 }
 
 
 extension UIFont {
     
-
     static func getRegularFont(_ size:FontSize) -> UIFont {
-
 
         switch size {
 
@@ -48,17 +46,16 @@ extension UIFont {
         case .regular_24 :
             return UIFont(name: "NotoSansKR-Regular", size: 24)!
 
+        case .medium_12 :
+            return UIFont(name: "NotoSansKR-Medium", size: 12)!
         case .medium_14 :
             return UIFont(name: "NotoSansKR-Medium", size: 14)!
         case .medium_16 :
             return UIFont(name: "NotoSansKR-Medium", size: 16)!
+        
+        
             
         }
-
-
-
     }
-    
-    
     
 }
